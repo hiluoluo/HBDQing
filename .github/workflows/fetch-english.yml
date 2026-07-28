@@ -1,0 +1,28 @@
+name: 每日英文短文
+on:
+  schedule:
+    # 北京时间 00:00（UTC 16:00 前一天）自动抓取一篇英文短文
+    - cron: "0 16 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fetch daily English article
+        run: python scripts/fetch_english.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/english.json
+          git diff --cached --quiet || git commit -m "daily english: $(date +%F)"
+          git push

@@ -1,0 +1,32 @@
+name: 刷新热点动态
+
+on:
+  schedule:
+    - cron: "17 */2 * * *"        # 每 2 小时跑一次（GitHub Actions 免费额度足够）
+  workflow_dispatch: {}           # 也支持在 Actions 页面手动点一下运行
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 抓取并生成 data/news.json
+        env:
+          JUHE_KEY: ${{ secrets.JUHE_KEY }}   # 可选：仓库 Settings → Secrets 里加 JUHE_KEY 启用深圳/成都本地新闻
+        run: python scripts/fetch_news.py
+
+      - name: 提交更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/news.json
+          if git diff --cached --quiet; then
+            echo "无变化，跳过提交"
+          else
+            git commit -m "chore: 自动刷新热点动态 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi

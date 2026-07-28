@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>每日助手</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- 左侧导航：电脑常驻，手机为抽拉抽屉 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">❀ <span id="brandName">每日助手</span></div>
+      <nav class="nav" id="sidebarNav"></nav>
+      <p class="side-foot">数据只存在你自己的浏览器里 ◌</p>
+    </aside>
+    <div class="drawer-mask" id="drawerMask"></div>
+
+    <!-- 主区 -->
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" aria-label="打开菜单">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="topbar-text">
+          <p class="greet" id="greet">你好</p>
+          <h1 class="who" id="who">小宇</h1>
+          <p class="date" id="today"></p>
+        </div>
+        <div class="weather" id="weather">获取天气中…</div>
+      </header>
+
+      <div class="panels" id="panels">
+
+        <!-- 首页 -->
+        <section class="panel active" id="panel-home">
+          <p class="gift" id="gift"></p>
+
+          <!-- 赛博木鱼 -->
+          <div class="card woodfish-card">
+            <div class="card-head">
+              <h2>◍ 赛博木鱼</h2>
+              <span class="hint">敲一敲，静一静</span>
+            </div>
+            <div class="woodfish" id="woodfish" title="点我敲木鱼">
+              <div class="wf-body"></div>
+              <div class="wf-slit"></div>
+            </div>
+            <p class="merit">今日功德 <b id="meritCount">0</b></p>
+            <p class="merit-note" id="meritNote"></p>
+          </div>
+
+          <!-- 喝水 8 杯 -->
+          <div class="card water-card">
+            <div class="card-head">
+              <h2>◌ 喝水打卡</h2>
+              <span class="hint" id="waterHint">点亮 8 杯</span>
+            </div>
+            <div class="cups" id="cups"></div>
+            <div class="row" style="margin-top:10px">
+              <button id="waterMinusHome" class="btn">−1 杯</button>
+              <button id="waterResetHome" class="btn ghost">重置</button>
+            </div>
+          </div>
+
+          <!-- 名言轮播 -->
+          <div class="card quote-card">
+            <div class="card-head">
+              <h2>✶ 今日名言</h2>
+              <button id="quoteNext" class="mini-btn">换一句</button>
+            </div>
+            <div class="quote-box" id="quoteBox"></div>
+          </div>
+
+          <!-- 今日心情打卡（emoji 心情 + 确认按钮） -->
+          <div class="card note-card">
+            <div class="card-head">
+              <h2>◌ 今日心情打卡</h2>
+              <span class="hint">选个表情，写句想说的话，点确认留下今天</span>
+            </div>
+            <div class="mood-emoji" id="homeMoods"></div>
+            <textarea id="homeNote" class="note" rows="3" placeholder="今天想说点什么…"></textarea>
+            <div class="row" style="margin-top:10px">
+              <button id="homeMoodSave" class="btn primary">确认打卡</button>
+              <span class="hint" id="homeNoteSaved"></span>
+            </div>
+          </div>
+
+          <!-- 工作待办（移到首页） -->
+          <div class="card">
+            <div class="card-head">
+              <h2>✎ 今日待办</h2>
+              <span class="hint">随手记，做完勾掉</span>
+            </div>
+            <div class="row">
+              <input type="text" id="homeTodoInput" class="flex-input" placeholder="添加一项待办…">
+              <button id="homeTodoAdd" class="btn primary">添加</button>
+            </div>
+            <ul id="homeTodoList" class="check-list"></ul>
+          </div>
+        </section>
+
+        <!-- 健康 -->
+        <section class="panel" id="panel-health">
+          <!-- 体检提醒横幅：仅在提醒窗口出现 -->
+          <div class="exam-banner" id="examBanner" style="display:none"></div>
+
+          <div class="card">
+            <h2>今日心情</h2>
+            <div class="moods" id="moods"></div>
+            <textarea id="moodNote" class="note" rows="2" placeholder="想对今天的心情说点什么…"></textarea>
+          </div>
+
+          <div class="card">
+            <h2>喝水提醒</h2>
+            <div class="water-num"><span id="waterCount">0</span><span class="unit"> / <span id="waterGoal">8</span> 杯</span></div>
+            <div class="bar"><div class="bar-fill" id="waterBar"></div></div>
+            <div class="row">
+              <button id="waterPlus" class="btn primary">+1 杯</button>
+              <button id="waterMinus" class="btn">-1</button>
+              <label class="remind"><input type="checkbox" id="waterRemind"> 定时提醒</label>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>今日三餐</h2>
+            <label class="meal-label">◔ 早餐<input type="text" id="hMealB" placeholder="吃了什么…"></label>
+            <label class="meal-label">◑ 午餐<input type="text" id="hMealL" placeholder="吃了什么…"></label>
+            <label class="meal-label">☾ 晚餐<input type="text" id="hMealD" placeholder="吃了什么…"></label>
+          </div>
+
+          <div class="card">
+            <h2>作息记录</h2>
+            <div class="form-grid">
+              <label>起床时间<input type="time" id="sleepUp"></label>
+              <label>睡觉时间<input type="time" id="sleepDown"></label>
+            </div>
+            <p class="hint" id="sleepInfo"></p>
+          </div>
+
+          <div class="card">
+            <h2>运动打卡</h2>
+            <div class="row">
+              <input type="text" id="hExInput" class="flex-input" placeholder="今天运动了什么…">
+              <button id="hExAdd" class="btn primary">添加</button>
+            </div>
+            <ul id="hExList" class="check-list"></ul>
+          </div>
+
+          <div class="card">
+            <h2>经期提醒</h2>
+            <div id="periodInfo" class="period-info">—</div>
+            <div class="row">
+              <button id="periodMark" class="btn">今天来了</button>
+              <button id="periodSet" class="btn ghost">设置</button>
+            </div>
+            <div id="periodPanel" class="panel-in" style="display:none">
+              <label>上次经期开始<input type="date" id="pLast"></label>
+              <label>周期（天）<input type="number" id="pCycle" value="28"></label>
+              <label>经期天数<input type="number" id="pDur" value="5"></label>
+              <button id="pSave" class="btn primary">保存</button>
+            </div>
+          </div>
+
+          <div class="card exam-card">
+            <h2>体检提醒</h2>
+            <p class="hint" id="examDesc">记录上次体检时间，每半年提醒一次。</p>
+            <div class="row">
+              <button id="examSet" class="btn">记录 / 更新体检时间</button>
+              <button id="examIssueAdd" class="btn ghost">记录健康问题</button>
+            </div>
+            <div id="examIssues" class="exam-issues"></div>
+          </div>
+
+          <!-- 底部小色带：平时也显示，说明距离上次体检天数与当前维度 -->
+          <div class="exam-band" id="examBand">
+            <span class="exam-dot" id="examDot"></span>
+            <span id="examBandText">还没记录体检时间</span>
+            <button id="examBandBtn" class="mini-btn">去记录</button>
+          </div>
+        </section>
+
+        <!-- 运动健身 -->
+        <section class="panel" id="panel-exercise">
+          <div class="card">
+            <div class="card-head">
+              <h2>✦ 运动健身打卡</h2>
+              <span class="hint">选运动 · 记时长 · 看坚持</span>
+            </div>
+            <div class="ex-types" id="exTypes"></div>
+            <div class="row" style="margin-top:10px">
+              <label class="set-label" style="flex:1">时长（分钟）<input type="number" id="exMin" placeholder="30" min="1" step="1"></label>
+              <label class="set-label" style="flex:1">强度
+                <select id="exLevel"><option value="轻">轻</option><option value="中" selected>中</option><option value="重">重</option></select>
+              </label>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <button id="exSave" class="btn primary">记录今天的运动</button>
+              <span class="hint" id="exSaved"></span>
+            </div>
+          </div>
+          <div class="card">
+            <h2>近 14 天热力图</h2>
+            <p class="hint">颜色越深代表当天运动时长越长</p>
+            <div class="ex-heat" id="exHeat"></div>
+          </div>
+          <div class="card">
+            <h2>今日运动清单</h2>
+            <ul id="exList2" class="check-list"></ul>
+          </div>
+        </section>
+
+        <!-- 记录生活 -->
+        <section class="panel" id="panel-life">
+          <div class="card">
+            <div class="card-head">
+              <h2>✿ 今日照片</h2>
+              <button id="snapBtn" class="btn primary">拍一张 / 选照片</button>
+            </div>
+            <input type="file" id="snapInput" accept="image/*" capture="environment" style="display:none">
+            <div id="photoWall" class="photo-wall"></div>
+          </div>
+          <div class="card">
+            <h2>今日日常</h2>
+            <textarea id="log" class="log" rows="7" placeholder="记录今天发生的事、见的人、冒出的念头…"></textarea>
+            <p class="hint" id="logSaved"></p>
+          </div>
+          <div class="card">
+            <h2>近 7 天记录</h2>
+            <div id="history" class="history"></div>
+          </div>
+        </section>
+
+        <!-- 与姐姐的回忆录 -->
+        <section class="panel" id="panel-memoir">
+          <div class="memoir-head">
+            <h2 id="memoirTitle">与姐姐的回忆录</h2>
+            <p class="memoir-sub" id="memoirSub"></p>
+          </div>
+          <div class="card">
+            <h3>添加一条回忆</h3>
+            <div class="form-grid">
+              <label>日期<input type="date" id="mDate"></label>
+              <label>标题<input type="text" id="mTitle" placeholder="例如：第一次一起旅行"></label>
+            </div>
+            <textarea id="mText" class="log" rows="3" placeholder="写点什么吧…"></textarea>
+            <label class="file-label">照片（可填图床链接，或从相册选）
+              <input type="text" id="mPhotoUrl" placeholder="图片链接 https://…（可留空）">
+            </label>
+            <input type="file" id="mPhotoFile" accept="image/*" class="file-input">
+            <div class="row" style="margin-top:10px">
+              <button id="mAdd" class="btn primary">保存这条回忆</button>
+              <span class="hint" id="mHint"></span>
+            </div>
+          </div>
+          <div class="timeline" id="memoirList"></div>
+        </section>
+
+        <!-- 热点动态 -->
+        <section class="panel" id="panel-news">
+          <div class="card">
+            <div class="card-head">
+              <h2>✉ 热点动态</h2>
+              <div class="row" style="gap:8px">
+                <span class="hot-summary" id="hotSummary"></span>
+                <button id="hotRefresh" class="mini-btn">刷新</button>
+              </div>
+            </div>
+            <div class="hot-tagline" id="hotTagline"></div>
+            <p class="hint">微博热搜 · 抖音热榜 · 新华社早报 · 知乎 · 小红书 · 深圳/成都本地（免 Key 自动更新）。已标注 <b>关键词</b> 与 <b>出处</b>。</p>
+            <div class="tabs" id="hotTabs"></div>
+            <div class="hot-panels" id="hotPanels"></div>
+          </div>
+        </section>
+
+        <!-- 学习：外语中心 -->
+        <section class="panel" id="panel-study">
+          <div class="card">
+            <div class="tabs" id="studyTabs">
+              <button class="tab active" data-study="en">英语积累</button>
+              <button class="tab" data-study="ko">韩语入门</button>
+              <button class="tab" data-study="law">法律法规</button>
+              <button class="tab" data-study="interest">兴趣拓展</button>
+            </div>
+
+            <!-- 英语阅读 -->
+            <div id="study-en" class="study-panel active">
+              <div class="study-head">
+                <h2 id="enTitle"></h2>
+                <div class="row" style="gap:6px">
+                  <button id="enMode" class="mini-btn">轻松短文（带中文）</button>
+                  <button id="enNext" class="mini-btn">换一篇</button>
+                </div>
+              </div>
+              <div class="en-meta" id="enMeta"></div>
+              <div class="en-box" id="enText"></div>
+              <div class="row" style="margin:12px 0">
+                <button id="enUk" class="btn">英音朗读</button>
+                <button id="enUs" class="btn">美音朗读</button>
+                <button id="enShowZh" class="btn ghost">显示翻译</button>
+              </div>
+              <div id="enZh" class="zh-box" style="display:none"></div>
+            </div>
+
+            <!-- 韩语入门 -->
+            <div id="study-ko" class="study-panel">
+              <h2>常用词汇</h2>
+              <div id="koWords" class="ko-grid"></div>
+              <h2 style="margin-top:22px">韩语四十音</h2>
+              <div class="ko-section">
+                <h3>子音</h3>
+                <div id="koCon" class="ko-grid"></div>
+              </div>
+              <div class="ko-section">
+                <h3>母音</h3>
+                <div id="koVow" class="ko-grid"></div>
+              </div>
+
+            <!-- 法律法规 -->
+            <div id="study-law" class="study-panel">
+              <div class="card-head">
+                <h2>法律法规 · 每日一条</h2>
+                <span class="hint" id="lawSource"></span>
+              </div>
+              <p class="hint">每天自动滚动 1-2 条常用法律法规，了解自己的权利与底线。</p>
+              <div id="lawList" class="law-list"></div>
+            </div>
+
+            <!-- 兴趣拓展 -->
+            <div id="study-interest" class="study-panel">
+              <div class="card-head">
+                <h2>✺ 兴趣拓展 · 一个月计划</h2>
+                <span class="hint">填你感兴趣的事，自动生成 30 天计划表</span>
+              </div>
+              <div class="row">
+                <input type="text" id="interestInput" class="flex-input" placeholder="比如：学吉他 / 摄影 / 练字 / 健身 / 做饭…">
+                <button id="interestGen" class="btn primary">生成计划</button>
+              </div>
+              <p class="hint" id="interestHint">说明：纯前端无法实时联网，这里用精选模板自动生成计划；底部附小红书 / B 站搜索链接，方便看真实教程。</p>
+              <div id="interestPlan"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 每日一问 · 答案之书 -->
+        <section class="panel" id="panel-answer">
+          <div class="card mystic-card">
+            <h2>✉ 答案之书</h2>
+            <p class="hint">在心里默念一个问题，闭上眼睛，然后点下面的按钮。它会给你一句答案。</p>
+            <div class="answer-box" id="answerBox">？</div>
+            <p class="answer-note" id="answerNote"></p>
+            <div class="row" style="margin-top:18px;gap:10px;flex-wrap:wrap">
+              <button id="answerDraw" class="btn primary">抽一张答案</button>
+              <button id="answerAgain" class="btn ghost">再抽一次</button>
+            </div>
+            <p class="hint" style="margin-top:14px">今日已抽：<span id="answerToday">还没有</span></p>
+          </div>
+        </section>
+
+        <!-- 每日一问 · 塔罗 -->
+        <section class="panel" id="panel-tarot">
+          <div class="card mystic-card">
+            <h2>✺ 塔罗 · 每日一牌</h2>
+            <p class="hint">为你抽一张今日指引牌。点「今日牌」得到稳定的一日一牌，点「换一张」随意再抽。</p>
+            <div class="tarot-card" id="tarotCard">
+              <div class="tarot-name" id="tarotName">—</div>
+              <div class="tarot-en" id="tarotEn"></div>
+              <div class="tarot-pos"><b>正位</b><span id="tarotPos"></span></div>
+              <div class="tarot-rev"><b>逆位</b><span id="tarotRev"></span></div>
+            </div>
+            <div class="row" style="margin-top:18px;gap:10px;flex-wrap:wrap">
+              <button id="tarotDaily" class="btn primary">今日牌</button>
+              <button id="tarotShuffle" class="btn ghost">换一张</button>
+            </div>
+            <p class="hint" id="tarotNote" style="margin-top:14px"></p>
+          </div>
+        </section>
+
+        <!-- 每日一问 · 灵签 -->
+        <section class="panel" id="panel-oracle">
+          <div class="card mystic-card">
+            <h2>✎ 求签问卜</h2>
+            <p class="hint">心诚则灵。求一支签，看看今日的运势与提醒。</p>
+            <div class="oracle-box" id="oracleBox">
+              <div class="oracle-top">
+                <span class="oracle-level" id="oracleLevel">—</span>
+                <span class="oracle-no" id="oracleNo"></span>
+              </div>
+              <div class="oracle-poem" id="oraclePoem"></div>
+              <div class="oracle-meaning" id="oracleMeaning"></div>
+            </div>
+            <div class="row" style="margin-top:18px">
+              <button id="oracleDraw" class="btn primary">求一支签</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 每日一问 · 美食盲盒 -->
+        <section class="panel" id="panel-food">
+          <div class="card mystic-card">
+            <h2>🍜 美食盲盒 · 今天吃什么</h2>
+            <p class="hint">不知道吃啥？转一转，让命运替你决定。可先选品类。</p>
+            <div class="food-cats" id="foodCats"></div>
+            <div class="wheel-wrap">
+              <div class="wheel-pointer"></div>
+              <div class="wheel" id="foodWheel"></div>
+            </div>
+            <div class="row" style="justify-content:center;margin-top:14px">
+              <button id="foodSpin" class="btn primary" style="font-size:16px;padding:12px 28px">转 一 转</button>
+            </div>
+            <div class="food-result" id="foodResult"></div>
+          </div>
+        </section>
+
+        <!-- 工作 -->
+        <section class="panel" id="panel-work">
+          <div class="card">
+            <h2>待办清单</h2>
+            <div class="row">
+              <input type="text" id="todoInput" class="flex-input" placeholder="添加一项待办…">
+              <button id="todoAdd" class="btn primary">添加</button>
+            </div>
+            <ul id="todoList" class="check-list"></ul>
+          </div>
+          <div class="card">
+            <h2>项目进度</h2>
+            <div id="projList"></div>
+          </div>
+        </section>
+
+        <!-- 财富 -->
+        <section class="panel" id="panel-wealth">
+          <div class="card">
+            <h2>记一笔</h2>
+            <div class="form-grid">
+              <label>类型
+                <select id="wType">
+                  <option value="支出">支出</option>
+                  <option value="收入">收入</option>
+                </select>
+              </label>
+              <label>分类<select id="wCat"></select></label>
+            </div>
+            <div class="form-grid">
+              <label>金额<input type="number" id="wAmount" placeholder="0" min="0" step="0.01"></label>
+              <label>备注<input type="text" id="wNote" placeholder="选填"></label>
+            </div>
+            <button id="wAdd" class="btn primary" style="margin-top:8px">保存</button>
+          </div>
+          <div class="card">
+            <h2>存钱计划 · 月历</h2>
+            <p class="hint" id="savGoalHint"></p>
+            <div class="row" style="margin-top:8px">
+              <button id="budgetEdit" class="btn ghost">编辑预算 / 目标</button>
+            </div>
+            <div class="panel-in" id="budgetPanel" style="display:none">
+              <label>每月预算（元）<input type="number" id="bBudget" min="0" step="100"></label>
+              <label>每月存钱目标（元）<input type="number" id="bGoal" min="0" step="100"></label>
+              <button id="budgetSave" class="btn primary">保存目标</button>
+            </div>
+            <div class="cal-head" style="margin-top:12px">
+              <button id="calPrev" class="mini-btn">‹ 上月</button>
+              <span id="calMonth" class="cal-month"></span>
+              <button id="calNext" class="mini-btn">下月 ›</button>
+            </div>
+            <div class="cal-week" id="calWeek"></div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div class="cal-form" id="calForm" style="display:none">
+              <div class="cal-detail" id="calDetail"></div>
+              <div class="cal-add">
+                <h3 style="margin:8px 0 8px">补记 / 添加这一天的记录</h3>
+                <div class="form-grid">
+                  <label>类型<select id="calType"><option value="存款">存款</option><option value="花销">花销</option></select></label>
+                  <label>金额<input type="number" id="calAmt" placeholder="0" min="0" step="0.01"></label>
+                </div>
+                <label class="set-label">备注<input type="text" id="calNote" placeholder="选填"></label>
+                <div class="row" style="margin-top:8px">
+                  <button id="calSave" class="btn primary">保存</button>
+                  <button id="calCancel" class="btn ghost">取消</button>
+                  <span class="hint" id="calDateLabel"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>本月概览</h2>
+            <div id="wealthSummary" class="ov-grid"></div>
+            <h3 style="margin-top:14px">最近记录</h3>
+            <ul id="wealthList" class="rec-list"></ul>
+          </div>
+        </section>
+
+        <!-- 饮食运动 -->
+        <section class="panel" id="panel-diet">
+          <div class="card">
+            <h2>营养补剂提醒</h2>
+            <div id="supList" class="check-list"></div>
+          </div>
+          <div class="card">
+            <h2>今日三餐 · 运动速览</h2>
+            <p class="hint">完整记录请在「健康」页，这里是今天的回顾：</p>
+            <div id="dietRecap" class="diet-recap"></div>
+            <button id="toHealth" class="btn primary" style="margin-top:10px">去健康页记录</button>
+          </div>
+        </section>
+
+        <!-- 出游计划 -->
+        <section class="panel" id="panel-travel">
+          <div class="card">
+            <div class="card-head">
+              <h2>出游计划</h2>
+              <span class="hint">内置五维攻略 · 可自主添加收藏 · 一键跳小红书</span>
+            </div>
+            <label class="set-label">想去哪儿？<input type="text" id="travelDest" placeholder="输入城市，如：成都"></label>
+            <div class="row" style="margin-top:8px;flex-wrap:wrap;gap:6px" id="travelChips"></div>
+            <div class="travel-out" id="travelOut"></div>
+          </div>
+          <div class="card">
+            <h2>我的出游打卡清单</h2>
+            <div class="row">
+              <input type="text" id="travelItem" class="flex-input" placeholder="想打卡的事，如：登长城">
+              <button id="travelItemAdd" class="btn primary">添加</button>
+            </div>
+            <ul id="travelList" class="check-list"></ul>
+          </div>
+        </section>
+
+        <!-- 每日打卡（占位，等待后续填补） -->
+        <section class="panel" id="panel-checkin">
+          <div class="card" style="text-align:center;padding:48px 20px">
+            <div style="font-size:52px;margin-bottom:12px">✓</div>
+            <h2>每日打卡</h2>
+            <p class="hint" style="margin-top:8px;max-width:280px;margin-left:auto;margin-right:auto">这里是每日综合打卡面板，正在搭建中。<br>你可以把想坚持的习惯、待办、健康打卡都汇总到这里。</p>
+            <button class="btn primary" style="margin-top:18px" onclick="window.location.hash='#panel-study'">先去学习中心打卡</button>
+          </div>
+        </section>
+
+        <!-- 设置 -->
+        <section class="panel" id="panel-settings">
+          <div class="card">
+            <h2>基本设置</h2>
+            <label class="set-label">朋友的名字<input type="text" id="sName"></label>
+            <label class="set-label">城市名称<input type="text" id="sCityName"></label>
+            <div class="form-grid">
+              <label>纬度<input type="number" id="sLat" step="0.0001"></label>
+              <label>经度<input type="number" id="sLon" step="0.0001"></label>
+            </div>
+            <label class="set-label">顶部寄语<input type="text" id="sGift"></label>
+            <button id="sSave" class="btn primary" style="margin-top:8px">保存设置</button>
+            <p class="hint" id="sHint"></p>
+          </div>
+          <div class="card">
+            <h2>关于</h2>
+            <p class="about">这是一份用心做的礼物 ❀：一个每天陪她的「工作台」。<br>所有数据都存在她自己的浏览器里，不会上传，放心用。</p>
+          </div>
+        </section>
+
+        <!-- 数据备份 -->
+        <section class="panel" id="panel-data">
+          <div class="card">
+            <h2>◈ 数据备份与恢复</h2>
+            <p class="hint">所有数据只存在你自己的浏览器里。导出可备份到手机/电脑；导入可换设备恢复。</p>
+            <div class="row" style="margin-top:10px">
+              <button id="dataExport" class="btn primary">导出数据（下载 JSON）</button>
+              <button id="dataImportBtn" class="btn">导入数据</button>
+              <input type="file" id="dataImport" accept="application/json" style="display:none">
+            </div>
+            <p class="hint" id="dataMsg" style="margin-top:10px"></p>
+          </div>
+          <div class="card">
+            <h2>关于数据</h2>
+            <ul class="data-list" id="dataList"></ul>
+          </div>
+        </section>
+
+        <!-- 我的 · 整体记录时间线 -->
+        <section class="panel" id="panel-timeline">
+          <div class="card">
+            <div class="card-head">
+              <h2>☺ 我的 · 记录时间线</h2>
+              <span class="hint">自动汇总你做过的事，按日期回看</span>
+            </div>
+            <div id="timelineBox" class="timeline-box"></div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- 底部三键栏（手机）：左键 / 中央相机 / 右键 -->
+    <nav class="bottombar" id="bottomBar">
+      <button class="bb-side" id="bbLeft"></button>
+      <button class="bb-cam" id="bbCam" aria-label="拍照记录">◉</button>
+      <button class="bb-side" id="bbRight"></button>
+    </nav>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="config.js"></script>
+  <script src="data/quotes.js"></script>
+  <script src="data/life.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
