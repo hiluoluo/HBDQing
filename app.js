@@ -78,35 +78,105 @@
     const st = todoStats();
     txt.innerHTML = "今天共 <b>" + st.total + "</b> 待办" + (st.soon + st.overdue > 0 ? "，<b>" + (st.soon + st.overdue) + "</b> 个即将超时" : "");
     tab.classList.toggle("warn", st.overdue > 0);
-    const pop = document.getElementById("todoPop");
-    const todos = st.todos;
-    if (!todos.length) { pop.innerHTML = '<div class="tp-empty">今天还没有待办，轻松一天 ♡</div>'; return; }
-    let html = '<div class="tp-head">待办详情</div>';
-    todos.slice().sort(function (a, b) {
-      const rank = { "重要": 0, "比较重要": 1, "一般": 2 };
-      return (a.done - b.done) || ((a.ddl || "9999") + "").localeCompare((b.ddl || "9999") + "") || (rank[a.prio] || 2) - (rank[b.prio] || 2);
-    }).forEach(function (t) {
-      const over = t.ddl && !t.done && daysBetween(key, t.ddl) < 0;
-      const color = PRIO_COLOR[t.prio || "一般"];
-      html += '<div class="tp-item' + (over ? " over" : "") + (t.done ? " done" : "") + '">' +
-        '<span class="tp-dot" style="background:' + (over ? "#e0533d" : color) + '"></span>' +
-        '<span class="tp-text">' + esc(t.text) + '</span>' +
-        '<span class="tp-meta">' + (t.prio || "一般") + (t.ddl ? " · 最晚 " + esc(t.ddl.slice(5)) : "") + (over ? " · 已超时" : "") + '</span></div>';
-    });
-    pop.innerHTML = html;
   }
   (function initTodoTab() {
     const tab = document.getElementById("todoTab"); if (!tab) return;
-    const pop = document.getElementById("todoPop");
-    tab.onclick = function (e) {
-      if (e.target.closest(".tt-pop")) return;
-      renderTodoTab();
-      pop.hidden = !pop.hidden;
-      tab.classList.toggle("openned", !pop.hidden);
+    // 点击小方块 → 直接进入首页待办卡片（置顶显示，不再弹小窗）
+    tab.onclick = function () {
+      showPanel("home");
+      const card = document.getElementById("homeTodoCard");
+      if (card) {
+        setTimeout(function () {
+          try { card.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {}
+          card.classList.remove("flash-card"); void card.offsetWidth; // 重新触发动画
+          card.classList.add("flash-card");
+        }, 80);
+      }
     };
-    document.addEventListener("click", function (e) { if (!tab.contains(e.target)) { pop.hidden = true; tab.classList.remove("openned"); } });
     renderTodoTab();
   })();
+
+  // ---------- 仪式感删除：长按拖拽到垃圾桶 + 确认弹窗 ----------
+  let dragEndAt = 0;   // 拖拽刚结束时抑制误触点击
+  const trashZone = document.createElement("div");
+  trashZone.className = "trash-zone";
+  trashZone.innerHTML = '<span class="tz-icon">🗑</span><span class="tz-text">拖到这里删除</span>';
+  document.body.appendChild(trashZone);
+
+  function showConfirm(msg, onYes) {
+    const mask = document.createElement("div"); mask.className = "confirm-mask";
+    mask.innerHTML = '<div class="confirm-card"><div class="cc-icon">🗑</div><div class="cc-msg">' + msg + '</div>' +
+      '<div class="cc-btns"><button class="btn ghost cc-no">取消</button><button class="btn danger cc-yes">确认删除</button></div></div>';
+    document.body.appendChild(mask);
+    mask.querySelector(".cc-no").onclick = function () { mask.remove(); };
+    mask.onclick = function (e) { if (e.target === mask) mask.remove(); };
+    mask.querySelector(".cc-yes").onclick = function () { mask.remove(); onYes(); };
+  }
+
+  // 长按 0.5 秒进入拖拽 → 出现垃圾桶 → 拖入松手 → 确认删除
+  function enableHoldDrag(el, confirmMsg, onDelete) {
+    let timer = null, dragging = false, ghost = null, sx = 0, sy = 0;
+    function overTrash(x, y) {
+      const r = trashZone.getBoundingClientRect();
+      return x >= r.left - 20 && x <= r.right + 20 && y >= r.top - 20 && y <= r.bottom + 20;
+    }
+    function moveGhost(x, y) {
+      if (!ghost) return;
+      ghost.style.left = (x - ghost.offsetWidth / 2) + "px";
+      ghost.style.top = (y - ghost.offsetHeight / 2) + "px";
+      trashZone.classList.toggle("hot", overTrash(x, y));
+    }
+    function start(e) {
+      dragging = true;
+      ghost = el.cloneNode(true);
+      ghost.classList.add("drag-ghost");
+      const r = el.getBoundingClientRect();
+      ghost.style.width = r.width + "px"; ghost.style.height = r.height + "px";
+      document.body.appendChild(ghost);
+      el.classList.add("drag-src");
+      trashZone.classList.add("show");
+      moveGhost(e.clientX, e.clientY);
+      if (navigator.vibrate) try { navigator.vibrate(30); } catch (_) {}
+    }
+    function end() {
+      dragging = false; dragEndAt = Date.now();
+      if (ghost) { ghost.remove(); ghost = null; }
+      el.classList.remove("drag-src");
+      trashZone.classList.remove("show"); trashZone.classList.remove("hot");
+    }
+    el.addEventListener("pointerdown", function (e) {
+      if (e.button && e.button !== 0) return;
+      sx = e.clientX; sy = e.clientY;
+      timer = setTimeout(function () { start(e); }, 500);
+      function move(ev) {
+        if (!dragging) {
+          // 长按成立前明显移动 = 想滚动页面，取消长按
+          if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) > 12) { clearTimeout(timer); cleanup(); }
+          return;
+        }
+        if (ev.cancelable) ev.preventDefault();
+        moveGhost(ev.clientX, ev.clientY);
+      }
+      function up(ev) {
+        clearTimeout(timer);
+        if (dragging) {
+          const hot = overTrash(ev.clientX, ev.clientY);
+          end();
+          if (hot) showConfirm(confirmMsg, onDelete);
+        }
+        cleanup();
+      }
+      function cleanup() {
+        document.removeEventListener("pointermove", move);
+        document.removeEventListener("pointerup", up);
+        document.removeEventListener("pointercancel", up);
+      }
+      document.addEventListener("pointermove", move, { passive: false });
+      document.addEventListener("pointerup", up);
+      document.addEventListener("pointercancel", up);
+    });
+    el.addEventListener("contextmenu", function (e) { if (dragging) e.preventDefault(); });
+  }
 
   // ---------- 心情 ----------
   const MOODS = [
@@ -189,18 +259,19 @@
   document.getElementById("periodSet").onclick = function () { const p = document.getElementById("periodPanel"); p.style.display = p.style.display === "none" ? "block" : "none"; document.getElementById("pLast").value = pcfg.lastDate || ""; document.getElementById("pCycle").value = pcfg.cycle || 28; document.getElementById("pDur").value = pcfg.duration || 5; };
   document.getElementById("pSave").onclick = function () { pcfg.lastDate = document.getElementById("pLast").value; pcfg.cycle = parseInt(document.getElementById("pCycle").value, 10) || 28; pcfg.duration = parseInt(document.getElementById("pDur").value, 10) || 5; savePCfg(); renderPeriod(); document.getElementById("periodPanel").style.display = "none"; toast("经期设置已保存"); };
 
-  // ---------- 记录生活：拍照 / 照片墙 ----------
+  // ---------- 记录生活：今日随手拍（选图先预览确认；删除需长按拖到垃圾桶） ----------
   const snapInput = document.getElementById("snapInput");
   function renderPhotoWall() {
     const wall = document.getElementById("photoWall"); if (!wall) return;
     wall.innerHTML = "";
     (day.photos || []).forEach(function (src, i) {
       const d = document.createElement("div"); d.className = "pw-item";
-      const img = document.createElement("img"); img.src = src; img.alt = "";
-      img.onclick = function () { window.open(src, "_blank"); };
-      const del = document.createElement("button"); del.className = "pw-del"; del.textContent = "✕";
-      del.onclick = function (e) { e.stopPropagation(); day.photos.splice(i, 1); saveDay(key, day); renderPhotoWall(); toast("已删除照片"); };
-      d.appendChild(img); d.appendChild(del); wall.appendChild(d);
+      const img = document.createElement("img"); img.src = src; img.alt = ""; img.draggable = false;
+      img.onclick = function () { if (Date.now() - dragEndAt < 400) return; window.open(src, "_blank"); };
+      d.appendChild(img); wall.appendChild(d);
+      enableHoldDrag(d, "确定删除这张照片吗？删掉就找不回来啦", function () {
+        day.photos.splice(i, 1); saveDay(key, day); renderPhotoWall(); toast("照片已删除");
+      });
     });
   }
   // 压缩后存本地：最长边 1100px、jpeg 0.78，一张大约 100-250KB，不易撑爆 localStorage
@@ -220,25 +291,64 @@
     };
     r.readAsDataURL(file);
   }
+  // 选好照片先预览，点「确认上传」才真正保存
+  let pendingPhoto = null;
+  const snapPreview = document.getElementById("snapPreview"), snapPrevImg = document.getElementById("snapPrevImg");
   if (snapInput) snapInput.onchange = function () {
     const f = snapInput.files[0]; if (!f) return;
     compressImage(f, function (dataUrl) {
-      day.photos = day.photos || [];
-      day.photos.push(dataUrl);
-      try { saveDay(key, day); toast("照片已存好"); }
-      catch (e) { day.photos.pop(); toast("存储空间满了，删几张旧照片再试"); }
-      renderPhotoWall(); snapInput.value = "";
-      day.prompts = day.prompts || {}; day.prompts.snap = true; saveDay(key, day);
+      pendingPhoto = dataUrl;
+      if (snapPreview && snapPrevImg) { snapPrevImg.src = dataUrl; snapPreview.hidden = false; }
+      snapInput.value = "";
     });
   };
+  const snapConfirm = document.getElementById("snapConfirm"), snapCancel = document.getElementById("snapCancel");
+  if (snapConfirm) snapConfirm.onclick = function () {
+    if (!pendingPhoto) return;
+    day.photos = day.photos || [];
+    day.photos.push(pendingPhoto);
+    try { saveDay(key, day); toast("照片已存好 ✿"); }
+    catch (e) { day.photos.pop(); toast("存储空间满了，删几张旧照片再试"); }
+    day.prompts = day.prompts || {}; day.prompts.snap = true; saveDay(key, day);
+    pendingPhoto = null; snapPreview.hidden = true; snapPrevImg.src = "";
+    renderPhotoWall();
+  };
+  if (snapCancel) snapCancel.onclick = function () { pendingPhoto = null; snapPreview.hidden = true; snapPrevImg.src = ""; };
   const snapBtn = document.getElementById("snapBtn");
   if (snapBtn) snapBtn.onclick = function () { snapInput.click(); };
   renderPhotoWall();
 
-  // ---------- 记录生活 ----------
+  // ---------- 记录生活：今日日常（确定后锁定；点内容出「修改」；长按拖到垃圾桶删除） ----------
   const logEl = document.getElementById("log"), logSaved = document.getElementById("logSaved");
-  logEl.value = day.log || ""; let logTimer;
-  logEl.oninput = function () { logSaved.textContent = ""; clearTimeout(logTimer); logTimer = setTimeout(function () { day.log = logEl.value; saveDay(key, day); logSaved.textContent = "已自动保存"; }, 600); };
+  const logView = document.getElementById("logView"), logAddBtn = document.getElementById("logAdd"), logEditBtn = document.getElementById("logEdit");
+  function renderLog() {
+    const has = !!(day.log && day.log.trim());
+    if (has) {
+      logView.hidden = false; logView.textContent = day.log;
+      logEl.style.display = "none"; logAddBtn.style.display = "none";
+      logEditBtn.hidden = true;
+      logSaved.textContent = "已保存 · 点一下内容可修改";
+    } else {
+      logView.hidden = true; logEl.style.display = ""; logEl.value = "";
+      logAddBtn.style.display = ""; logAddBtn.textContent = "添加";
+      logEditBtn.hidden = true; logSaved.textContent = "";
+    }
+  }
+  if (logView) {
+    logView.onclick = function () { if (Date.now() - dragEndAt < 400) return; logEditBtn.hidden = !logEditBtn.hidden; };
+    logEditBtn.onclick = function () {
+      logEl.value = day.log || ""; logEl.style.display = ""; logView.hidden = true;
+      logAddBtn.style.display = ""; logAddBtn.textContent = "确认修改"; logEditBtn.hidden = true;
+      logEl.focus();
+    };
+    logAddBtn.onclick = function () {
+      const v = logEl.value.trim();
+      if (!v) { toast("先写点什么吧"); return; }
+      day.log = v; saveDay(key, day); renderLog(); toast("今日日常已保存 ✎");
+    };
+    enableHoldDrag(logView, "确定删除今天的日常记录吗？", function () { day.log = ""; saveDay(key, day); renderLog(); toast("已删除"); });
+    renderLog();
+  }
 
   function renderHistory() {
     const hist = document.getElementById("history"); hist.innerHTML = "";
@@ -1097,15 +1207,37 @@
       b.onclick = function () { day.homeMood = i; saveDay(key, day); renderHomeNote(); toast("今天的心情：" + m.l); };
       box.appendChild(b);
     });
-    const note = document.getElementById("homeNote"); note.value = day.homeNote || "";
-    document.getElementById("homeNoteSaved").textContent = day.homeNote ? "已打卡 ♡" : "";
+    // 心情小记：添加确认后锁定；点一下内容出「修改」按钮才能改
+    const note = document.getElementById("homeNote");
+    const view = document.getElementById("homeNoteView");
     const saveBtn = document.getElementById("homeMoodSave");
-    if (saveBtn) saveBtn.onclick = function () {
-      day.homeNote = note.value.trim();
-      saveDay(key, day);
-      document.getElementById("homeNoteSaved").textContent = "今日心情已打卡 ♡";
-      toast("今日心情已打卡 ♡");
+    const editBtn = document.getElementById("homeNoteEdit");
+    const savedEl = document.getElementById("homeNoteSaved");
+    if (!note || !view || !saveBtn) return;
+    function paintNote() {
+      const has = !!(day.homeNote && day.homeNote.trim());
+      if (has) {
+        view.hidden = false; view.textContent = day.homeNote;
+        note.style.display = "none"; saveBtn.style.display = "none";
+        editBtn.hidden = true; savedEl.textContent = "已打卡 ♡ 点一下内容可修改";
+      } else {
+        view.hidden = true; note.style.display = ""; note.value = "";
+        saveBtn.style.display = ""; saveBtn.textContent = "添加";
+        editBtn.hidden = true; savedEl.textContent = "";
+      }
+    }
+    view.onclick = function () { editBtn.hidden = !editBtn.hidden; };
+    editBtn.onclick = function () {
+      note.value = day.homeNote || ""; note.style.display = ""; view.hidden = true;
+      saveBtn.style.display = ""; saveBtn.textContent = "确认修改"; editBtn.hidden = true;
+      note.focus();
     };
+    saveBtn.onclick = function () {
+      const v = note.value.trim();
+      if (!v) { toast("先写一句吧"); return; }
+      day.homeNote = v; saveDay(key, day); paintNote(); toast("今日心情已打卡 ♡");
+    };
+    paintNote();
   }
 
   // 首页待办（复用 work_todos，支持 DDL + 优先级：重要红 / 比较重要橙 / 一般绿；超时整条红）
@@ -1630,19 +1762,21 @@
   function buildNav() {
     NAV.forEach(function (item) {
       if (item.children && item.children.length) {
-        const head = document.createElement("button"); head.className = "nav-head";
-        head.innerHTML = '<span class="nh-main"><span class="ni">' + item.icon + '</span>' + item.label + '</span><span class="nav-arrow"></span>';
-        const sub = document.createElement("div"); sub.className = "nav-sub" + (item.open ? " open" : "");
-        const arrow = head.querySelector(".nav-arrow"); if (item.open) arrow.classList.add("open");
-        head.onclick = function () {
+        const isFixed = !!item.fixed;   // 固定分组：无三角箭头、不折叠、子项常驻
+        const head = document.createElement("button"); head.className = "nav-head" + (isFixed ? " static" : "");
+        head.innerHTML = '<span class="nh-main"><span class="ni">' + item.icon + '</span>' + item.label + '</span>' + (isFixed ? "" : '<span class="nav-arrow"></span>');
+        const sub = document.createElement("div"); sub.className = "nav-sub" + (isFixed ? " open fixed" : (item.open ? " open" : ""));
+        const arrow = head.querySelector(".nav-arrow");
+        if (arrow && item.open) arrow.classList.add("open");
+        if (!isFixed) head.onclick = function () {
           const willOpen = !sub.classList.contains("open");
-          // 手风琴：打开一个时自动收起其他，避免互相遮挡
+          // 手风琴：打开一个时自动收起其他可折叠分组（固定分组不受影响）
           if (willOpen) {
-            Array.prototype.forEach.call(sidebarNav.querySelectorAll(".nav-sub.open"), function (s) { s.classList.remove("open"); });
+            Array.prototype.forEach.call(sidebarNav.querySelectorAll(".nav-sub.open:not(.fixed)"), function (s) { s.classList.remove("open"); });
             Array.prototype.forEach.call(sidebarNav.querySelectorAll(".nav-arrow.open"), function (a) { a.classList.remove("open"); });
           }
           sub.classList.toggle("open", willOpen);
-          arrow.classList.toggle("open", willOpen);
+          if (arrow) arrow.classList.toggle("open", willOpen);
         };
         item.children.forEach(function (child) {
           if (child.group) {

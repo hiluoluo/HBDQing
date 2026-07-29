@@ -27,10 +27,9 @@
           <h1 class="who" id="who">小宇</h1>
           <p class="date" id="today"></p>
         </div>
-        <div class="todo-tab" id="todoTab">
+        <div class="todo-tab" id="todoTab" title="点击进入待办">
           <span class="tt-emoji">📋</span>
           <span class="tt-text" id="todoTabText">待办</span>
-          <div class="tt-pop" id="todoPop" hidden></div>
         </div>
       </header>
 
@@ -83,15 +82,17 @@
               <span class="hint">选个表情，写句想说的话，点确认留下今天</span>
             </div>
             <div class="mood-emoji" id="homeMoods"></div>
+            <div id="homeNoteView" class="log-locked" hidden></div>
             <textarea id="homeNote" class="note" rows="3" placeholder="今天想说点什么…"></textarea>
             <div class="row" style="margin-top:10px">
-              <button id="homeMoodSave" class="btn primary">确认打卡</button>
+              <button id="homeMoodSave" class="btn primary">添加</button>
+              <button id="homeNoteEdit" class="btn" hidden>修改</button>
               <span class="hint" id="homeNoteSaved"></span>
             </div>
           </div>
 
           <!-- 工作待办（移到首页） -->
-          <div class="card">
+          <div class="card" id="homeTodoCard">
             <div class="card-head">
               <h2>✎ 今日待办</h2>
               <span class="hint">随手记，做完勾掉</span>
@@ -237,16 +238,31 @@
         <section class="panel" id="panel-life">
           <div class="card">
             <div class="card-head">
-              <h2>✿ 今日照片</h2>
+              <h2>✿ 今日随手拍</h2>
               <button id="snapBtn" class="btn primary">拍一张 / 选照片</button>
             </div>
             <input type="file" id="snapInput" accept="image/*" capture="environment" style="display:none">
+            <!-- 选好照片先预览，点确认才真正保存 -->
+            <div id="snapPreview" class="snap-preview" hidden>
+              <img id="snapPrevImg" alt="预览">
+              <div class="row" style="margin-top:10px">
+                <button id="snapConfirm" class="btn primary">确认上传</button>
+                <button id="snapCancel" class="btn ghost">取消</button>
+              </div>
+            </div>
             <div id="photoWall" class="photo-wall"></div>
+            <p class="hint">删除照片：长按图片拖到出现的垃圾桶里，再确认删除。</p>
           </div>
           <div class="card">
             <h2>今日日常</h2>
-            <textarea id="log" class="log" rows="7" placeholder="记录今天发生的事、见的人、冒出的念头…"></textarea>
-            <p class="hint" id="logSaved"></p>
+            <div id="logView" class="log-locked" hidden></div>
+            <textarea id="log" class="log" rows="6" placeholder="记录今天发生的事、见的人、冒出的念头…"></textarea>
+            <div class="row" style="margin-top:8px">
+              <button id="logAdd" class="btn primary">添加</button>
+              <button id="logEdit" class="btn" hidden>修改</button>
+              <span class="hint" id="logSaved"></span>
+            </div>
+            <p class="hint">确定后内容会锁定；点一下文字才会出现「修改」按钮，长按拖到垃圾桶可删除。</p>
           </div>
           <div class="card">
             <h2>近 7 天记录</h2>

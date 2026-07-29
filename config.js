@@ -38,7 +38,7 @@ window.APP_CONFIG = {
   friendName: "庆",
 
   // 顶部那句礼物寄语
-  giftLine: "送给最棒的你 —— 愿你每天都被温柔以待。",
+  giftLine: "姐姐今天也要开心 ♡",
 
   // 喝水目标（杯/天）
   waterGoal: 8,
@@ -213,9 +213,9 @@ window.APP_CONFIG = {
   nav: [
     { id: "home", label: "首页", icon: "⌂" },
 
-    // 生活管理：下拉分类（三餐 / 健康 / 记录）
+    // 生活管理：固定展开（fixed:true = 不折叠、无三角箭头，子项常驻显示）
     {
-      id: "life", label: "生活管理", icon: "❀", open: true,
+      id: "life", label: "生活管理", icon: "❀", open: true, fixed: true,
       children: [
         { group: "三餐饮食", items: [
           { id: "health", label: "喝水",   icon: "💧" },
@@ -236,7 +236,7 @@ window.APP_CONFIG = {
 
     // 学习中心：下拉分类（语言 / 法规 / 兴趣）
     {
-      id: "study", label: "学习中心", icon: "✎", open: false,
+      id: "study", label: "学习中心", icon: "✎", open: true,
       children: [
         { group: "学习", items: [
           { id: "study-en",  label: "英语积累", icon: "✐" },
@@ -249,7 +249,7 @@ window.APP_CONFIG = {
 
     // 每日一问：下拉（玄学 + 美食）
     {
-      id: "daily", label: "每日一问", icon: "✶", open: false,
+      id: "daily", label: "每日一问", icon: "✶", open: true,
       children: [
         { group: "今日玄学 & 美食", items: [
           { id: "answer", label: "答案之书", icon: "✉" },

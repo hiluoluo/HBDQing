@@ -53,18 +53,6 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .tt-emoji{font-size:22px;line-height:1}
 .tt-text{font-size:12px;text-align:center;line-height:1.5;opacity:.95}
 .tt-text b{font-size:15px}
-.tt-pop{position:absolute;top:calc(100% + 10px);right:0;z-index:60;width:290px;max-height:340px;overflow-y:auto;
-  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(60,40,120,.22);padding:12px;text-align:left;cursor:default}
-.tp-head{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px}
-.tp-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#f7f5fc;margin-bottom:6px}
-.tp-item.over{background:#fdeceb;border:1px solid #f3c0ba}
-.tp-item.over .tp-text,.tp-item.over .tp-meta{color:#c33a27}
-.tp-item.done .tp-text{text-decoration:line-through;color:var(--muted)}
-.tp-dot{width:9px;height:9px;border-radius:50%;flex:none}
-.tp-text{flex:1;font-size:13px;color:var(--ink);word-break:break-all}
-.tp-meta{font-size:11px;color:var(--muted);flex:none}
-.tp-empty{font-size:13px;color:var(--muted);text-align:center;padding:14px 0}
 .gift{max-width:1080px;margin:12px auto 0;opacity:.95;font-size:14px;display:block}
 
 .panels{max-width:1080px;width:100%;margin:0 auto;padding:18px 22px 90px}
@@ -213,7 +201,6 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
   .bb-cam:active{transform:scale(.92)}
 
   .todo-tab{min-width:78px;min-height:64px;padding:8px 10px}
-  .tt-pop{width:min(290px,80vw)}
   .who{font-size:24px}
   .form-grid{grid-template-columns:1fr}
 }
@@ -492,3 +479,49 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .about-title{font-size:30px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px}
 .about-msg{font-size:19px;color:#5a4d80;line-height:1.9;font-weight:600}
 .about-emoji-row{margin-top:26px;font-size:26px;letter-spacing:10px}
+
+/* ===== 仪式感删除：垃圾桶 / 确认弹窗 / 拖拽幽灵 ===== */
+.trash-zone{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) scale(.6);z-index:300;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  width:98px;height:98px;border-radius:50%;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:2px dashed var(--accent);box-shadow:0 10px 30px rgba(60,40,120,.25);
+  opacity:0;pointer-events:none;transition:.2s}
+.trash-zone.show{opacity:1;transform:translateX(-50%) scale(1)}
+.trash-zone.hot{background:#fdeceb;border-color:#e0533d;transform:translateX(-50%) scale(1.18)}
+.tz-icon{font-size:32px;line-height:1}
+.tz-text{font-size:10px;color:var(--muted)}
+.drag-ghost{position:fixed;z-index:310;pointer-events:none;opacity:.92;margin:0;
+  transform:scale(1.06) rotate(2deg);border-radius:14px;overflow:hidden;box-shadow:0 18px 44px rgba(60,40,120,.35)}
+.drag-src{opacity:.35}
+.confirm-mask{position:fixed;inset:0;z-index:320;background:rgba(30,20,60,.45);
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.confirm-card{background:#fff;border-radius:18px;padding:22px 24px;max-width:320px;width:100%;
+  text-align:center;box-shadow:0 20px 60px rgba(30,20,60,.35);animation:popIn .18s ease}
+@keyframes popIn{from{transform:scale(.86);opacity:0}to{transform:scale(1);opacity:1}}
+.cc-icon{font-size:34px;margin-bottom:6px}
+.cc-msg{font-size:14px;color:var(--ink);margin-bottom:16px;line-height:1.6}
+.cc-btns{display:flex;gap:10px;justify-content:center}
+.btn.danger{background:#e0533d;color:#fff;border:none}
+.btn.danger:hover{background:#c94330}
+
+/* ===== 锁定后的文字块（今日日常 / 心情小记） ===== */
+.log-locked{background:#f7f5fc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  font-size:14px;color:var(--ink);white-space:pre-wrap;word-break:break-word;cursor:pointer;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;margin-bottom:4px}
+.log-locked:hover{border-color:var(--accent2)}
+
+/* ===== 随手拍：预览确认 ===== */
+.snap-preview{margin:10px 0;padding:12px;border:1.5px dashed var(--accent);border-radius:14px;background:#faf8ff;text-align:center}
+.snap-preview img{max-width:100%;max-height:260px;border-radius:10px}
+.pw-item{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pw-item img{-webkit-user-drag:none}
+
+/* ===== 顶栏待办 tab 点击跳转后的卡片高亮 ===== */
+.flash-card{animation:flashCard 1.6s ease}
+@keyframes flashCard{0%{box-shadow:0 0 0 0 rgba(155,138,216,0)}25%{box-shadow:0 0 0 5px rgba(155,138,216,.65)}100%{box-shadow:0 0 0 0 rgba(155,138,216,0)}}
+
+/* ===== 固定分组头（生活管理）：无箭头、不可折叠 ===== */
+.nav-head.static{cursor:default}
+.nav-head.static:hover{background:none;color:var(--muted)}
+.nav-sub.fixed{max-height:none}
