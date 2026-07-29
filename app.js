@@ -859,11 +859,12 @@
     }
   }
   function sleepJudge(hours, allNight) {
-    if (allNight) return { color: "#e0533d", light: "red", text: "姐姐，牛逼。" };
-    if (hours < 6)  return { color: "#e0533d", light: "red",    text: "姐姐只睡了这么点，身体可是要抗议的呀~今晚早点躺平好不好？" };
-    if (hours <= 8) return { color: "#2bb673", light: "green",  text: "睡得刚刚好，姐姐今天必须心情好到爆棚！" };
-    if (hours <= 10) return { color: "#e0c02a", light: "yellow", text: "姐姐睡得有一丢丢多哦～不过能睡是福！" };
-    return { color: "#e0533d", light: "red", text: "睡了超过 10 小时……姐姐你这睡眠质量，太让人羡慕了，快分享秘诀！" };
+    if (allNight) return { color: "#e0533d", light: "red", text: "姐姐，牛逼！" };
+    if (hours < 5)  return { color: "#e0533d", light: "red",    text: "姐姐只睡了这么点，头发一定很多吧~今晚早点躺吧求求你了！" };
+    if (hours < 6)  return { color: "#e0922a", light: "orange",  text: "嗯…姐姐睡眠有点短哦，明天补个午觉吧~" };
+    if (hours <= 8) return { color: "#2bb673", light: "green",  text: "睡眠大王就是你！姐姐今天必是满血状态~" };
+    if (hours <= 9) return { color: "#e0c02a", light: "yellow", text: "能睡是福！恭喜姐姐睡得很饱啦~" };
+    return { color: "#e0533d", light: "red", text: "姐姐这是多久没睡了啊，太能睡了吧！" };
   }
   function renderSleep() {
     const s = day.sleep || {};
@@ -895,6 +896,74 @@
   document.getElementById("sleepUp").onchange = function () { day.sleep = day.sleep || {}; day.sleep.up = this.value; saveDay(key, day); renderSleep(); };
   document.getElementById("sleepDown").onchange = function () { day.sleep = day.sleep || {}; day.sleep.down = this.value; saveDay(key, day); renderSleep(); };
   (function () { var cb = document.getElementById("sleepAllNight"); if (cb) cb.onchange = function () { day.sleep = day.sleep || {}; day.sleep.allNight = this.checked; saveDay(key, day); renderSleep(); }; })();
+
+  // 睡眠趋势图：读取历史数据，画柱状图 + 科学评分
+  var sleepSpan = 7;
+  function renderSleepChart() {
+    var chart = document.getElementById("sleepChart");
+    var analysis = document.getElementById("sleepAnalysis");
+    if (!chart) return;
+    var data = []; var nowD = new Date(key + "T00:00:00");
+    for (var i = 0; i < sleepSpan; i++) {
+      var dk = addDays(key, -i);
+      var dd = loadDay(dk); var sl = dd.sleep || {};
+      var hours = null;
+      if (sl.allNight) hours = 0;
+      else if (sl.up && sl.down) {
+        var a = sl.down.split(":"), b = sl.up.split(":");
+        var m = (Number(b[0]) * 60 + Number(b[1])) - (Number(a[0]) * 60 + Number(a[1]));
+        if (m <= 0) m += 24 * 60;
+        hours = m / 60;
+      }
+      data.unshift({ date: dk.slice(5), hours: hours, allNight: !!sl.allNight });
+    }
+    var valid = data.filter(function (d) { return d.hours !== null; });
+    var maxH = valid.length ? Math.max(10, Math.ceil(Math.max.apply(null, valid.map(function (d) { return d.hours || 0; })))) : 10;
+    // 柱状图
+    var barWidth = sleepSpan <= 7 ? 34 : 16;
+    var gap = sleepSpan <= 7 ? 4 : 2;
+    chart.innerHTML = '<div class="sleep-bars" style="display:flex;align-items:flex-end;gap:' + gap + 'px;height:120px;padding:4px 0">' +
+      data.map(function (d) {
+        var h = d.hours !== null ? d.hours : -1;
+        var pct = h >= 0 ? (h / maxH) * 100 : 0;
+        var color = d.allNight ? "#e0533d" : h < 5 ? "#e0533d" : h < 6 ? "#e0922a" : h <= 8 ? "#2bb673" : h <= 9 ? "#e0c02a" : "#e0533d";
+        var label = d.allNight ? "通宵" : h >= 0 ? h.toFixed(1) + "h" : "-";
+        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:' + barWidth + 'px">' +
+          '<span style="font-size:10px;color:' + color + ';margin-bottom:3px">' + label + '</span>' +
+          '<div style="width:100%;height:' + Math.max(2, pct) + '%;background:' + color + ';border-radius:4px 4px 0 0;min-height:' + (pct > 0 ? 4 : 0) + 'px"></div>' +
+          '<span style="font-size:9px;color:var(--muted);margin-top:4px;white-space:nowrap">' + d.date.slice(-2) + '</span></div>';
+      }).join("") + '</div>';
+    // 分析
+    if (!valid.length) { analysis.innerHTML = "还没有记录，记几天就能看到趋势啦~"; return; }
+    var avg = valid.reduce(function (s, d) { return s + d.hours; }, 0) / valid.length;
+    var bedTimes = data.filter(function (d) { return d.hours !== null; }).map(function (d, i) {
+      var dd = loadDay(addDays(key, -(data.length - 1 - i))); return (dd.sleep || {}).down;
+    }).filter(Boolean);
+    // 一致性：计算就寝时间标准差
+    var bedMins = bedTimes.map(function (t) { var p = t.split(":"); return Number(p[0]) * 60 + Number(p[1]); });
+    var bedAvg = bedMins.length ? bedMins.reduce(function (s, v) { return s + v; }, 0) / bedMins.length : 0;
+    var bedVar = bedMins.length > 1 ? Math.sqrt(bedMins.reduce(function (s, v) { return s + (v - bedAvg) * (v - bedAvg); }, 0) / bedMins.length) : 0;
+    var consColor = bedVar < 60 ? "#2bb673" : bedVar < 120 ? "#e0c02a" : "#e0533d";
+    var consText = bedVar < 60 ? "入睡时间很规律，姐姐的作息像瑞士钟表~" : bedVar < 120 ? "入睡略有不规律，但整体还行" : "姐姐的入睡时间飘忽不定，试着固定一个时间段吧";
+    // 综合
+    var avgColor = avg < 5 ? "#e0533d" : avg < 6 ? "#e0922a" : avg <= 8 ? "#2bb673" : avg <= 9 ? "#e0c02a" : "#e0533d";
+    var avgText = avg < 5 ? "平均 " + avg.toFixed(1) + "h · 严重不足，姐姐需要补觉" : avg < 6 ? "平均 " + avg.toFixed(1) + "h · 偏少，适当加一点" : avg <= 8 ? "平均 " + avg.toFixed(1) + "h · 黄金睡眠区间，优秀！" : avg <= 9 ? "平均 " + avg.toFixed(1) + "h · 稍多，姐姐是不是太累了" : "平均 " + avg.toFixed(1) + "h · 过多，别睡了姐姐醒醒！";
+    analysis.innerHTML = '<b style="color:' + avgColor + '">' + avgText + '</b><br><span style="color:' + consColor + '">' + consText + '</span>';
+  }
+  // 切换天数的按钮
+  (function () {
+    var btns = document.querySelectorAll("#sleepSpanBtns button");
+    Array.prototype.forEach.call(btns, function (b) {
+      b.onclick = function () {
+        Array.prototype.forEach.call(btns, function (bb) { bb.classList.remove("sel"); });
+        b.classList.add("sel");
+        sleepSpan = parseInt(b.dataset.span, 10);
+        renderSleepChart();
+      };
+    });
+  })();
+
+  renderSleepChart();
   renderSleep();
 
   // ---------- 体检提醒 ----------
@@ -1740,7 +1809,7 @@
   function renderHealth() {
     if (moodsEl) Array.prototype.forEach.call(moodsEl.children, function (c, i) { c.classList.toggle("sel", day.mood === i); });
     if (moodNote) moodNote.value = day.moodNote || "";
-    renderExercise(); renderPeriod(); renderExam(); renderSleep();
+    renderExercise(); renderPeriod(); renderExam(); renderSleep(); renderSleepChart();
   }
 
   // ---------- 导航 ----------

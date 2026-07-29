@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260729j">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260729j">
-  <link rel="stylesheet" href="style.css?v=20260729j">
+  <link rel="manifest" href="manifest.webmanifest?v=20260729k">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260729k">
+  <link rel="stylesheet" href="style.css?v=20260729k">
 </head>
 <body>
   <div class="app">
@@ -137,7 +137,7 @@
           <!-- 作息 -->
           <div class="card" id="sec-sleep">
             <h2>☾ 作息记录</h2>
-            <p class="hint">一般 7–8 小时最合适，看看姐姐睡得如何~</p>
+            <p class="hint">看看姐姐昨晚睡得如何~</p>
             <div class="form-grid">
               <label>睡觉时间（昨晚）<select id="sleepDown"></select></label>
               <label>起床时间（今早）<select id="sleepUp"></select></label>
@@ -147,6 +147,19 @@
               <span class="sleep-light" id="sleepLight"></span>
               <span id="sleepInfo"></span>
             </div>
+          </div>
+
+          <!-- 睡眠趋势图 -->
+          <div class="card" id="sleepChartCard">
+            <div class="card-head">
+              <h2>睡眠趋势</h2>
+              <div class="row" id="sleepSpanBtns" style="gap:6px">
+                <button class="mini-btn sel" data-span="7">近 7 天</button>
+                <button class="mini-btn" data-span="30">近 30 天</button>
+              </div>
+            </div>
+            <div id="sleepChart" class="sleep-chart"></div>
+            <p class="hint" id="sleepAnalysis" style="margin-top:8px;line-height:1.7"></p>
           </div>
 
           <!-- 运动健身打卡 -->
@@ -627,10 +640,10 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260729j"></script>
-  <script src="data/quotes.js?v=20260729j"></script>
-  <script src="data/life.js?v=20260729j"></script>
-  <script src="app.js?v=20260729j"></script>
+  <script src="config.js?v=20260729k"></script>
+  <script src="data/quotes.js?v=20260729k"></script>
+  <script src="data/life.js?v=20260729k"></script>
+  <script src="app.js?v=20260729k"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

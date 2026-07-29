@@ -470,6 +470,10 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .sleep-light.red{animation:lightBlink 1s ease infinite}
 @keyframes lightBlink{0%,100%{opacity:1}50%{opacity:.35}}
 
+/* 睡眠趋势图 */
+.sleep-bars{display:flex;align-items:flex-end;gap:4px;height:120px;padding:4px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.sleep-chart{min-height:128px}
+
 /* ---- 经期判断 ---- */
 .period-judge{margin-top:10px;font-size:13px;line-height:1.7;background:#faf8ff;border-radius:10px;padding:8px 12px}
 
