@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260729">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260729">
-  <link rel="stylesheet" href="style.css?v=20260729">
+  <link rel="manifest" href="manifest.webmanifest?v=20260729b">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260729b">
+  <link rel="stylesheet" href="style.css?v=20260729b">
 </head>
 <body>
   <div class="app">
@@ -134,25 +134,8 @@
             <textarea id="moodNote" class="note" rows="2" placeholder="想对今天的心情说点什么…"></textarea>
           </div>
 
-          <div class="card">
-            <h2>喝水提醒</h2>
-            <div class="water-num"><span id="waterCount">0</span><span class="unit"> / <span id="waterGoal">8</span> 杯</span></div>
-            <div class="bar"><div class="bar-fill" id="waterBar"></div></div>
-            <div class="row">
-              <button id="waterPlus" class="btn primary">+1 杯</button>
-              <button id="waterMinus" class="btn">-1</button>
-              <label class="remind"><input type="checkbox" id="waterRemind"> 定时提醒</label>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>今日三餐</h2>
-            <label class="meal-label">◔ 早餐<input type="text" id="hMealB" placeholder="吃了什么…"></label>
-            <label class="meal-label">◑ 午餐<input type="text" id="hMealL" placeholder="吃了什么…"></label>
-            <label class="meal-label">☾ 晚餐<input type="text" id="hMealD" placeholder="吃了什么…"></label>
-          </div>
-
-          <div class="card">
+          <!-- 作息 -->
+          <div class="card" id="sec-sleep">
             <h2>作息记录</h2>
             <p class="hint">一般 7–8 小时最合适：6–8 小时绿灯 · 8–10 小时黄灯 · 少于 6 或超过 10 小时红灯。先选睡觉时间，再选起床时间。</p>
             <div class="form-grid">
@@ -165,16 +148,8 @@
             </div>
           </div>
 
-          <div class="card">
-            <h2>运动打卡</h2>
-            <div class="row">
-              <input type="text" id="hExInput" class="flex-input" placeholder="今天运动了什么…">
-              <button id="hExAdd" class="btn primary">添加</button>
-            </div>
-            <ul id="hExList" class="check-list"></ul>
-          </div>
-
-          <div class="card">
+          <!-- 经期 -->
+          <div class="card" id="sec-period">
             <h2>经期提醒</h2>
             <div id="periodInfo" class="period-info">—</div>
             <div class="row">
@@ -189,7 +164,8 @@
             </div>
           </div>
 
-          <div class="card exam-card">
+          <!-- 体检 -->
+          <div class="card exam-card" id="sec-exam">
             <h2>体检提醒</h2>
             <p class="hint" id="examDesc">记录上次体检时间，每半年提醒一次。</p>
             <div class="row">
@@ -199,22 +175,16 @@
             <div id="examIssues" class="exam-issues"></div>
           </div>
 
-          <!-- 底部小色带：平时也显示，说明距离上次体检天数与当前维度 -->
-          <div class="exam-band" id="examBand">
-            <span class="exam-dot" id="examDot"></span>
-            <span id="examBandText">还没记录体检时间</span>
-            <button id="examBandBtn" class="mini-btn">去记录</button>
-          </div>
-        </section>
-
-        <!-- 运动健身 -->
-        <section class="panel" id="panel-exercise">
-          <div class="card">
+          <!-- 运动健身打卡 -->
+          <div class="card" id="sec-exercise">
             <div class="card-head">
               <h2>✦ 运动健身打卡</h2>
               <span class="hint">选运动 · 记时长 · 看坚持</span>
             </div>
             <div class="ex-types" id="exTypes"></div>
+            <label class="set-label" style="margin-top:10px">自定义运动
+              <input type="text" id="exCustom" class="flex-input" placeholder="列表里没有就填这里，如：爬山、普拉提…">
+            </label>
             <div class="row" style="margin-top:10px">
               <label class="set-label" style="flex:1">运动时间<input type="time" id="exTime"></label>
               <label class="set-label" style="flex:1">时长（分钟）<input type="number" id="exMin" placeholder="30" min="1" step="1"></label>
@@ -237,6 +207,33 @@
           <div class="card">
             <h2>今日运动清单</h2>
             <ul id="exList2" class="check-list"></ul>
+          </div>
+
+          <!-- 底部小色带：平时也显示，说明距离上次体检天数与当前维度 -->
+          <div class="exam-band" id="examBand">
+            <span class="exam-dot" id="examDot"></span>
+            <span id="examBandText">还没记录体检时间</span>
+            <button id="examBandBtn" class="mini-btn">去记录</button>
+          </div>
+        </section>
+
+        <!-- 三餐饮食：喝水 + 早午晚，无运动打卡 -->
+        <section class="panel" id="panel-meals">
+          <div class="card">
+            <h2>◌ 喝水打卡</h2>
+            <div class="water-num"><span id="waterCount">0</span><span class="unit"> / <span id="waterGoal">8</span> 杯</span></div>
+            <div class="bar"><div class="bar-fill" id="waterBar"></div></div>
+            <div class="row">
+              <button id="waterPlus" class="btn primary">+1 杯</button>
+              <button id="waterMinus" class="btn">-1</button>
+              <label class="remind"><input type="checkbox" id="waterRemind"> 定时提醒</label>
+            </div>
+          </div>
+          <div class="card">
+            <h2>今日三餐</h2>
+            <label class="meal-label">◔ 早餐<input type="text" id="hMealB" placeholder="吃了什么…"></label>
+            <label class="meal-label">◑ 午餐<input type="text" id="hMealL" placeholder="吃了什么…"></label>
+            <label class="meal-label">☾ 晚餐<input type="text" id="hMealD" placeholder="吃了什么…"></label>
           </div>
         </section>
 
@@ -632,10 +629,10 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260729"></script>
-  <script src="data/quotes.js?v=20260729"></script>
-  <script src="data/life.js?v=20260729"></script>
-  <script src="app.js?v=20260729"></script>
+  <script src="config.js?v=20260729b"></script>
+  <script src="data/quotes.js?v=20260729b"></script>
+  <script src="data/life.js?v=20260729b"></script>
+  <script src="app.js?v=20260729b"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

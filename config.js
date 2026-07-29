@@ -214,23 +214,30 @@ window.APP_CONFIG = {
     { id: "home", label: "首页", icon: "⌂" },
 
     // 生活管理：固定展开（fixed:true = 不折叠、无三角箭头，子项常驻显示）
+    // 二级标题可以是「直接进内容的页」(type:"page")，也可以是「带下拉的分组」(type:"group")
     {
       id: "life", label: "生活管理", icon: "❀", open: true, fixed: true,
       children: [
-        { group: "三餐饮食", items: [
-          { id: "health", label: "喝水",   icon: "💧" },
-          { id: "health", label: "早饭",   icon: "◔" },
-          { id: "health", label: "午餐",   icon: "◑" },
-          { id: "health", label: "晚餐",   icon: "☾" }
-        ]},
-        { group: "健康管理", items: [
-          { id: "exercise", label: "运动健身", icon: "✦" },
-          { id: "health",   label: "体检记录", icon: "♡" }
-        ]},
-        { group: "日常记录", items: [
-          { id: "wealth",  label: "记账",     icon: "✧" },
-          { id: "travel",  label: "旅游计划", icon: "➹" }
-        ]}
+        // 三餐饮食：二级标题，无下拉，直接进入「三餐饮食」面板（喝水 + 早午晚，无运动打卡）
+        { id: "meals", label: "三餐饮食", icon: "◔", type: "page" },
+
+        // 健康管理：二级标题，带下拉（各子项进入「健康管理」面板并滚动到对应区块）
+        { id: "health", label: "健康管理", icon: "♡", type: "group",
+          children: [
+            { id: "sleep",    label: "作息",        icon: "☾" },
+            { id: "period",   label: "经期",        icon: "✛" },
+            { id: "exam",     label: "体检",        icon: "✚" },
+            { id: "exercise", label: "运动健身打卡", icon: "✦" }
+          ]
+        },
+
+        // 日常记录：二级标题，带下拉
+        { id: "record", label: "日常记录", icon: "✎", type: "group",
+          children: [
+            { id: "wealth", label: "记账",     icon: "✧" },
+            { id: "travel", label: "旅游计划", icon: "➹" }
+          ]
+        }
       ]
     },
 

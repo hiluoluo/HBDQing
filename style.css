@@ -26,8 +26,10 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .nav-head .nh-main{display:flex;align-items:center;gap:10px}
 .nav-arrow{width:9px;height:9px;border-right:1px solid var(--muted);border-bottom:1px solid var(--muted);transform:rotate(45deg);transition:transform .25s;margin-right:6px;flex:none}
 .nav-arrow.open{transform:rotate(-135deg)}
-.nav-sub{overflow:hidden;max-height:0;transition:max-height .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;gap:2px;padding-left:8px}
-.nav-sub.open{max-height:800px}
+.nav-sub{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s cubic-bezier(.4,0,.2,1);padding-left:8px;gap:2px;overflow:hidden}
+.nav-sub>*{min-height:0}
+.nav-sub.open{grid-template-rows:1fr}
+.nav-sub .nav-sub{padding-left:16px}
 .nav-group-title{font-size:12px;color:var(--muted);padding:8px 14px 4px 40px;font-weight:500}
 .nav-sub-item{display:flex;align-items:center;gap:10px;padding:9px 12px 9px 40px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:14px;font-weight:500;border:none;background:none;text-align:left;font-family:inherit;transition:.15s}
 .nav-sub-item .ni{font-size:16px;width:22px;text-align:center}
@@ -524,4 +526,11 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 /* ===== 固定分组头（生活管理）：无箭头、不可折叠 ===== */
 .nav-head.static{cursor:default}
 .nav-head.static:hover{background:none;color:var(--muted)}
-.nav-sub.fixed{max-height:none}
+.nav-sub.fixed{grid-template-rows:1fr}
+
+/* 固定分组内的「二级标题 + 嵌套下拉」 */
+.nav-sub-group{display:flex;align-items:center;gap:10px;padding:9px 12px 9px 40px;border-radius:10px;cursor:pointer;color:var(--ink);font-size:14px;font-weight:600;border:none;background:none;text-align:left;font-family:inherit;transition:.15s}
+.nav-sub-group .ni{font-size:16px;width:22px;text-align:center}
+.nav-sub-group .ng-label{flex:1}
+.nav-sub-group:hover{background:#f4f1fc}
+.nav-sub-group .nav-arrow{margin-left:auto;margin-right:2px}

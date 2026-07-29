@@ -816,19 +816,7 @@
   ["hMealB", "hMealL", "hMealD"].forEach(function (id) {
     document.getElementById(id).oninput = function () { day.meals = day.meals || {}; day.meals[{ hMealB: "b", hMealL: "l", hMealD: "d" }[id]] = this.value; saveDay(key, day); };
   });
-  function renderHealthEx() {
-    const ex = day.exercises || []; const exl = document.getElementById("hExList"); exl.innerHTML = "";
-    ex.forEach(function (e, i) {
-      const li = document.createElement("li"); const sp = document.createElement("span");
-      sp.textContent = (typeof e === "object" && e) ? ((e.time ? e.time + " · " : "") + e.type + " · " + (e.min || 0) + " 分钟" + (e.level ? " · " + e.level : "")) : e;
-      const del = document.createElement("button"); del.className = "ci-del"; del.textContent = "删除";
-      del.onclick = function () { ex.splice(i, 1); day.exercises = ex; saveDay(key, day); renderHealthEx(); renderDiet(); };
-      li.appendChild(sp); li.appendChild(del); exl.appendChild(li);
-    });
-  }
-  document.getElementById("hExAdd").onclick = function () { const inp = document.getElementById("hExInput"); const v = inp.value.trim(); if (!v) return; const ex = day.exercises || []; ex.push(v); day.exercises = ex; saveDay(key, day); inp.value = ""; renderHealthEx(); renderDiet(); };
-  document.getElementById("hExInput").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("hExAdd").click(); });
-  renderHealthMeals(); renderHealthEx();
+  renderHealthMeals();
 
   // 作息：先选睡觉时间（昨晚），再选起床时间（今早）。半小时一档，不怕滑过。
   // 判定标准（已规范）：7–8 小时最合适；<6 红灯，6–8 绿灯，8–10 黄灯，>10 红灯
@@ -1501,13 +1489,16 @@
       if (!min || min <= 0) { toast("先填一下运动了多少分钟哦"); return; }
       const level = document.getElementById("exLevel").value;
       const time = document.getElementById("exTime") ? document.getElementById("exTime").value : "";
+      const custom = document.getElementById("exCustom") ? document.getElementById("exCustom").value.trim() : "";
+      const type = custom || exSelType;
       const ex = day.exercises || [];
-      ex.push({ type: exSelType, min: min, level: level, time: time });
+      ex.push({ type: type, min: min, level: level, time: time });
       day.exercises = ex; saveDay(key, day);
       document.getElementById("exMin").value = "";
-      document.getElementById("exSaved").textContent = "已记录：" + (time ? time + " " : "") + exSelType + " " + min + " 分钟（" + level + "）";
+      if (custom) document.getElementById("exCustom").value = "";
+      document.getElementById("exSaved").textContent = "已记录：" + (time ? time + " " : "") + type + " " + min + " 分钟（" + level + "）";
       toast("运动打卡成功 ♡");
-      renderExHeat(); renderExList(); renderHealthEx(); renderDiet();
+      renderExHeat(); renderExList(); renderDiet();
     };
     renderExHeat(); renderExList();
   }
@@ -1540,7 +1531,7 @@
       const sp = document.createElement("span");
       sp.textContent = (typeof e === "object" && e) ? ((e.time ? e.time + " · " : "") + e.type + " · " + e.min + " 分钟 · 强度" + (e.level || "中")) : String(e);
       const del = document.createElement("button"); del.className = "ci-del"; del.textContent = "删除";
-      del.onclick = function () { ex.splice(i, 1); day.exercises = ex; saveDay(key, day); renderExHeat(); renderExList(); renderHealthEx(); renderDiet(); };
+      del.onclick = function () { ex.splice(i, 1); day.exercises = ex; saveDay(key, day); renderExHeat(); renderExList(); renderDiet(); };
       li.appendChild(sp); li.appendChild(del);
       ul.appendChild(li);
     });
@@ -1707,11 +1698,16 @@
     box.innerHTML = html;
   }
 
-  // 健康面板统一渲染：三餐 / 喝水 / 运动 / 作息 / 经期 / 体检 / 心情
+  // 三餐饮食面板：喝水 + 早午晚（无运动打卡）
+  function renderMeals() {
+    paintWater(); renderHealthMeals();
+  }
+
+  // 健康面板统一渲染：心情 / 作息 / 经期 / 体检 / 运动健身打卡
   function renderHealth() {
     if (moodsEl) Array.prototype.forEach.call(moodsEl.children, function (c, i) { c.classList.toggle("sel", day.mood === i); });
     if (moodNote) moodNote.value = day.moodNote || "";
-    paintWater(); renderPeriod(); renderHealthMeals(); renderHealthEx(); renderSleep(); renderExam();
+    renderPeriod(); renderSleep(); renderExam(); renderExercise();
   }
 
   // ---------- 导航 ----------
@@ -1729,7 +1725,7 @@
   ];
   const sidebarNav = document.getElementById("sidebarNav");
   const sidebar = document.getElementById("sidebar"), drawerMask = document.getElementById("drawerMask"), menuBtn = document.getElementById("menuBtn");
-  const renderMap = { home: renderHome, memoir: renderMemoir, study: renderStudy, work: renderWork, health: renderHealth, wealth: function () { renderWealth(); renderCalendar(); }, diet: renderDiet, travel: renderTravel, checkin: function () {}, answer: renderAnswer, tarot: renderTarot, oracle: renderOracle, exercise: renderExercise, food: renderFood, interest: function () { renderStudy(); }, timeline: renderTimeline, about: function () {} };
+  const renderMap = { home: renderHome, memoir: renderMemoir, study: renderStudy, work: renderWork, health: renderHealth, meals: renderMeals, wealth: function () { renderWealth(); renderCalendar(); }, diet: renderDiet, travel: renderTravel, checkin: function () {}, answer: renderAnswer, tarot: renderTarot, oracle: renderOracle, exercise: renderExercise, food: renderFood, interest: function () { renderStudy(); }, timeline: renderTimeline, about: function () {} };
 
   // 把导航树拍平，便于底部栏查找图标名称
   const flatNav = [];
@@ -1779,10 +1775,27 @@
           if (arrow) arrow.classList.toggle("open", willOpen);
         };
         item.children.forEach(function (child) {
-          if (child.group) {
+          if (child.type === "group" || child.children) {
+            // 二级标题（带下拉）：点击展开/收起嵌套的 nav-sub
+            const gHead = document.createElement("button");
+            gHead.className = "nav-sub-group";
+            gHead.innerHTML = '<span class="ni">' + (child.icon || "") + '</span><span class="ng-label">' + child.label + '</span><span class="nav-arrow"></span>';
+            const gSub = document.createElement("div"); gSub.className = "nav-sub open";
+            const gArrow = gHead.querySelector(".nav-arrow");
+            gHead.onclick = function (e) {
+              e.stopPropagation();
+              const open = gSub.classList.toggle("open");
+              gArrow.classList.toggle("open", open);
+            };
+            (child.children || []).forEach(function (it) { gSub.appendChild(makeLeaf(it, true)); });
+            sub.appendChild(gHead);
+            sub.appendChild(gSub);
+          } else if (child.group && child.items) {
+            // 旧格式：分组小标题 + 子项（静态，不折叠）
             const gt = document.createElement("div"); gt.className = "nav-group-title"; gt.textContent = child.group; sub.appendChild(gt);
             (child.items || []).forEach(function (it) { sub.appendChild(makeLeaf(it, true)); });
           } else {
+            // 一级二级标题（无下拉，直接进对应面板）
             sub.appendChild(makeLeaf(child, true));
           }
         });
@@ -1816,11 +1829,19 @@
     const origId = id;
     const studyTabs = { "law": "law", "study-en": "en", "study-ko": "ko", "interest": "interest" };
     if (studyTabs[id]) { switchStudy(studyTabs[id]); id = "study"; }
+    // 健康管理的下拉子项：统一进入「健康管理」面板并滚动到对应区块
+    const HEALTH_SECTIONS = { sleep: "sec-sleep", period: "sec-period", exam: "sec-exam", exercise: "sec-exercise" };
+    let pendingScroll = null;
+    if (HEALTH_SECTIONS[origId]) { id = "health"; pendingScroll = HEALTH_SECTIONS[origId]; }
     Array.prototype.forEach.call(document.querySelectorAll(".panel"), function (p) { p.classList.toggle("active", p.id === "panel-" + id); });
     Array.prototype.forEach.call(document.querySelectorAll(".nav-item, .nav-sub-item"), function (b) { b.classList.toggle("active", b.dataset.id === origId); });
     bbLeft.classList.toggle("active", bbLeft.dataset.id === id);
     bbRight.classList.toggle("active", bbRight.dataset.id === id);
     if (renderMap[id]) renderMap[id]();
+    if (pendingScroll) {
+      const target = document.getElementById(pendingScroll);
+      if (target && target.scrollIntoView) setTimeout(function () { target.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60);
+    }
     window.scrollTo(0, 0);
   }
   initWoodfish(); initQuotes(); initHomeCtrls();
