@@ -157,11 +157,11 @@ function setSleep(d, u) {
   up.value = u; up.dispatchEvent(new window.Event("change"));
   return doc.getElementById("sleepInfo").textContent;
 }
-ok(down.querySelectorAll("option").length <= 20, "睡觉选项精简（" + down.querySelectorAll("option").length + " 个）");
+ok(down.querySelectorAll("option").length <= 30, "睡觉选项精简（" + down.querySelectorAll("option").length + " 个）");
 let t = setSleep("23:00", "04:00"); ok(/红|睡/.test(t) && doc.getElementById("sleepJudge").style.display !== "none", "<6h 有红灯调侃: " + t.slice(0, 30));
 t = setSleep("23:00", "06:30"); ok(/绿灯|刚刚好/.test(t), "6-8h 绿灯: " + t.slice(0, 30));
-t = setSleep("22:00", "07:00"); ok(/黄灯|羡慕/.test(t), "8-10h 黄灯+羡慕调侃: " + t.slice(0, 30));
-t = setSleep("21:00", "08:00"); ok(/怎么睡得着|红灯/.test(t), ">10h 红灯+怎么睡得着: " + t.slice(0, 30));
+t = setSleep("22:00", "07:00"); ok(/黄灯|一丢丢/.test(t), "8-10h 黄灯+羡慕调侃: " + t.slice(0, 30));
+t = setSleep("21:00", "08:00"); ok(/睡眠质量|红灯/.test(t), ">10h 红灯+怎么睡得着: " + t.slice(0, 30));
 
 console.log("== 6 运动打卡加时间 ==");
 // 运动健身打卡在健康记录页的 sec-exercise 中，renderHealth 已渲染

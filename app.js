@@ -858,25 +858,34 @@
       h = (h + 1) % 24;
     }
   }
-  function sleepJudge(hours) {
-    if (hours < 6)  return { color: "#e0533d", light: "red",    text: "只睡了这么点？红灯警告！身体是自己的，今晚早点睡好不好" };
-    if (hours <= 8) return { color: "#2bb673", light: "green",  text: "绿灯通过～睡得刚刚好，今天必须元气满满" };
-    if (hours <= 10) return { color: "#e0c02a", light: "yellow", text: "黄灯提示：睡得有点儿多啦，真是羡慕你这种想睡就睡的" };
-    return { color: "#e0533d", light: "red", text: "红灯！超过 10 小时……你是怎么睡得着的，教教我" };
+  function sleepJudge(hours, allNight) {
+    if (allNight) return { color: "#e0533d", light: "red", text: "姐姐，牛逼。" };
+    if (hours < 6)  return { color: "#e0533d", light: "red",    text: "姐姐只睡了这么点，身体可是要抗议的呀~今晚早点躺平好不好？" };
+    if (hours <= 8) return { color: "#2bb673", light: "green",  text: "睡得刚刚好，姐姐今天必须心情好到爆棚！" };
+    if (hours <= 10) return { color: "#e0c02a", light: "yellow", text: "姐姐睡得有一丢丢多哦～不过能睡是福！" };
+    return { color: "#e0533d", light: "red", text: "睡了超过 10 小时……姐姐你这睡眠质量，太让人羡慕了，快分享秘诀！" };
   }
   function renderSleep() {
     const s = day.sleep || {};
     const upSel = document.getElementById("sleepUp"), downSel = document.getElementById("sleepDown");
-    if (!downSel.dataset.filled) { fillTimeOptions(downSel, 20, 4); downSel.dataset.filled = "1"; }  // 睡觉 20:00–04:30
-    if (!upSel.dataset.filled) { fillTimeOptions(upSel, 4, 13); upSel.dataset.filled = "1"; }        // 起床 04:00–13:30
+    const allNightCB = document.getElementById("sleepAllNight");
+    if (!downSel.dataset.filled) { fillTimeOptions(downSel, 18, 6); downSel.dataset.filled = "1"; }
+    if (!upSel.dataset.filled) { fillTimeOptions(upSel, 4, 13); upSel.dataset.filled = "1"; }
     downSel.value = s.down || ""; upSel.value = s.up || "";
+    const allNight = !!s.allNight;
+    if (allNightCB) { allNightCB.checked = allNight; downSel.disabled = allNight; upSel.disabled = allNight; }
     const judge = document.getElementById("sleepJudge"), lightEl = document.getElementById("sleepLight"), infoEl = document.getElementById("sleepInfo");
+    if (allNight) {
+      const j = sleepJudge(0, true);
+      judge.style.display = "flex"; lightEl.style.background = j.color; lightEl.className = "sleep-light " + j.light;
+      infoEl.innerHTML = j.text; infoEl.style.color = j.color; return;
+    }
     if (!s.up || !s.down) { judge.style.display = "none"; return; }
-    let a = s.down.split(":"), b = s.up.split(":");
-    let mins = (Number(b[0]) * 60 + Number(b[1])) - (Number(a[0]) * 60 + Number(a[1]));
+    var a = s.down.split(":"), b = s.up.split(":");
+    var mins = (Number(b[0]) * 60 + Number(b[1])) - (Number(a[0]) * 60 + Number(a[1]));
     if (mins <= 0) mins += 24 * 60;
-    const h2 = Math.floor(mins / 60), m2 = mins % 60, hours = mins / 60;
-    const j = sleepJudge(hours);
+    var h2 = Math.floor(mins / 60), m2 = mins % 60, hours = mins / 60;
+    var j = sleepJudge(hours, false);
     judge.style.display = "flex";
     lightEl.style.background = j.color;
     lightEl.className = "sleep-light " + j.light;
@@ -885,6 +894,7 @@
   }
   document.getElementById("sleepUp").onchange = function () { day.sleep = day.sleep || {}; day.sleep.up = this.value; saveDay(key, day); renderSleep(); };
   document.getElementById("sleepDown").onchange = function () { day.sleep = day.sleep || {}; day.sleep.down = this.value; saveDay(key, day); renderSleep(); };
+  (function () { var cb = document.getElementById("sleepAllNight"); if (cb) cb.onchange = function () { day.sleep = day.sleep || {}; day.sleep.allNight = this.checked; saveDay(key, day); renderSleep(); }; })();
   renderSleep();
 
   // ---------- 体检提醒 ----------
