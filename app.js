@@ -863,8 +863,9 @@
     if (hours < 5)  return { color: "#e0533d", light: "red",    text: "姐姐只睡了这么点，头发一定很多吧~今晚早点躺吧求求你了！" };
     if (hours < 6)  return { color: "#e0922a", light: "orange",  text: "嗯…姐姐睡眠有点短哦，明天补个午觉吧~" };
     if (hours <= 8) return { color: "#2bb673", light: "green",  text: "睡眠合格啦，姐姐今天必是满血状态~" };
-    if (hours <= 9) return { color: "#e0c02a", light: "yellow", text: "能睡是福！恭喜姐姐睡得很饱啦~" };
-    return { color: "#e0533d", light: "red", text: "姐姐这是多久没睡了啊，太能睡了吧！" };
+    if (hours <= 9) return { color: "#2bb673", light: "green",  text: "姐姐睡得很幸福了吧，元气快溢出来了~" };
+    if (hours <= 10) return { color: "#e0922a", light: "orange", text: "有点儿多了哦姐姐，再睡就真的起不来啦！" };
+    return { color: "#e0533d", light: "red", text: "别睡了姐姐！太阳都晒到哪了！" };
   }
   function renderSleep() {
     const s = day.sleep || {};
@@ -926,7 +927,7 @@
       data.map(function (d) {
         var h = d.hours !== null ? d.hours : -1;
         var pct = h >= 0 ? (h / maxH) * 100 : 0;
-        var color = d.allNight ? "#e0533d" : h < 5 ? "#e0533d" : h < 6 ? "#e0922a" : h <= 8 ? "#2bb673" : h <= 9 ? "#e0c02a" : "#e0533d";
+        var color = d.allNight ? "#e0533d" : h < 5 ? "#e0533d" : h < 6 ? "#e0922a" : h <= 9 ? "#2bb673" : h <= 10 ? "#e0922a" : "#e0533d";
         var label = d.allNight ? "通宵" : h >= 0 ? h.toFixed(1) + "h" : "-";
         var dd = h >= 0 ? ' data-recorded="1"' : ' data-recorded="0"';
         return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:' + barWidth + 'px;cursor:pointer"' + dd + ' data-date="' + d.date + '" onclick="window._sleepChartClick(this)">' +
@@ -984,8 +985,8 @@
     var consColor = bedVar < 60 ? "#2bb673" : bedVar < 120 ? "#e0c02a" : "#e0533d";
     var consText = bedVar < 60 ? "入睡时间很规律，姐姐的作息像瑞士钟表~" : bedVar < 120 ? "入睡略有不规律，但整体还行" : "姐姐的入睡时间飘忽不定，试着固定一个时间段吧";
     // 综合
-    var avgColor = avg < 5 ? "#e0533d" : avg < 6 ? "#e0922a" : avg <= 8 ? "#2bb673" : avg <= 9 ? "#e0c02a" : "#e0533d";
-    var avgText = avg < 5 ? "平均 " + avg.toFixed(1) + "h · 严重不足，姐姐需要补觉" : avg < 6 ? "平均 " + avg.toFixed(1) + "h · 偏少，适当加一点" : avg <= 8 ? "平均 " + avg.toFixed(1) + "h · 黄金睡眠区间，优秀！" : avg <= 9 ? "平均 " + avg.toFixed(1) + "h · 稍多，姐姐是不是太累了" : "平均 " + avg.toFixed(1) + "h · 过多，别睡了姐姐醒醒！";
+    var avgColor = avg < 5 ? "#e0533d" : avg < 6 ? "#e0922a" : avg <= 9 ? "#2bb673" : avg <= 10 ? "#e0922a" : "#e0533d";
+    var avgText = avg < 5 ? "平均 " + avg.toFixed(1) + "h · 严重不足，姐姐需要补觉" : avg < 6 ? "平均 " + avg.toFixed(1) + "h · 偏少，适当加一点" : avg <= 9 ? "平均 " + avg.toFixed(1) + "h · 刚刚好，很幸福！" : avg <= 10 ? "平均 " + avg.toFixed(1) + "h · 有点儿多了哦" : "平均 " + avg.toFixed(1) + "h · 别睡了姐姐！";
     analysis.innerHTML = '<b style="color:' + avgColor + '">' + avgText + '</b><br><span style="color:' + consColor + '">' + consText + '</span>';
   }
   // 切换天数的按钮
