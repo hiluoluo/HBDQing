@@ -26,9 +26,8 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .nav-head .nh-main{display:flex;align-items:center;gap:10px}
 .nav-arrow{width:9px;height:9px;border-right:1px solid var(--muted);border-bottom:1px solid var(--muted);transform:rotate(45deg);transition:transform .25s;margin-right:6px;flex:none}
 .nav-arrow.open{transform:rotate(-135deg)}
-.nav-sub{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s cubic-bezier(.4,0,.2,1);padding-left:8px;gap:2px;overflow:hidden}
-.nav-sub>*{min-height:0}
-.nav-sub.open{grid-template-rows:1fr}
+.nav-sub{max-height:0;overflow:hidden;transition:max-height .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;gap:2px;padding-left:8px}
+.nav-sub.open{max-height:9999px}
 .nav-sub .nav-sub{padding-left:16px}
 .nav-group-title{font-size:12px;color:var(--muted);padding:8px 14px 4px 40px;font-weight:500}
 .nav-sub-item{display:flex;align-items:center;gap:10px;padding:9px 12px 9px 40px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:14px;font-weight:500;border:none;background:none;text-align:left;font-family:inherit;transition:.15s}
@@ -384,6 +383,10 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .law-today{background:linear-gradient(160deg,#fff7fb,#f3edff);border:1px solid var(--accent2);border-radius:14px;padding:12px 14px;margin-bottom:14px}
 .law-today-h{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px}
 .law-card.today{border-color:var(--accent2);background:#fffafd}
+.law-more{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.law-more.open{max-height:9999px}
+.law-more-list{margin-top:6px}
+#lawMoreBtn{display:block;margin:8px auto 4px}
 
 /* ---- 首页 · 今日小记（emoji 心情） ---- */
 .mood-emoji{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
@@ -526,7 +529,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 /* ===== 固定分组头（生活管理）：无箭头、不可折叠 ===== */
 .nav-head.static{cursor:default}
 .nav-head.static:hover{background:none;color:var(--muted)}
-.nav-sub.fixed{grid-template-rows:1fr}
+.nav-sub.fixed{max-height:9999px;transition:none}
 
 /* 固定分组内的「二级标题 + 嵌套下拉」 */
 .nav-sub-group{display:flex;align-items:center;gap:10px;padding:9px 12px 9px 40px;border-radius:10px;cursor:pointer;color:var(--ink);font-size:14px;font-weight:600;border:none;background:none;text-align:left;font-family:inherit;transition:.15s}

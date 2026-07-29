@@ -706,7 +706,7 @@
   renderKorean();
   function renderStudy() { if (studyActive === "en") renderEnglish(enIdx); else if (studyActive === "ko") renderKorean(); else if (studyActive === "interest") renderInterest(); else renderLaw(); }
 
-  // ---------- 法律法规：完整法条库（今日推荐置顶高亮） ----------
+  // ---------- 法律法规：完整法条库（今日推荐置顶；其余默认折叠，按钮展开） ----------
   function renderLaw() {
     const cfg = C.law || { enabled: true };
     if (!cfg.enabled) return;
@@ -719,8 +719,24 @@
     const pickSet = {};
     for (let i = 0; i < n; i++) pickSet[(doy + i) % db.length] = true;
     box.innerHTML = "";
+    // 今日推荐（置顶、常驻显示）
     const todayWrap = document.createElement("div"); todayWrap.className = "law-today";
     todayWrap.innerHTML = '<div class="law-today-h">★ 今日推荐（' + n + ' 条）</div>';
+    // 其余法条：放进折叠容器
+    const moreWrap = document.createElement("div"); moreWrap.id = "lawMore"; moreWrap.className = "law-more";
+    const moreList = document.createElement("div"); moreList.className = "law-more-list"; moreWrap.appendChild(moreList);
+    // 展开/收起按钮
+    const moreBtn = document.createElement("button"); moreBtn.id = "lawMoreBtn"; moreBtn.className = "btn ghost";
+    moreBtn.type = "button";
+    const updateMoreBtn = function (open) { moreBtn.textContent = open ? "收起法条 ▲" : "查看更多法条（共 " + (db.length - n) + " 条） ▼"; };
+    updateMoreBtn(false);
+    moreBtn.onclick = function () {
+      const open = moreWrap.classList.toggle("open");
+      if (open) { moreWrap.style.maxHeight = moreWrap.scrollHeight + "px"; }
+      else { moreWrap.style.maxHeight = "0px"; }
+      updateMoreBtn(open);
+    };
+    let hasMore = false;
     db.forEach(function (l, idx) {
       const d = document.createElement("div");
       d.className = "law-card" + (pickSet[idx] ? " today" : "");
@@ -728,9 +744,11 @@
         '<div class="law-title">' + esc(l.title || "") + '</div>' +
         '<div class="law-content">' + esc(l.content || "") + '</div>' +
         '<div class="law-tip">解读 · ' + esc(l.tip || "") + '</div>';
-      if (pickSet[idx]) todayWrap.appendChild(d); else box.appendChild(d);
+      if (pickSet[idx]) todayWrap.appendChild(d);
+      else { moreList.appendChild(d); hasMore = true; }
     });
-    if (todayWrap.children.length > 1) box.insertBefore(todayWrap, box.firstChild);
+    if (todayWrap.children.length > 1) box.appendChild(todayWrap);
+    if (hasMore) { box.appendChild(moreWrap); box.appendChild(moreBtn); }
     const srcEl = document.getElementById("lawSource"); if (srcEl) srcEl.textContent = (cfg.source || "") + " · 共 " + db.length + " 条";
   }
   renderLaw();
@@ -1698,16 +1716,16 @@
     box.innerHTML = html;
   }
 
-  // 三餐饮食面板：喝水 + 早午晚（无运动打卡）
+  // 三餐饮食面板：喝水 + 早午晚 + 作息（无运动打卡）
   function renderMeals() {
-    paintWater(); renderHealthMeals();
+    paintWater(); renderHealthMeals(); renderSleep();
   }
 
-  // 健康面板统一渲染：心情 / 作息 / 经期 / 体检 / 运动健身打卡
+  // 健康面板统一渲染：心情 / 经期 / 体检 / 运动健身打卡
   function renderHealth() {
     if (moodsEl) Array.prototype.forEach.call(moodsEl.children, function (c, i) { c.classList.toggle("sel", day.mood === i); });
     if (moodNote) moodNote.value = day.moodNote || "";
-    renderPeriod(); renderSleep(); renderExam(); renderExercise();
+    renderPeriod(); renderExam(); renderExercise();
   }
 
   // ---------- 导航 ----------
@@ -1830,7 +1848,7 @@
     const studyTabs = { "law": "law", "study-en": "en", "study-ko": "ko", "interest": "interest" };
     if (studyTabs[id]) { switchStudy(studyTabs[id]); id = "study"; }
     // 健康管理的下拉子项：统一进入「健康管理」面板并滚动到对应区块
-    const HEALTH_SECTIONS = { sleep: "sec-sleep", period: "sec-period", exam: "sec-exam", exercise: "sec-exercise" };
+    const HEALTH_SECTIONS = { period: "sec-period", exam: "sec-exam", exercise: "sec-exercise" };
     let pendingScroll = null;
     if (HEALTH_SECTIONS[origId]) { id = "health"; pendingScroll = HEALTH_SECTIONS[origId]; }
     Array.prototype.forEach.call(document.querySelectorAll(".panel"), function (p) { p.classList.toggle("active", p.id === "panel-" + id); });

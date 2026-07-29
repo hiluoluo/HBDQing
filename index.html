@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260729b">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260729b">
-  <link rel="stylesheet" href="style.css?v=20260729b">
+  <link rel="manifest" href="manifest.webmanifest?v=20260729c">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260729c">
+  <link rel="stylesheet" href="style.css?v=20260729c">
 </head>
 <body>
   <div class="app">
@@ -134,21 +134,7 @@
             <textarea id="moodNote" class="note" rows="2" placeholder="想对今天的心情说点什么…"></textarea>
           </div>
 
-          <!-- 作息 -->
-          <div class="card" id="sec-sleep">
-            <h2>作息记录</h2>
-            <p class="hint">一般 7–8 小时最合适：6–8 小时绿灯 · 8–10 小时黄灯 · 少于 6 或超过 10 小时红灯。先选睡觉时间，再选起床时间。</p>
-            <div class="form-grid">
-              <label>睡觉时间（昨晚）<select id="sleepDown"></select></label>
-              <label>起床时间（今早）<select id="sleepUp"></select></label>
-            </div>
-            <div class="sleep-judge" id="sleepJudge" style="display:none">
-              <span class="sleep-light" id="sleepLight"></span>
-              <span id="sleepInfo"></span>
-            </div>
-          </div>
-
-          <!-- 经期 -->
+ <!-- 经期 -->
           <div class="card" id="sec-period">
             <h2>经期提醒</h2>
             <div id="periodInfo" class="period-info">—</div>
@@ -235,6 +221,18 @@
             <label class="meal-label">◑ 午餐<input type="text" id="hMealL" placeholder="吃了什么…"></label>
             <label class="meal-label">☾ 晚餐<input type="text" id="hMealD" placeholder="吃了什么…"></label>
           </div>
+          <div class="card" id="sec-sleep">
+            <h2>☾ 作息记录</h2>
+            <p class="hint">一般 7–8 小时最合适：6–8 小时绿灯 · 8–10 小时黄灯 · 少于 6 或超过 10 小时红灯。先选睡觉时间，再选起床时间。</p>
+            <div class="form-grid">
+              <label>睡觉时间（昨晚）<select id="sleepDown"></select></label>
+              <label>起床时间（今早）<select id="sleepUp"></select></label>
+            </div>
+            <div class="sleep-judge" id="sleepJudge" style="display:none">
+              <span class="sleep-light" id="sleepLight"></span>
+              <span id="sleepInfo"></span>
+            </div>
+          </div>
         </section>
 
         <!-- 记录生活 -->
@@ -254,7 +252,6 @@
               </div>
             </div>
             <div id="photoWall" class="photo-wall"></div>
-            <p class="hint">删除照片：长按图片拖到出现的垃圾桶里，再确认删除。</p>
           </div>
           <div class="card">
             <h2>今日日常</h2>
@@ -265,7 +262,6 @@
               <button id="logEdit" class="btn" hidden>修改</button>
               <span class="hint" id="logSaved"></span>
             </div>
-            <p class="hint">确定后内容会锁定；点一下文字才会出现「修改」按钮，长按拖到垃圾桶可删除。</p>
           </div>
           <div class="card">
             <h2>近 7 天记录</h2>
@@ -355,10 +351,9 @@
             <!-- 法律法规 -->
             <div id="study-law" class="study-panel">
               <div class="card-head">
-                <h2>法律法规 · 每日一条</h2>
+                <h2>法律法规 · 每日一览</h2>
                 <span class="hint" id="lawSource"></span>
               </div>
-              <p class="hint">每天自动滚动 1-2 条常用法律法规，了解自己的权利与底线。</p>
               <div id="lawList" class="law-list"></div>
             </div>
 
@@ -629,10 +624,10 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260729b"></script>
-  <script src="data/quotes.js?v=20260729b"></script>
-  <script src="data/life.js?v=20260729b"></script>
-  <script src="app.js?v=20260729b"></script>
+  <script src="config.js?v=20260729c"></script>
+  <script src="data/quotes.js?v=20260729c"></script>
+  <script src="data/life.js?v=20260729c"></script>
+  <script src="app.js?v=20260729c"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
