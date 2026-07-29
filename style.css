@@ -471,8 +471,8 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 @keyframes lightBlink{0%,100%{opacity:1}50%{opacity:.35}}
 
 /* 睡眠趋势图 */
-.sleep-bars{display:flex;align-items:flex-end;gap:4px;height:120px;padding:4px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.sleep-chart{min-height:128px}
+.sleep-chart{min-height:140px;margin:6px 0}
+.sleep-chart svg{font-family:inherit}
 
 /* ---- 经期判断 ---- */
 .period-judge{margin-top:10px;font-size:13px;line-height:1.7;background:#faf8ff;border-radius:10px;padding:8px 12px}
@@ -546,4 +546,3 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 
 /* 睡眠补录 */
 .sleep-edit{background:#faf8ff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:8px}
-.sleep-chart [data-recorded="0"]{opacity:.55}

@@ -920,21 +920,51 @@
     }
     var valid = data.filter(function (d) { return d.hours !== null; });
     var maxH = valid.length ? Math.max(10, Math.ceil(Math.max.apply(null, valid.map(function (d) { return d.hours || 0; })))) : 10;
-    // 柱状图
-    var barWidth = sleepSpan <= 7 ? 34 : 16;
-    var gap = sleepSpan <= 7 ? 4 : 2;
-    chart.innerHTML = '<div class="sleep-bars" style="display:flex;align-items:flex-end;gap:' + gap + 'px;height:120px;padding:4px 0">' +
-      data.map(function (d) {
-        var h = d.hours !== null ? d.hours : -1;
-        var pct = h >= 0 ? (h / maxH) * 100 : 0;
-        var color = d.allNight ? "#e0533d" : h < 5 ? "#e0533d" : h < 6 ? "#e0922a" : h <= 9 ? "#2bb673" : h <= 10 ? "#e0922a" : "#e0533d";
-        var label = d.allNight ? "通宵" : h >= 0 ? h.toFixed(1) + "h" : "-";
-        var dd = h >= 0 ? ' data-recorded="1"' : ' data-recorded="0"';
-        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:' + barWidth + 'px;cursor:pointer"' + dd + ' data-date="' + d.date + '" onclick="window._sleepChartClick(this)">' +
-          '<span style="font-size:10px;color:' + color + ';margin-bottom:3px">' + label + '</span>' +
-          '<div style="width:100%;height:' + Math.max(2, pct) + '%;background:' + color + ';border-radius:4px 4px 0 0;min-height:' + (pct > 0 ? 4 : 0) + 'px"></div>' +
-          '<span style="font-size:9px;color:var(--muted);margin-top:4px;white-space:nowrap">' + d.date.slice(-2) + '</span></div>';
-      }).join("") + '</div>';
+    // 折线图 SVG
+    var W = 320, H = 150, padL = 32, padR = 12, padT = 12, padB = 22;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var n = data.length;
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:400px;display:block;margin:0 auto">';
+    // 网格线 + Y 轴标签
+    for (var yi = 0; yi <= maxH; yi += 2) {
+      var yy = padT + plotH - (yi / maxH) * plotH;
+      svg += '<line x1="' + padL + '" y1="' + yy + '" x2="' + (padL + plotW) + '" y2="' + yy + '" stroke="#e8e4f2" stroke-width="1"/>';
+      svg += '<text x="' + (padL - 4) + '" y="' + (yy + 4) + '" fill="var(--muted)" font-size="9" text-anchor="end">' + yi + 'h</text>';
+    }
+    // X 轴标签
+    data.forEach(function (d, i) {
+      var xx = padL + (i / (n - 1 || 1)) * plotW;
+      svg += '<text x="' + xx + '" y="' + (H - 3) + '" fill="var(--muted)" font-size="9" text-anchor="middle">' + d.date.slice(-2) + '</text>';
+    });
+    // 收集有效数据点
+    var points = [];
+    data.forEach(function (d, i) {
+      var h = d.hours !== null ? d.hours : null;
+      if (h === null) return;
+      var xx = padL + (i / (n - 1 || 1)) * plotW;
+      var yy = padT + plotH - (h / maxH) * plotH;
+      var color = d.allNight ? "#e0533d" : h < 5 ? "#e0533d" : h < 6 ? "#e0922a" : h <= 9 ? "#2bb673" : h <= 10 ? "#e0922a" : "#e0533d";
+      points.push({ x: xx, y: yy, color: color, hours: h, allNight: d.allNight, date: d.date, i: i });
+    });
+    // 画线段
+    for (var pi = 1; pi < points.length; pi++) {
+      var p0 = points[pi - 1], p1 = points[pi];
+      svg += '<line x1="' + p0.x + '" y1="' + p0.y + '" x2="' + p1.x + '" y2="' + p1.y + '" stroke="' + p1.color + '" stroke-width="2" stroke-linecap="round"/>';
+    }
+    // 画圆点 + 数值标签
+    points.forEach(function (p) {
+      svg += '<circle cx="' + p.x + '" cy="' + p.y + '" r="4.5" fill="#fff" stroke="' + p.color + '" stroke-width="2.2" style="cursor:pointer" data-date="' + p.date + '" data-recorded="1" onclick="window._sleepChartClick(this)"/>';
+      svg += '<text x="' + p.x + '" y="' + (p.y - 8) + '" fill="' + p.color + '" font-size="9" text-anchor="middle" font-weight="600">' + p.hours.toFixed(1) + 'h</text>';
+    });
+    // 未录入日期：虚线圆点
+    data.forEach(function (d, i) {
+      if (d.hours !== null) return;
+      var xx = padL + (i / (n - 1 || 1)) * plotW;
+      var yy = padT + plotH + 6;
+      svg += '<circle cx="' + xx + '" cy="' + yy + '" r="3" fill="none" stroke="var(--muted)" stroke-width="1" stroke-dasharray="2 2" style="cursor:pointer;opacity:.5" data-date="' + d.date + '" data-recorded="0" onclick="window._sleepChartClick(this)"/>';
+    });
+    svg += '</svg>';
+    chart.innerHTML = svg;
     // 图表下方：补录弹窗
     chart.innerHTML += '<div id="sleepEdit" class="sleep-edit" style="display:none"><div class="form-grid" style="margin-top:10px">' +
       '<label>睡觉时间<select id="seDown"></select></label><label>起床时间<select id="seUp"></select></label></div>' +
