@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260729d">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260729d">
-  <link rel="stylesheet" href="style.css?v=20260729d">
+  <link rel="manifest" href="manifest.webmanifest?v=20260729e">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260729e">
+  <link rel="stylesheet" href="style.css?v=20260729e">
 </head>
 <body>
   <div class="app">
@@ -134,33 +134,6 @@
             <textarea id="moodNote" class="note" rows="2" placeholder="想对今天的心情说点什么…"></textarea>
           </div>
 
- <!-- 经期 -->
-          <div class="card" id="sec-period">
-            <h2>经期提醒</h2>
-            <div id="periodInfo" class="period-info">—</div>
-            <div class="row">
-              <button id="periodMark" class="btn">今天来了</button>
-              <button id="periodSet" class="btn ghost">设置</button>
-            </div>
-            <div id="periodPanel" class="panel-in" style="display:none">
-              <label>上次经期开始<input type="date" id="pLast"></label>
-              <label>周期（天）<input type="number" id="pCycle" value="28"></label>
-              <label>经期天数<input type="number" id="pDur" value="5"></label>
-              <button id="pSave" class="btn primary">保存</button>
-            </div>
-          </div>
-
-          <!-- 体检 -->
-          <div class="card exam-card" id="sec-exam">
-            <h2>体检提醒</h2>
-            <p class="hint" id="examDesc">记录上次体检时间，每半年提醒一次。</p>
-            <div class="row">
-              <button id="examSet" class="btn">记录 / 更新体检时间</button>
-              <button id="examIssueAdd" class="btn ghost">记录健康问题</button>
-            </div>
-            <div id="examIssues" class="exam-issues"></div>
-          </div>
-
           <!-- 运动健身打卡 -->
           <div class="card" id="sec-exercise">
             <div class="card-head">
@@ -195,13 +168,7 @@
             <ul id="exList2" class="check-list"></ul>
           </div>
 
-          <!-- 底部小色带：平时也显示，说明距离上次体检天数与当前维度 -->
-          <div class="exam-band" id="examBand">
-            <span class="exam-dot" id="examDot"></span>
-            <span id="examBandText">还没记录体检时间</span>
-            <button id="examBandBtn" class="mini-btn">去记录</button>
-          </div>
-
+          <!-- 作息 -->
           <div class="card" id="sec-sleep">
             <h2>☾ 作息记录</h2>
             <p class="hint">一般 7–8 小时最合适：6–8 小时绿灯 · 8–10 小时黄灯 · 少于 6 或超过 10 小时红灯。先选睡觉时间，再选起床时间。</p>
@@ -213,6 +180,40 @@
               <span class="sleep-light" id="sleepLight"></span>
               <span id="sleepInfo"></span>
             </div>
+          </div>
+
+          <!-- 经期 -->
+          <div class="card" id="sec-period">
+            <h2>经期提醒</h2>
+            <div id="periodInfo" class="period-info">—</div>
+            <div class="row">
+              <button id="periodMark" class="btn">今天来了</button>
+              <button id="periodSet" class="btn ghost">设置</button>
+            </div>
+            <div id="periodPanel" class="panel-in" style="display:none">
+              <label>上次经期开始<input type="date" id="pLast"></label>
+              <label>周期（天）<input type="number" id="pCycle" value="28"></label>
+              <label>经期天数<input type="number" id="pDur" value="5"></label>
+              <button id="pSave" class="btn primary">保存</button>
+            </div>
+          </div>
+
+          <!-- 体检 -->
+          <div class="card exam-card" id="sec-exam">
+            <h2>体检提醒</h2>
+            <p class="hint" id="examDesc">记录上次体检时间，每半年提醒一次。</p>
+            <div class="row">
+              <button id="examSet" class="btn">记录 / 更新体检时间</button>
+              <button id="examIssueAdd" class="btn ghost">记录健康问题</button>
+            </div>
+            <div id="examIssues" class="exam-issues"></div>
+          </div>
+
+          <!-- 底部小色带：平时也显示，说明距离上次体检天数与当前维度 -->
+          <div class="exam-band" id="examBand">
+            <span class="exam-dot" id="examDot"></span>
+            <span id="examBandText">还没记录体检时间</span>
+            <button id="examBandBtn" class="mini-btn">去记录</button>
           </div>
         </section>
 
@@ -625,10 +626,10 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260729d"></script>
-  <script src="data/quotes.js?v=20260729d"></script>
-  <script src="data/life.js?v=20260729d"></script>
-  <script src="app.js?v=20260729d"></script>
+  <script src="config.js?v=20260729e"></script>
+  <script src="data/quotes.js?v=20260729e"></script>
+  <script src="data/life.js?v=20260729e"></script>
+  <script src="app.js?v=20260729e"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
