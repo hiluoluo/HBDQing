@@ -211,11 +211,10 @@
   let waterTimer;
   document.getElementById("waterRemind").onchange = function (e) {
     if (e.target.checked) {
-      if ("Notification" in window && Notification.permission === "default") Notification.requestPermission();
-      const min = (C.waterReminderMin || 60) * 60000;
-      waterTimer = setInterval(function () { toast("该喝水啦"); if ("Notification" in window && Notification.permission === "granted") new Notification("喝水提醒", { body: "该起身喝杯水啦" }); }, min);
-      toast("已开启喝水提醒，每 " + (C.waterReminderMin || 60) + " 分钟一次");
-    } else { clearInterval(waterTimer); toast("已关闭喝水提醒"); }
+      toast("其实还没有攻克这个技术，姐姐自助提醒一下吧，嘻嘻~");
+      // 勾选后立即取消，保留 checkbox 可见但清除定时器
+      waterTimer = setTimeout(function () { e.target.checked = false; }, 2800);
+    } else { clearTimeout(waterTimer); }
   };
 
   // ---------- 经期 ----------
@@ -1631,30 +1630,27 @@
     if (!document.getElementById("foodBoxes").children.length) renderFoodBoxes();
   }
 
-  // ---------- 兴趣拓展（填写兴趣 → 自动生成 1 个月计划） ----------
+  // ---------- 兴趣拓展（填写兴趣 → 匹配内置模板，否则弹提示） ----------
   function renderInterest() {
     const btn = document.getElementById("interestGen"); if (!btn) return;
     const inp = document.getElementById("interestInput");
     btn.onclick = function () {
       const topic = inp.value.trim();
       if (!topic) { toast("先填一个你感兴趣的事呀"); return; }
-      let plan = null;
       const plans = LIFE.interestPlans || {};
       const hitKey = Object.keys(plans).find(function (k) { return topic.indexOf(k) >= 0 || k.indexOf(topic) >= 0; });
-      if (hitKey) plan = plans[hitKey];
-      else if (typeof LIFE.interestGeneric === "function") plan = LIFE.interestGeneric(topic);
-      if (!plan) { toast("生成失败，再试一次"); return; }
+      if (!hitKey) {
+        toast("姐姐我还没开发到这里，换一个兴趣哈哈~");
+        return;
+      }
+      const plan = plans[hitKey];
       let html = '<div class="interest-title">' + esc(plan.title || topic + " · 一个月入门计划") + "</div>";
       (plan.weeks || []).forEach(function (w, i) {
         html += '<div class="interest-week"><div class="iw-head">第 ' + (i + 1) + " 周 · " + esc(w.t) + "</div><ul>";
         (w.items || []).forEach(function (it) { html += "<li>" + esc(it) + "</li>"; });
         html += "</ul></div>";
       });
-      const xhs = "https://www.xiaohongshu.com/search_result?keyword=" + encodeURIComponent(topic + " 入门");
-      const bili = "https://search.bilibili.com/all?keyword=" + encodeURIComponent(topic + " 教程");
-      html += '<div class="interest-links"><a href="' + xhs + '" target="_blank" rel="noopener">小红书搜「' + esc(topic) + ' 入门」→</a><a href="' + bili + '" target="_blank" rel="noopener">B 站搜「' + esc(topic) + ' 教程」→</a></div>';
       document.getElementById("interestPlan").innerHTML = html;
-      // 存记录（供时间线）
       const recs = loadStore("interest_records") || [];
       recs.push({ date: key, topic: topic });
       saveStore("interest_records", recs);
