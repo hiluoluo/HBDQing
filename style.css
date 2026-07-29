@@ -344,9 +344,10 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .merit b{font-size:20px;color:var(--accent);margin:0 4px}
 .merit-note{font-size:13px;color:var(--accent);min-height:18px;margin-top:2px;font-weight:600}
 
-/* ---- 喝水 8 杯（单列 · 水滴） ---- */
-.cups{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px;justify-items:center}
-.cup{width:40px;height:52px;flex:none;border:2px solid var(--line);border-radius:8px 8px 14px 14px;background:#fbfaff;color:var(--muted);font-size:17px;cursor:pointer;transition:.18s;display:flex;align-items:center;justify-content:center;position:relative}
+/* ---- 喝水 8 杯（横排 · 缩小水滴，不滑动也能放下） ---- */
+.cups{display:flex;flex-wrap:nowrap;gap:5px;justify-content:flex-start;margin-top:6px}
+.cup{width:34px;height:40px;flex:none;border:2px solid var(--line);border-radius:8px 8px 14px 14px;background:#fbfaff;color:var(--muted);font-size:15px;cursor:pointer;transition:.18s;display:flex;align-items:center;justify-content:center;position:relative}
+.cup:hover{border-color:var(--accent2)}
 .cup.on{background:linear-gradient(180deg,#cdeafe,#a9d8fb);border-color:#7cc0f0;color:#2b7fc4;box-shadow:0 4px 12px rgba(90,160,230,.3)}
 
 /* ---- 名言轮播 ---- */

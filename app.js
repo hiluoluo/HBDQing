@@ -210,11 +210,11 @@
   document.getElementById("waterMinus").onclick = function () { day.water = Math.max(0, (day.water || 0) - 1); saveDay(key, day); paintWater(); };
   let waterTimer;
   document.getElementById("waterRemind").onchange = function (e) {
+    const hint = document.getElementById("waterRemindHint");
     if (e.target.checked) {
-      toast("其实还没有攻克这个技术，姐姐自助提醒一下吧，嘻嘻~");
-      // 勾选后立即取消，保留 checkbox 可见但清除定时器
-      waterTimer = setTimeout(function () { e.target.checked = false; }, 2800);
-    } else { clearTimeout(waterTimer); }
+      if (hint) { hint.style.display = ""; hint.textContent = "其实还没有攻克这个技术，姐姐自助提醒一下吧，嘻嘻~"; }
+      waterTimer = setTimeout(function () { e.target.checked = false; if (hint) hint.style.display = "none"; }, 3000);
+    } else { clearTimeout(waterTimer); if (hint) hint.style.display = "none"; }
   };
 
   // ---------- 经期 ----------
@@ -237,19 +237,19 @@
     // 综合判断结论
     let judge, jColor;
     if (inPeriod) {
-      judge = "判断：经期第 " + ((sinceLast % pcfg.cycle) + 1) + " 天。注意保暖、别碰凉的，多喝热水，别太累，痛得厉害要休息。";
+      judge = "经期第 " + ((sinceLast % pcfg.cycle) + 1) + " 天。注意保暖、别碰凉的，多喝热水，别太累，痛得厉害要休息。";
       jColor = "#e0533d";
     } else if (left <= 3) {
-      judge = "判断：经期快来了（约 " + left + " 天后）。可以提前备好用品，最近别熬夜、少吃生冷辛辣。";
+      judge = "经期快来了（约 " + left + " 天后）。可以提前备好用品，最近别熬夜、少吃生冷辛辣。";
       jColor = "#e0922a";
     } else if (nearOv) {
-      judge = "判断：正处于排卵期附近，属于周期正常波动，可能会有轻微不适，注意休息。";
+      judge = "正处于排卵期附近，属于周期正常波动，可能会有轻微不适，注意休息。";
       jColor = "#7c5bb5";
     } else {
       const normal = pcfg.cycle >= 21 && pcfg.cycle <= 35;
       judge = normal
-        ? "判断：目前处于安全平稳期，周期 " + pcfg.cycle + " 天在正常范围（21–35 天），状态不错，保持规律作息就好。"
-        : "判断：你的周期 " + pcfg.cycle + " 天不在常见范围（21–35 天），如果长期如此，建议找时间咨询医生。";
+        ? "目前处于安全平稳期，周期 " + pcfg.cycle + " 天在正常范围（21–35 天），状态不错，保持规律作息就好。"
+        : "你的周期 " + pcfg.cycle + " 天不在常见范围（21–35 天），如果长期如此，建议找时间咨询医生。";
       jColor = normal ? "#2bb673" : "#e0533d";
     }
     html += '<div class="period-judge" style="color:' + jColor + '">' + judge + "</div>";
@@ -1630,26 +1630,28 @@
     if (!document.getElementById("foodBoxes").children.length) renderFoodBoxes();
   }
 
-  // ---------- 兴趣拓展（填写兴趣 → 匹配内置模板，否则弹提示） ----------
+  // ---------- 兴趣拓展（填写兴趣 → 匹配内置模板，没有则用通用 4 周脚手架） ----------
   function renderInterest() {
     const btn = document.getElementById("interestGen"); if (!btn) return;
     const inp = document.getElementById("interestInput");
     btn.onclick = function () {
       const topic = inp.value.trim();
       if (!topic) { toast("先填一个你感兴趣的事呀"); return; }
+      let plan = null;
       const plans = LIFE.interestPlans || {};
       const hitKey = Object.keys(plans).find(function (k) { return topic.indexOf(k) >= 0 || k.indexOf(topic) >= 0; });
-      if (!hitKey) {
-        toast("姐姐我还没开发到这里，换一个兴趣哈哈~");
-        return;
-      }
-      const plan = plans[hitKey];
+      if (hitKey) plan = plans[hitKey];
+      else if (typeof LIFE.interestGeneric === "function") plan = LIFE.interestGeneric(topic);
+      if (!plan) { toast("生成失败，再试一次"); return; }
       let html = '<div class="interest-title">' + esc(plan.title || topic + " · 一个月入门计划") + "</div>";
       (plan.weeks || []).forEach(function (w, i) {
         html += '<div class="interest-week"><div class="iw-head">第 ' + (i + 1) + " 周 · " + esc(w.t) + "</div><ul>";
         (w.items || []).forEach(function (it) { html += "<li>" + esc(it) + "</li>"; });
         html += "</ul></div>";
       });
+      html += '<p class="hint" style="margin-top:10px;text-align:center">底部附 B 站搜索链接，可直接搜教程</p>';
+      const bili = "https://search.bilibili.com/all?keyword=" + encodeURIComponent(topic + " 教程");
+      html += '<div class="interest-links"><a href="' + bili + '" target="_blank" rel="noopener">B 站搜「' + esc(topic) + ' 教程」→</a></div>';
       document.getElementById("interestPlan").innerHTML = html;
       const recs = loadStore("interest_records") || [];
       recs.push({ date: key, topic: topic });
