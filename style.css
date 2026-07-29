@@ -543,3 +543,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .nav-sub-group .ng-label{flex:1}
 .nav-sub-group:hover{background:#f4f1fc}
 .nav-sub-group .nav-arrow{margin-left:auto;margin-right:2px}
+
+/* 睡眠补录 */
+.sleep-edit{background:#faf8ff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:8px}
+.sleep-chart [data-recorded="0"]{opacity:.55}

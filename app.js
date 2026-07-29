@@ -212,7 +212,7 @@
   document.getElementById("waterRemind").onchange = function (e) {
     const hint = document.getElementById("waterRemindHint");
     if (e.target.checked) {
-      if (hint) { hint.style.display = ""; hint.textContent = "其实还没有攻克这个技术，姐姐自助提醒一下吧，嘻嘻~"; }
+      if (hint) { hint.style.display = ""; hint.textContent = "其实还没有学会这个技能，姐姐自助提醒一下吧，嘻嘻~"; }
       waterTimer = setTimeout(function () { e.target.checked = false; if (hint) hint.style.display = "none"; }, 3000);
     } else { clearTimeout(waterTimer); if (hint) hint.style.display = "none"; }
   };
@@ -928,11 +928,49 @@
         var pct = h >= 0 ? (h / maxH) * 100 : 0;
         var color = d.allNight ? "#e0533d" : h < 5 ? "#e0533d" : h < 6 ? "#e0922a" : h <= 8 ? "#2bb673" : h <= 9 ? "#e0c02a" : "#e0533d";
         var label = d.allNight ? "通宵" : h >= 0 ? h.toFixed(1) + "h" : "-";
-        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:' + barWidth + 'px">' +
+        var dd = h >= 0 ? ' data-recorded="1"' : ' data-recorded="0"';
+        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:' + barWidth + 'px;cursor:pointer"' + dd + ' data-date="' + d.date + '" onclick="window._sleepChartClick(this)">' +
           '<span style="font-size:10px;color:' + color + ';margin-bottom:3px">' + label + '</span>' +
           '<div style="width:100%;height:' + Math.max(2, pct) + '%;background:' + color + ';border-radius:4px 4px 0 0;min-height:' + (pct > 0 ? 4 : 0) + 'px"></div>' +
           '<span style="font-size:9px;color:var(--muted);margin-top:4px;white-space:nowrap">' + d.date.slice(-2) + '</span></div>';
       }).join("") + '</div>';
+    // 图表下方：补录弹窗
+    chart.innerHTML += '<div id="sleepEdit" class="sleep-edit" style="display:none"><div class="form-grid" style="margin-top:10px">' +
+      '<label>睡觉时间<select id="seDown"></select></label><label>起床时间<select id="seUp"></select></label></div>' +
+      '<label class="remind" style="margin-top:6px;display:block"><input type="checkbox" id="seAllNight"> 通宵了</label>' +
+      '<div class="row" style="margin-top:8px;gap:8px"><button id="seSave" class="btn primary">确认保存</button><button id="seCancel" class="btn ghost">取消</button><span class="hint" id="seDateLabel"></span></div></div>';
+    // 给补录面板的选项赋值
+    var seDown = document.getElementById("seDown"), seUp = document.getElementById("seUp");
+    if (seDown && !seDown.dataset.filled) { fillTimeOptions(seDown, 18, 6); seDown.dataset.filled = "1"; }
+    if (seUp && !seUp.dataset.filled) { fillTimeOptions(seUp, 4, 13); seUp.dataset.filled = "1"; }
+    // 补录按钮事件
+    var editingDate = null;
+    window._sleepChartClick = function (el) {
+      var dt = el.dataset.date;
+      if (!dt) return;
+      editingDate = dt;
+      var y = key.slice(0, 4);
+      var fullDate = y + "-" + dt;
+      document.getElementById("seDateLabel").textContent = "补录日期：" + fullDate;
+      document.getElementById("sleepEdit").style.display = "block";
+      var dd = loadDay(fullDate), sl = dd.sleep || {};
+      seDown.value = sl.down || ""; seUp.value = sl.up || ""; document.getElementById("seAllNight").checked = !!sl.allNight;
+    };
+    document.getElementById("seSave").onclick = function () {
+      if (!editingDate) return;
+      var y = key.slice(0, 4);
+      var dd = loadDay(y + "-" + editingDate), sl = dd.sleep || {};
+      var an = document.getElementById("seAllNight").checked;
+      sl.allNight = an;
+      if (!an) { sl.down = seDown.value; sl.up = seUp.value; }
+      dd.sleep = sl; saveDay(y + "-" + editingDate, dd);
+      document.getElementById("sleepEdit").style.display = "none"; editingDate = null;
+      renderSleepChart();
+    };
+    document.getElementById("seCancel").onclick = function () { document.getElementById("sleepEdit").style.display = "none"; editingDate = null; };       
+    document.getElementById("seAllNight").onchange = function () {
+      var an = this.checked; seDown.disabled = an; seUp.disabled = an;
+    };
     // 分析
     if (!valid.length) { analysis.innerHTML = "还没有记录，记几天就能看到趋势啦~"; return; }
     var avg = valid.reduce(function (s, d) { return s + d.hours; }, 0) / valid.length;
