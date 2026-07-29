@@ -213,7 +213,7 @@ window.APP_CONFIG = {
   nav: [
     { id: "home", label: "首页", icon: "⌂" },
 
-    // 生活管理：可折叠（带三角箭头）。二级标题是三个页面：三餐饮食 / 健康管理 / 日常记录(带下拉)
+    // 生活管理：可折叠（带三角箭头）。二级标题是三个页面：三餐饮食 / 健康记录 / 日常规划(带下拉)
     // 二级标题可以是「直接进内容的页」(type:"page")，也可以是「带下拉的分组」(type:"group")
     {
       id: "life", label: "生活管理", icon: "❀", open: true,
@@ -221,11 +221,11 @@ window.APP_CONFIG = {
         // 三餐饮食：二级标题，无下拉，直接进入「三餐饮食」面板（喝水 + 早午晚，无运动打卡）
         { id: "meals", label: "三餐饮食", icon: "◔", type: "page" },
 
-        // 健康管理：单页（无下拉），顺序：心情 → 运动健身打卡 → 经期 → 体检
-        { id: "health", label: "健康管理", icon: "♡", type: "page" },
+        // 健康记录：单页（无下拉），顺序：心情 → 作息 → 运动健身打卡 → 经期 → 体检
+        { id: "health", label: "健康记录", icon: "♡", type: "page" },
 
-        // 日常记录：二级标题，带下拉
-        { id: "record", label: "日常记录", icon: "✎", type: "group",
+        // 日常规划：二级标题，带下拉
+        { id: "record", label: "日常规划", icon: "✎", type: "group",
           children: [
             { id: "wealth", label: "记账",     icon: "✧" },
             { id: "travel", label: "旅游计划", icon: "➹" }
