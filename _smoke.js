@@ -159,7 +159,7 @@ function setSleep(d, u) {
 }
 ok(down.querySelectorAll("option").length <= 30, "睡觉选项精简（" + down.querySelectorAll("option").length + " 个）");
 let t = setSleep("23:00", "04:00"); ok(/红|睡/.test(t) && doc.getElementById("sleepJudge").style.display !== "none", "<6h 有红灯调侃: " + t.slice(0, 30));
-t = setSleep("23:00", "06:30"); ok(/睡眠大王/.test(t), "6-8h 绿灯: " + t.slice(0, 30));
+t = setSleep("23:00", "06:30"); ok(/睡眠合格啦/.test(t), "6-8h 绿灯: " + t.slice(0, 30));
 t = setSleep("22:00", "07:00"); ok(/能睡是福/.test(t), "8-10h 黄灯+羡慕调侃: " + t.slice(0, 30));
 t = setSleep("21:00", "08:00"); ok(/太能睡了吧/.test(t), ">10h 红灯+怎么睡得着: " + t.slice(0, 30));
 

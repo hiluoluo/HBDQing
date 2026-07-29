@@ -862,7 +862,7 @@
     if (allNight) return { color: "#e0533d", light: "red", text: "姐姐，牛逼！" };
     if (hours < 5)  return { color: "#e0533d", light: "red",    text: "姐姐只睡了这么点，头发一定很多吧~今晚早点躺吧求求你了！" };
     if (hours < 6)  return { color: "#e0922a", light: "orange",  text: "嗯…姐姐睡眠有点短哦，明天补个午觉吧~" };
-    if (hours <= 8) return { color: "#2bb673", light: "green",  text: "睡眠大王就是你！姐姐今天必是满血状态~" };
+    if (hours <= 8) return { color: "#2bb673", light: "green",  text: "睡眠合格啦，姐姐今天必是满血状态~" };
     if (hours <= 9) return { color: "#e0c02a", light: "yellow", text: "能睡是福！恭喜姐姐睡得很饱啦~" };
     return { color: "#e0533d", light: "red", text: "姐姐这是多久没睡了啊，太能睡了吧！" };
   }
