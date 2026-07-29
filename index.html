@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260729c">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260729c">
-  <link rel="stylesheet" href="style.css?v=20260729c">
+  <link rel="manifest" href="manifest.webmanifest?v=20260729d">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260729d">
+  <link rel="stylesheet" href="style.css?v=20260729d">
 </head>
 <body>
   <div class="app">
@@ -201,6 +201,19 @@
             <span id="examBandText">还没记录体检时间</span>
             <button id="examBandBtn" class="mini-btn">去记录</button>
           </div>
+
+          <div class="card" id="sec-sleep">
+            <h2>☾ 作息记录</h2>
+            <p class="hint">一般 7–8 小时最合适：6–8 小时绿灯 · 8–10 小时黄灯 · 少于 6 或超过 10 小时红灯。先选睡觉时间，再选起床时间。</p>
+            <div class="form-grid">
+              <label>睡觉时间（昨晚）<select id="sleepDown"></select></label>
+              <label>起床时间（今早）<select id="sleepUp"></select></label>
+            </div>
+            <div class="sleep-judge" id="sleepJudge" style="display:none">
+              <span class="sleep-light" id="sleepLight"></span>
+              <span id="sleepInfo"></span>
+            </div>
+          </div>
         </section>
 
         <!-- 三餐饮食：喝水 + 早午晚，无运动打卡 -->
@@ -220,18 +233,6 @@
             <label class="meal-label">◔ 早餐<input type="text" id="hMealB" placeholder="吃了什么…"></label>
             <label class="meal-label">◑ 午餐<input type="text" id="hMealL" placeholder="吃了什么…"></label>
             <label class="meal-label">☾ 晚餐<input type="text" id="hMealD" placeholder="吃了什么…"></label>
-          </div>
-          <div class="card" id="sec-sleep">
-            <h2>☾ 作息记录</h2>
-            <p class="hint">一般 7–8 小时最合适：6–8 小时绿灯 · 8–10 小时黄灯 · 少于 6 或超过 10 小时红灯。先选睡觉时间，再选起床时间。</p>
-            <div class="form-grid">
-              <label>睡觉时间（昨晚）<select id="sleepDown"></select></label>
-              <label>起床时间（今早）<select id="sleepUp"></select></label>
-            </div>
-            <div class="sleep-judge" id="sleepJudge" style="display:none">
-              <span class="sleep-light" id="sleepLight"></span>
-              <span id="sleepInfo"></span>
-            </div>
           </div>
         </section>
 
@@ -624,10 +625,10 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260729c"></script>
-  <script src="data/quotes.js?v=20260729c"></script>
-  <script src="data/life.js?v=20260729c"></script>
-  <script src="app.js?v=20260729c"></script>
+  <script src="config.js?v=20260729d"></script>
+  <script src="data/quotes.js?v=20260729d"></script>
+  <script src="data/life.js?v=20260729d"></script>
+  <script src="app.js?v=20260729d"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

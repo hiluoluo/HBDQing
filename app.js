@@ -128,6 +128,7 @@
     }
     function start(e) {
       dragging = true;
+      document.body.style.overflow = "hidden";
       ghost = el.cloneNode(true);
       ghost.classList.add("drag-ghost");
       const r = el.getBoundingClientRect();
@@ -140,6 +141,7 @@
     }
     function end() {
       dragging = false; dragEndAt = Date.now();
+      document.body.style.overflow = "";
       if (ghost) { ghost.remove(); ghost = null; }
       el.classList.remove("drag-src");
       trashZone.classList.remove("show"); trashZone.classList.remove("hot");
@@ -790,6 +792,12 @@
     document.getElementById("wealthSummary").innerHTML =
       '<div class="ov"><div class="ov-t">本月支出</div><div class="ov-v" style="color:#e0533d">¥' + out.toFixed(0) + '</div><div class="ov-s">预算 ¥' + (C.wealth.monthlyBudget || 0) + '</div></div>' +
       '<div class="ov"><div class="ov-t">剩余预算</div><div class="ov-v">¥' + ((C.wealth.monthlyBudget || 0) - out).toFixed(0) + '</div><div class="ov-s">本月收入 ¥' + in_.toFixed(0) + '</div></div>';
+    // 进度条
+    const budget = C.wealth.monthlyBudget || 0;
+    const pct = budget > 0 ? Math.min(100, (out / budget) * 100) : 0;
+    const barColor = pct > 90 ? "#e0533d" : pct > 70 ? "#e0922a" : "#2bb673";
+    document.getElementById("wealthSummary").innerHTML +=
+      '<div class="wbar-wrap"><div class="wbar-label">预算使用</div><div class="bar" style="height:10px;margin:4px 0"><div class="bar-fill" style="width:' + pct.toFixed(0) + '%;background:' + barColor + '"></div></div><div class="wbar-num" style="font-size:12px;color:var(--muted);text-align:right">' + pct.toFixed(0) + '% (' + (budget > 0 ? '¥' + out.toFixed(0) + ' / ¥' + budget : '未设预算') + ')</div></div>';
     const ul = document.getElementById("wealthList"); ul.innerHTML = "";
     recs.slice().sort(function (a, b) { return (b.date || "").localeCompare(a.date || "") || b.id - a.id; }).slice(0, 10).forEach(function (r) {
       const li = document.createElement("li");
@@ -999,30 +1007,32 @@
     const out = document.getElementById("travelOut");
     const t = cfg.cities[city];
     const plan = loadTravelPlan(city);
-    const has = (t && (t.landmarks.length || t.food.length || t.photo.length)) || plan.landmarks.length || plan.food.length || plan.photo.length || plan.outfit || plan.budget;
-    if (!has) {
-      out.innerHTML = '<div class="travel-card"><p>没有「' + city + '」的内置攻略，但你可以自己添加收藏，也能直接去小红书看真实分享：</p>' + xhsBtns(city) + '</div>';
+    // baseForDim: 从内置城市配置里取，字符串转数组
+    function baseForDim(key) { const v = t ? t[key] : ""; return Array.isArray(v) ? v : (v ? [v] : []); }
+    const dims = [
+      { key: "landmarks", name: "地标打卡", base: baseForDim("landmarks") },
+      { key: "food", name: "必吃美食", base: baseForDim("food") },
+      { key: "photo", name: "拍照出片", base: baseForDim("photo") },
+      { key: "outfit", name: "穿搭建议", base: baseForDim("outfit") },
+      { key: "budget", name: "费用预估", base: baseForDim("budget") }
+    ];
+    const hasBuiltin = t && (t.landmarks.length || t.food.length || t.photo.length);
+    const hasCustom = plan.landmarks.length || plan.food.length || plan.photo.length || plan.outfit || plan.budget;
+    if (!hasBuiltin && !hasCustom) {
+      out.innerHTML = '<div class="travel-card"><p>还没有「' + city + '」的攻略，你可以自己添加收藏 ♡</p></div>';
       return;
     }
-    const dims = [
-      { key: "landmarks", name: "地标打卡", base: t ? t.landmarks : [] },
-      { key: "food", name: "必吃美食", base: t ? t.food : [] },
-      { key: "photo", name: "拍照出片", base: t ? t.photo : [] }
-    ];
     let html = '<div class="travel-card">';
     dims.forEach(function (dm) {
+      const baseItems = dm.base;
+      const customItems = Array.isArray(plan[dm.key]) ? plan[dm.key] : (plan[dm.key] ? [plan[dm.key]] : []);
       html += '<h3>' + dm.name + '</h3><div class="tag-row" id="trav_' + dm.key + '">';
-      (dm.base || []).forEach(function (s) { html += '<span class="tag">' + esc(s) + '</span>'; });
-      (plan[dm.key] || []).forEach(function (s, i) {
+      baseItems.forEach(function (s) { html += '<span class="tag">' + esc(s) + '</span>'; });
+      customItems.forEach(function (s, i) {
         html += '<span class="tag custom" data-dim="' + dm.key + '" data-i="' + i + '">' + esc(s) + ' <b>✕</b></span>';
       });
-      html += '</div><div class="row" style="margin-top:6px"><input class="flex-input trav-add" data-dim="' + dm.key + '" placeholder="添加一条' + dm.name + '…"><button class="btn primary trav-add-btn" data-dim="' + dm.key + '">添加</button></div>';
+      html += '</div><div class="row" style="margin-top:6px"><input class="flex-input trav-add" data-dim="' + dm.key + '" placeholder="添加' + dm.name + '…"><button class="btn primary trav-add-btn" data-dim="' + dm.key + '">添加</button></div>';
     });
-    html += '<h3>穿搭建议</h3>';
-    html += '<textarea class="trav-text" data-dim="outfit" placeholder="写写穿搭建议…">' + esc(plan.outfit || (t ? t.outfit : "")) + '</textarea>';
-    html += '<h3>费用建议</h3>';
-    html += '<textarea class="trav-text" data-dim="budget" placeholder="写写费用预算…">' + esc(plan.budget || (t ? t.budget : "")) + '</textarea>';
-    html += '<h3>更多真实分享</h3>' + xhsBtns(city);
     html += '</div>';
     out.innerHTML = html;
     Array.prototype.forEach.call(out.querySelectorAll(".trav-add-btn"), function (b) {
@@ -1032,9 +1042,6 @@
         const pl = loadTravelPlan(city); pl[dm] = pl[dm] || []; pl[dm].push(v); saveTravelPlan(city, pl); showTravel(city);
       };
     });
-    Array.prototype.forEach.call(out.querySelectorAll(".trav-text"), function (ta) {
-      ta.oninput = function () { const pl = loadTravelPlan(city); pl[ta.dataset.dim] = ta.value; saveTravelPlan(city, pl); };
-    });
     Array.prototype.forEach.call(out.querySelectorAll(".tag.custom"), function (sp) {
       sp.querySelector("b").onclick = function (e) {
         e.stopPropagation();
@@ -1042,14 +1049,6 @@
         const pl = loadTravelPlan(city); pl[dm].splice(i, 1); saveTravelPlan(city, pl); showTravel(city);
       };
     });
-  }
-  function tag(s) { return '<span class="tag">' + s + '</span>'; }
-  function xhsBtns(city) {
-    const dims = [["地标", "地标打卡"], ["美食", "美食"], ["穿搭", "穿搭"], ["出片", "拍照出片"], ["费用", "花费攻略"]];
-    return dims.map(function (d) {
-      const kw = encodeURIComponent(city + " " + d[1]);
-      return '<a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=' + kw + '" target="_blank" rel="noopener">小红书 · ' + d[0] + '</a>';
-    }).join("");
   }
   document.getElementById("travelDest").addEventListener("input", function () { showTravel(this.value.trim()); });
   document.getElementById("travelDest").addEventListener("blur", function () { renderTravel(); });
@@ -1286,12 +1285,16 @@
 
   // ---------- 首页交互模块：敲木鱼 / 水杯 / 名言 / 拍一拍 ----------
   // 赛博木鱼（真实木质敲击声，data/woodfish.wav；连击可叠加）
-  let wfAudio = null;
   function playWood() {
     try {
-      if (!wfAudio) { wfAudio = new Audio("data/woodfish.wav"); wfAudio.preload = "auto"; }
-      const a = wfAudio.cloneNode(true); a.volume = 0.9;
-      const p = a.play(); if (p && p.catch) p.catch(function () {});
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.type = "sine"; osc.frequency.setValueAtTime(380, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.6, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
     } catch (e) {}
   }
   function initWoodfish() {
@@ -1490,7 +1493,11 @@
   }
 
   // ---------- 运动健身（打卡 + 近14天热力图） ----------
-  const EX_TYPES = (C.diet && C.diet.exerciseTypes) || ["跑步", "走路", "瑜伽", "健身", "跳绳", "游泳", "骑车", "拉伸", "羽毛球", "跳舞"];
+  var EX_TYPES = (C.diet && C.diet.exerciseTypes) || ["跑步", "走路", "瑜伽", "健身", "跳绳", "游泳", "骑车", "拉伸", "羽毛球", "跳舞"];
+  // 从 localStorage 加载用户自定义的运动类型，合并去重
+  (function () {
+    try { var saved = JSON.parse(localStorage.getItem("exercise_types")); if (Array.isArray(saved)) { saved.forEach(function (t) { if (EX_TYPES.indexOf(t) === -1) EX_TYPES.push(t); }); } } catch (e) {}
+  })();
   let exSelType = EX_TYPES[0];
   function renderExercise() {
     const box = document.getElementById("exTypes"); if (!box) return;
@@ -1516,7 +1523,10 @@
       if (custom) document.getElementById("exCustom").value = "";
       document.getElementById("exSaved").textContent = "已记录：" + (time ? time + " " : "") + type + " " + min + " 分钟（" + level + "）";
       toast("运动打卡成功 ♡");
-      renderExHeat(); renderExList(); renderDiet();
+      // 自定义运动类型：加入可选项列表并持久化
+      if (custom && EX_TYPES.indexOf(custom) === -1) { EX_TYPES.push(custom); try { localStorage.setItem("exercise_types", JSON.stringify(EX_TYPES.filter(function (t) { return t; }))); } catch (e) {} renderExercise(); }
+      else { renderExHeat(); renderExList(); }
+      renderDiet();
     };
     renderExHeat(); renderExList();
   }
@@ -1716,16 +1726,16 @@
     box.innerHTML = html;
   }
 
-  // 三餐饮食面板：喝水 + 早午晚 + 作息（无运动打卡）
+  // 三餐饮食面板：喝水 + 早午晚
   function renderMeals() {
-    paintWater(); renderHealthMeals(); renderSleep();
+    paintWater(); renderHealthMeals();
   }
 
-  // 健康面板统一渲染：心情 / 经期 / 体检 / 运动健身打卡
+  // 健康面板：心情 / 运动健身打卡(热力图) / 经期 / 体检 / 作息
   function renderHealth() {
     if (moodsEl) Array.prototype.forEach.call(moodsEl.children, function (c, i) { c.classList.toggle("sel", day.mood === i); });
     if (moodNote) moodNote.value = day.moodNote || "";
-    renderPeriod(); renderExam(); renderExercise();
+    renderExercise(); renderPeriod(); renderExam(); renderSleep();
   }
 
   // ---------- 导航 ----------
@@ -1847,19 +1857,11 @@
     const origId = id;
     const studyTabs = { "law": "law", "study-en": "en", "study-ko": "ko", "interest": "interest" };
     if (studyTabs[id]) { switchStudy(studyTabs[id]); id = "study"; }
-    // 健康管理的下拉子项：统一进入「健康管理」面板并滚动到对应区块
-    const HEALTH_SECTIONS = { period: "sec-period", exam: "sec-exam", exercise: "sec-exercise" };
-    let pendingScroll = null;
-    if (HEALTH_SECTIONS[origId]) { id = "health"; pendingScroll = HEALTH_SECTIONS[origId]; }
     Array.prototype.forEach.call(document.querySelectorAll(".panel"), function (p) { p.classList.toggle("active", p.id === "panel-" + id); });
     Array.prototype.forEach.call(document.querySelectorAll(".nav-item, .nav-sub-item"), function (b) { b.classList.toggle("active", b.dataset.id === origId); });
     bbLeft.classList.toggle("active", bbLeft.dataset.id === id);
     bbRight.classList.toggle("active", bbRight.dataset.id === id);
     if (renderMap[id]) renderMap[id]();
-    if (pendingScroll) {
-      const target = document.getElementById(pendingScroll);
-      if (target && target.scrollIntoView) setTimeout(function () { target.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60);
-    }
     window.scrollTo(0, 0);
   }
   initWoodfish(); initQuotes(); initHomeCtrls();

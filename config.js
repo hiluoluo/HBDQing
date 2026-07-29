@@ -221,14 +221,8 @@ window.APP_CONFIG = {
         // 三餐饮食：二级标题，无下拉，直接进入「三餐饮食」面板（喝水 + 早午晚，无运动打卡）
         { id: "meals", label: "三餐饮食", icon: "◔", type: "page" },
 
-        // 健康管理：二级标题，带下拉（各子项进入「健康管理」面板并滚动到对应区块；作息归到三餐饮食页内）
-        { id: "health", label: "健康管理", icon: "♡", type: "group",
-          children: [
-            { id: "period",   label: "经期",        icon: "✛" },
-            { id: "exam",     label: "体检",        icon: "✚" },
-            { id: "exercise", label: "运动健身打卡", icon: "✦" }
-          ]
-        },
+        // 健康管理：单页（无下拉），顺序：心情 → 运动健身打卡 → 经期 → 体检
+        { id: "health", label: "健康管理", icon: "♡", type: "page" },
 
         // 日常记录：二级标题，带下拉
         { id: "record", label: "日常记录", icon: "✎", type: "group",
