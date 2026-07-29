@@ -1006,7 +1006,6 @@
     const out = document.getElementById("travelOut");
     const t = cfg.cities[city];
     const plan = loadTravelPlan(city);
-    // baseForDim: 从内置城市配置里取，字符串转数组
     function baseForDim(key) { const v = t ? t[key] : ""; return Array.isArray(v) ? v : (v ? [v] : []); }
     const dims = [
       { key: "landmarks", name: "地标打卡", base: baseForDim("landmarks") },
@@ -1017,11 +1016,9 @@
     ];
     const hasBuiltin = t && (t.landmarks.length || t.food.length || t.photo.length);
     const hasCustom = plan.landmarks.length || plan.food.length || plan.photo.length || plan.outfit || plan.budget;
-    if (!hasBuiltin && !hasCustom) {
-      out.innerHTML = '<div class="travel-card"><p>还没有「' + city + '」的攻略，你可以自己添加收藏 ♡</p></div>';
-      return;
-    }
+    // 始终展示五维输入框，没有内置数据时给提示语
     let html = '<div class="travel-card">';
+    if (!hasBuiltin && !hasCustom) html += '<p class="hint">还没有「' + city + '」的攻略，姐姐自己添加收藏吧 ♡</p>';
     dims.forEach(function (dm) {
       const baseItems = dm.base;
       const customItems = Array.isArray(plan[dm.key]) ? plan[dm.key] : (plan[dm.key] ? [plan[dm.key]] : []);
