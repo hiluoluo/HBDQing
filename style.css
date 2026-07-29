@@ -37,12 +37,34 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 
 /* ---- 主区 ---- */
 .main{flex:1;min-width:0;display:flex;flex-direction:column}
-.topbar{background:var(--grad);color:#fff;padding:24px 22px 20px}
-.topbar-inner{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px}
+.topbar{background:var(--grad);color:#fff;padding:24px 22px 20px;display:flex;align-items:flex-start;gap:12px}
+.topbar-text{flex:1;min-width:0}
 .greet{opacity:.92;font-size:14px}
 .who{font-size:28px;font-weight:800;margin:2px 0}
 .date{opacity:.88;font-size:14px}
-.weather{background:rgba(255,255,255,.2);padding:8px 14px;border-radius:12px;font-size:15px;white-space:nowrap}
+
+/* 待办速览：半透明毛玻璃小方块，点开看详情 */
+.todo-tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  min-width:96px;min-height:76px;padding:10px 14px;border-radius:16px;cursor:pointer;user-select:none;
+  background:rgba(255,255,255,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.35);box-shadow:0 4px 16px rgba(60,40,120,.15);transition:background .2s}
+.todo-tab:hover{background:rgba(255,255,255,.28)}
+.todo-tab.warn{border-color:rgba(255,120,100,.8);box-shadow:0 4px 16px rgba(224,83,61,.35)}
+.tt-emoji{font-size:22px;line-height:1}
+.tt-text{font-size:12px;text-align:center;line-height:1.5;opacity:.95}
+.tt-text b{font-size:15px}
+.tt-pop{position:absolute;top:calc(100% + 10px);right:0;z-index:60;width:290px;max-height:340px;overflow-y:auto;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(60,40,120,.22);padding:12px;text-align:left;cursor:default}
+.tp-head{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.tp-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#f7f5fc;margin-bottom:6px}
+.tp-item.over{background:#fdeceb;border:1px solid #f3c0ba}
+.tp-item.over .tp-text,.tp-item.over .tp-meta{color:#c33a27}
+.tp-item.done .tp-text{text-decoration:line-through;color:var(--muted)}
+.tp-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.tp-text{flex:1;font-size:13px;color:var(--ink);word-break:break-all}
+.tp-meta{font-size:11px;color:var(--muted);flex:none}
+.tp-empty{font-size:13px;color:var(--muted);text-align:center;padding:14px 0}
 .gift{max-width:1080px;margin:12px auto 0;opacity:.95;font-size:14px;display:block}
 
 .panels{max-width:1080px;width:100%;margin:0 auto;padding:18px 22px 90px}
@@ -190,7 +212,8 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
     transition:transform .15s}
   .bb-cam:active{transform:scale(.92)}
 
-  .weather{font-size:13px;padding:6px 10px}
+  .todo-tab{min-width:78px;min-height:64px;padding:8px 10px}
+  .tt-pop{width:min(290px,80vw)}
   .who{font-size:24px}
   .form-grid{grid-template-columns:1fr}
 }
@@ -282,10 +305,26 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 
 /* 塔罗 */
 .tarot-card{margin:16px 0;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:0 10px 30px rgba(139,122,212,.16);padding:22px 20px;text-align:center}
+.tarot-card.flip{animation:tarotFlip .5s ease}
+@keyframes tarotFlip{from{transform:rotateY(90deg);opacity:0}to{transform:rotateY(0);opacity:1}}
 .tarot-name{font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .tarot-en{font-size:13px;color:var(--muted);letter-spacing:1px;margin-bottom:14px;text-transform:uppercase}
-.tarot-pos,.tarot-rev{text-align:left;font-size:14px;color:#5a5370;line-height:1.7;padding:8px 12px;border-radius:12px;background:#faf8ff;margin-top:8px}
-.tarot-pos b,.tarot-rev b{display:inline-block;min-width:42px;color:var(--accent);font-weight:800;margin-right:8px}
+/* 牌背：点击抽牌 */
+.tarot-back{width:170px;height:250px;margin:18px auto;border-radius:16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:linear-gradient(135deg,#7b5cff 0%,#a98ef5 55%,#cdb9f7 100%);border:3px solid #fff;box-shadow:0 12px 32px rgba(123,92,255,.35);
+  color:#fff;transition:transform .2s,box-shadow .2s;user-select:none}
+.tarot-back:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 18px 40px rgba(123,92,255,.45)}
+.tb-pattern{font-size:44px;text-shadow:0 0 18px rgba(255,255,255,.8);animation:tbGlow 2s ease-in-out infinite}
+@keyframes tbGlow{0%,100%{opacity:.75}50%{opacity:1}}
+.tb-text{font-size:15px;font-weight:700;letter-spacing:4px}
+/* 正 / 逆位徽章 */
+.tarot-ori{margin:6px 0 12px}
+.ori-badge{display:inline-block;padding:5px 18px;border-radius:20px;font-size:14px;font-weight:800;letter-spacing:2px}
+.ori-badge.up{background:#e7f7ef;color:#1e9e62;border:1px solid #b8e6cf}
+.ori-badge.rev{background:#f3effc;color:#7b5cff;border:1px solid #d8cbf5}
+.tarot-read{text-align:left;font-size:14px;color:#5a5370;line-height:1.7;padding:10px 14px;border-radius:12px;background:#faf8ff;margin-top:8px}
+.tarot-read b{color:var(--accent)}
+.tarot-cheer{margin-top:12px;font-size:15px;color:var(--accent);font-weight:600;line-height:1.7}
 
 /* 灵签 */
 .oracle-box{margin:16px 0;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:0 10px 30px rgba(139,122,212,.16);padding:0;overflow:hidden;max-height:0;opacity:0;transition:max-height .4s ease, opacity .4s ease}
@@ -396,16 +435,21 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .food-cat{padding:7px 18px;border-radius:20px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;font-size:14px;transition:all .18s}
 .food-cat:hover{border-color:var(--accent2)}
 .food-cat.sel{background:var(--grad);color:#fff;border-color:transparent;font-weight:600}
-.wheel-wrap{position:relative;width:300px;height:300px;margin:0 auto}
-.wheel{width:100%;height:100%;border-radius:50%;border:6px solid #fff;box-shadow:0 6px 24px rgba(139,122,212,.25);position:relative;overflow:hidden}
-.wheel-label{position:absolute;left:50%;top:50%;width:132px;margin-left:-2px;transform-origin:0 0;font-size:11px;color:#5a4d80;padding-left:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
-.wheel-pointer{position:absolute;left:50%;top:-8px;transform:translateX(-50%);width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:22px solid var(--accent);z-index:2;filter:drop-shadow(0 2px 3px rgba(0,0,0,.15))}
+/* 盲盒网格：点任意一个开箱 */
+.box-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:420px;margin:0 auto}
+.blind-box{position:relative;aspect-ratio:1;border-radius:16px;border:2px solid #e5daf7;cursor:pointer;
+  background:linear-gradient(145deg,#f6f1ff 0%,#ece2fb 100%);box-shadow:0 6px 16px rgba(139,122,212,.18);
+  display:flex;align-items:center;justify-content:center;font-size:34px;transition:transform .18s,box-shadow .18s}
+.blind-box:hover{transform:translateY(-5px);box-shadow:0 12px 24px rgba(139,122,212,.3)}
+.blind-box .bb-q{position:absolute;right:8px;bottom:4px;font-size:15px;font-weight:800;color:var(--accent);opacity:.8}
+.blind-box.shaking{animation:boxShake .5s ease infinite}
+@keyframes boxShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg) scale(1.05)}75%{transform:rotate(7deg) scale(1.05)}}
+.blind-box.opened{background:linear-gradient(145deg,#efe8ff 0%,#dcc9fa 100%);border-color:var(--accent2);transform:scale(1.06)}
 .food-result{text-align:center;margin-top:18px;min-height:32px}
-.food-hit{font-size:18px}
+.food-hit{font-size:17px;line-height:1.7}
 .food-hit strong{color:var(--accent);font-size:22px}
 .food-hit-sub{color:var(--muted);font-size:13px;margin-top:4px}
-.food-link{display:inline-block;margin-top:10px;color:var(--accent);font-size:14px;text-decoration:none;border-bottom:1px dashed var(--accent2)}
-@media (max-width:480px){.wheel-wrap{width:260px;height:260px}.wheel-label{width:114px;padding-left:46px;font-size:10px}}
+@media (max-width:480px){.box-grid{gap:10px;max-width:320px}.blind-box{font-size:28px}}
 
 /* ---- 兴趣拓展计划 ---- */
 .interest-title{font-size:17px;font-weight:700;margin:14px 0 8px;color:var(--accent)}
@@ -426,3 +470,25 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .tl-item{display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:14px}
 .tl-icon{flex:none;width:22px;text-align:center;color:var(--accent)}
 .tl-text{color:var(--ink)}
+
+/* ---- 作息判断（红绿黄灯 + 调侃） ---- */
+.sleep-judge{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 14px;border-radius:12px;background:#faf8ff;font-size:14px;line-height:1.6}
+.sleep-light{flex:none;width:14px;height:14px;border-radius:50%;box-shadow:0 0 0 3px rgba(0,0,0,.05)}
+.sleep-light.red{animation:lightBlink 1s ease infinite}
+@keyframes lightBlink{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ---- 经期判断 ---- */
+.period-judge{margin-top:10px;font-size:13px;line-height:1.7;background:#faf8ff;border-radius:10px;padding:8px 12px}
+
+/* ---- 首页待办：优先级与超时 ---- */
+.todo-meta{display:block;font-size:11px;margin-top:2px}
+.check-list li.overdue{background:#fdeceb}
+.check-list li.overdue span{color:#c33a27}
+
+/* ---- 关于页 ---- */
+.about-card{background:linear-gradient(150deg,#f6f1ff 0%,#efe4fc 60%,#fdf1f8 100%);border:none;box-shadow:0 14px 40px rgba(139,122,212,.2)}
+.about-inner{text-align:center;padding:56px 16px}
+.about-emoji{font-size:46px;margin-bottom:18px}
+.about-title{font-size:30px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px}
+.about-msg{font-size:19px;color:#5a4d80;line-height:1.9;font-weight:600}
+.about-emoji-row{margin-top:26px;font-size:26px;letter-spacing:10px}

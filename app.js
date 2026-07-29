@@ -58,16 +58,54 @@
   const wk = ["日", "一", "二", "三", "四", "五", "六"][now.getDay()];
   document.getElementById("today").textContent = now.getFullYear() + "年" + (now.getMonth() + 1) + "月" + now.getDate() + "日 星期" + wk;
 
-  // ---------- 天气 ----------
-  const WMAP = { 0:["晴"],1:["晴间多云"],2:["多云"],3:["阴"],45:["雾"],48:["雾"],51:["毛毛雨"],53:["毛毛雨"],55:["小雨"],61:["小雨"],63:["中雨"],65:["大雨"],71:["雪"],73:["中雪"],75:["大雪"],80:["阵雨"],81:["阵雨"],82:["强阵雨"],95:["雷阵雨"],96:["雷阵雨"],99:["雷阵雨"] };
-  (function renderWeather() {
-    const el = document.getElementById("weather");
-    const city = C.city || { name: "本地", lat: 39.9042, lon: 116.4074 };
-    const url = "https://api.open-meteo.com/v1/forecast?latitude=" + city.lat + "&longitude=" + city.lon + "&current=temperature_2m,weather_code";
-    fetch(url).then(function (r) { return r.json(); }).then(function (j) {
-      const t = j.current.temperature_2m; const w = WMAP[j.current.weather_code] || [""];
-      el.textContent = city.name + "  " + Math.round(t) + "°C  " + (w[0] || "");
-    }).catch(function () { el.textContent = city.name + "  天气获取失败"; });
+  // ---------- 顶部待办速览小方块（半透明，点开看详情） ----------
+  const PRIO_COLOR = { "重要": "#e0533d", "比较重要": "#e0922a", "一般": "#2bb673" };
+  function todoStats() {
+    const todos = loadStore("work_todos") || [];
+    const open = todos.filter(function (t) { return !t.done; });
+    let overdue = 0, soon = 0;
+    open.forEach(function (t) {
+      if (!t.ddl) return;
+      const d = daysBetween(key, t.ddl); // 正数=还有d天，负数=已超时
+      if (d < 0) overdue++;
+      else if (d <= 1) soon++; // 今明两天到期算“即将超时”
+    });
+    return { total: open.length, overdue: overdue, soon: soon, todos: todos };
+  }
+  function renderTodoTab() {
+    const tab = document.getElementById("todoTab"); if (!tab) return;
+    const txt = document.getElementById("todoTabText");
+    const st = todoStats();
+    txt.innerHTML = "今天共 <b>" + st.total + "</b> 待办" + (st.soon + st.overdue > 0 ? "，<b>" + (st.soon + st.overdue) + "</b> 个即将超时" : "");
+    tab.classList.toggle("warn", st.overdue > 0);
+    const pop = document.getElementById("todoPop");
+    const todos = st.todos;
+    if (!todos.length) { pop.innerHTML = '<div class="tp-empty">今天还没有待办，轻松一天 ♡</div>'; return; }
+    let html = '<div class="tp-head">待办详情</div>';
+    todos.slice().sort(function (a, b) {
+      const rank = { "重要": 0, "比较重要": 1, "一般": 2 };
+      return (a.done - b.done) || ((a.ddl || "9999") + "").localeCompare((b.ddl || "9999") + "") || (rank[a.prio] || 2) - (rank[b.prio] || 2);
+    }).forEach(function (t) {
+      const over = t.ddl && !t.done && daysBetween(key, t.ddl) < 0;
+      const color = PRIO_COLOR[t.prio || "一般"];
+      html += '<div class="tp-item' + (over ? " over" : "") + (t.done ? " done" : "") + '">' +
+        '<span class="tp-dot" style="background:' + (over ? "#e0533d" : color) + '"></span>' +
+        '<span class="tp-text">' + esc(t.text) + '</span>' +
+        '<span class="tp-meta">' + (t.prio || "一般") + (t.ddl ? " · 最晚 " + esc(t.ddl.slice(5)) : "") + (over ? " · 已超时" : "") + '</span></div>';
+    });
+    pop.innerHTML = html;
+  }
+  (function initTodoTab() {
+    const tab = document.getElementById("todoTab"); if (!tab) return;
+    const pop = document.getElementById("todoPop");
+    tab.onclick = function (e) {
+      if (e.target.closest(".tt-pop")) return;
+      renderTodoTab();
+      pop.hidden = !pop.hidden;
+      tab.classList.toggle("openned", !pop.hidden);
+    };
+    document.addEventListener("click", function (e) { if (!tab.contains(e.target)) { pop.hidden = true; tab.classList.remove("openned"); } });
+    renderTodoTab();
   })();
 
   // ---------- 心情 ----------
@@ -117,12 +155,33 @@
     if (!pcfg.enabled || !pcfg.lastDate) { pInfo.innerHTML = "还没设置经期信息，点“设置”填写。"; return; }
     let next = pcfg.lastDate; while (daysBetween(next, key) >= 0) next = addDays(next, pcfg.cycle);
     const left = daysBetween(key, next);
-    const inPeriod = daysBetween(pcfg.lastDate, key) >= 0 && daysBetween(pcfg.lastDate, key) < pcfg.duration;
+    const sinceLast = daysBetween(pcfg.lastDate, key);
+    const inPeriod = sinceLast >= 0 && sinceLast < pcfg.duration;
     let html = "距离下次经期还有 <b>" + left + "</b> 天";
     if (left === 0) html = "预计今天开始经期";
     if (inPeriod) html += " · 现在 <b>经期中</b>";
     const ov = addDays(next, -14), ovLeft = daysBetween(key, ov);
-    if (ovLeft >= 0 && ovLeft <= 3) html += " · 接近排卵期";
+    const nearOv = ovLeft >= 0 && ovLeft <= 3;
+    if (nearOv) html += " · 接近排卵期";
+    // 综合判断结论
+    let judge, jColor;
+    if (inPeriod) {
+      judge = "判断：经期第 " + ((sinceLast % pcfg.cycle) + 1) + " 天。注意保暖、别碰凉的，多喝热水，别太累，痛得厉害要休息。";
+      jColor = "#e0533d";
+    } else if (left <= 3) {
+      judge = "判断：经期快来了（约 " + left + " 天后）。可以提前备好用品，最近别熬夜、少吃生冷辛辣。";
+      jColor = "#e0922a";
+    } else if (nearOv) {
+      judge = "判断：正处于排卵期附近，属于周期正常波动，可能会有轻微不适，注意休息。";
+      jColor = "#7c5bb5";
+    } else {
+      const normal = pcfg.cycle >= 21 && pcfg.cycle <= 35;
+      judge = normal
+        ? "判断：目前处于安全平稳期，周期 " + pcfg.cycle + " 天在正常范围（21–35 天），状态不错，保持规律作息就好。"
+        : "判断：你的周期 " + pcfg.cycle + " 天不在常见范围（21–35 天），如果长期如此，建议找时间咨询医生。";
+      jColor = normal ? "#2bb673" : "#e0533d";
+    }
+    html += '<div class="period-judge" style="color:' + jColor + '">' + judge + "</div>";
     pInfo.innerHTML = html;
   }
   renderPeriod();
@@ -586,6 +645,7 @@
       d.innerHTML = '<div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px"><span>' + p.name + '</span><span class="hot-val">' + p.progress + '%</span></div><div class="bar"><div class="bar-fill" style="width:' + p.progress + '%"></div></div>';
       pl.appendChild(d);
     });
+    renderTodoTab();
   }
   document.getElementById("todoAdd").onclick = function () { const inp = document.getElementById("todoInput"); const v = inp.value.trim(); if (!v) return; const todos = loadStore("work_todos") || []; todos.push({ text: v, done: false }); saveStore("work_todos", todos); inp.value = ""; renderWork(); };
   document.getElementById("todoInput").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("todoAdd").click(); });
@@ -650,7 +710,7 @@
     const ex = day.exercises || []; const exl = document.getElementById("hExList"); exl.innerHTML = "";
     ex.forEach(function (e, i) {
       const li = document.createElement("li"); const sp = document.createElement("span");
-      sp.textContent = (typeof e === "object" && e) ? (e.type + " · " + (e.min || 0) + " 分钟" + (e.level ? " · " + e.level : "")) : e;
+      sp.textContent = (typeof e === "object" && e) ? ((e.time ? e.time + " · " : "") + e.type + " · " + (e.min || 0) + " 分钟" + (e.level ? " · " + e.level : "")) : e;
       const del = document.createElement("button"); del.className = "ci-del"; del.textContent = "删除";
       del.onclick = function () { ex.splice(i, 1); day.exercises = ex; saveDay(key, day); renderHealthEx(); renderDiet(); };
       li.appendChild(sp); li.appendChild(del); exl.appendChild(li);
@@ -660,22 +720,45 @@
   document.getElementById("hExInput").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("hExAdd").click(); });
   renderHealthMeals(); renderHealthEx();
 
-  // 作息
-  function fmtDur(up, down) {
-    if (!up || !down) return "";
-    let a = up.split(":"), b = down.split(":");
-    let mins = (b[0] * 60 + b[1]) - (a[0] * 60 + a[1]);
-    if (mins <= 0) mins += 24 * 60;
-    const h = Math.floor(mins / 60), m = mins % 60;
-    const goal = (C.health && C.health.sleepGoalHours) || 8;
-    const tag2 = (h + m / 60) >= goal ? "已达标" : "还差一点";
-    return "睡眠约 " + h + " 小时 " + m + " 分 · " + tag2;
+  // 作息：先选睡觉时间（昨晚），再选起床时间（今早）。半小时一档，不怕滑过。
+  // 判定标准（已规范）：7–8 小时最合适；<6 红灯，6–8 绿灯，8–10 黄灯，>10 红灯
+  function fillTimeOptions(sel, startH, endH) {
+    // 从 startH 到 endH（可跨零点），每 30 分钟一档
+    sel.innerHTML = '<option value="">请选择</option>';
+    let h = startH;
+    while (true) {
+      ["00", "30"].forEach(function (m) {
+        const v = String(h % 24).padStart(2, "0") + ":" + m;
+        const o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o);
+      });
+      if (h % 24 === endH) break;
+      h = (h + 1) % 24;
+    }
+  }
+  function sleepJudge(hours) {
+    if (hours < 6)  return { color: "#e0533d", light: "red",    text: "只睡了这么点？红灯警告！身体是自己的，今晚早点睡好不好" };
+    if (hours <= 8) return { color: "#2bb673", light: "green",  text: "绿灯通过～睡得刚刚好，今天必须元气满满" };
+    if (hours <= 10) return { color: "#e0c02a", light: "yellow", text: "黄灯提示：睡得有点儿多啦，真是羡慕你这种想睡就睡的" };
+    return { color: "#e0533d", light: "red", text: "红灯！超过 10 小时……你是怎么睡得着的，教教我" };
   }
   function renderSleep() {
     const s = day.sleep || {};
-    document.getElementById("sleepUp").value = s.up || "";
-    document.getElementById("sleepDown").value = s.down || "";
-    document.getElementById("sleepInfo").textContent = fmtDur(s.up, s.down);
+    const upSel = document.getElementById("sleepUp"), downSel = document.getElementById("sleepDown");
+    if (!downSel.dataset.filled) { fillTimeOptions(downSel, 20, 4); downSel.dataset.filled = "1"; }  // 睡觉 20:00–04:30
+    if (!upSel.dataset.filled) { fillTimeOptions(upSel, 4, 13); upSel.dataset.filled = "1"; }        // 起床 04:00–13:30
+    downSel.value = s.down || ""; upSel.value = s.up || "";
+    const judge = document.getElementById("sleepJudge"), lightEl = document.getElementById("sleepLight"), infoEl = document.getElementById("sleepInfo");
+    if (!s.up || !s.down) { judge.style.display = "none"; return; }
+    let a = s.down.split(":"), b = s.up.split(":");
+    let mins = (Number(b[0]) * 60 + Number(b[1])) - (Number(a[0]) * 60 + Number(a[1]));
+    if (mins <= 0) mins += 24 * 60;
+    const h2 = Math.floor(mins / 60), m2 = mins % 60, hours = mins / 60;
+    const j = sleepJudge(hours);
+    judge.style.display = "flex";
+    lightEl.style.background = j.color;
+    lightEl.className = "sleep-light " + j.light;
+    infoEl.innerHTML = "睡了约 <b>" + h2 + " 小时" + (m2 ? " " + m2 + " 分" : "") + "</b> · " + j.text;
+    infoEl.style.color = j.color;
   }
   document.getElementById("sleepUp").onchange = function () { day.sleep = day.sleep || {}; day.sleep.up = this.value; saveDay(key, day); renderSleep(); };
   document.getElementById("sleepDown").onchange = function () { day.sleep = day.sleep || {}; day.sleep.down = this.value; saveDay(key, day); renderSleep(); };
@@ -1025,29 +1108,40 @@
     };
   }
 
-  // 首页待办（复用 work_todos）
+  // 首页待办（复用 work_todos，支持 DDL + 优先级：重要红 / 比较重要橙 / 一般绿；超时整条红）
   function renderHomeTodos() {
     const ul = document.getElementById("homeTodoList"); if (!ul) return;
     const todos = loadStore("work_todos") || [];
     ul.innerHTML = "";
     todos.forEach(function (t, i) {
       const li = document.createElement("li");
+      const over = t.ddl && !t.done && daysBetween(key, t.ddl) < 0;
+      const color = over ? "#e0533d" : PRIO_COLOR[t.prio || "一般"];
+      li.style.borderLeft = "4px solid " + color;
+      if (over) li.classList.add("overdue");
       const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = !!t.done;
-      cb.onchange = function () { todos[i].done = cb.checked; saveStore("work_todos", todos); renderHomeTodos(); renderWork(); };
-      const sp = document.createElement("span"); sp.textContent = t.text;
+      cb.onchange = function () { todos[i].done = cb.checked; saveStore("work_todos", todos); renderHomeTodos(); renderWork(); renderTodoTab(); };
+      const sp = document.createElement("span");
+      sp.innerHTML = esc(t.text) +
+        '<small class="todo-meta" style="color:' + color + '">' +
+        (t.prio || "一般") + (t.ddl ? " · 最晚 " + esc(t.ddl.slice(5)) : "") + (over ? " · 已超时！" : "") + "</small>";
       const del = document.createElement("button"); del.className = "ci-del"; del.textContent = "删除";
-      del.onclick = function () { todos.splice(i, 1); saveStore("work_todos", todos); renderHomeTodos(); renderWork(); };
+      del.onclick = function () { todos.splice(i, 1); saveStore("work_todos", todos); renderHomeTodos(); renderWork(); renderTodoTab(); };
       li.appendChild(cb); li.appendChild(sp); li.appendChild(del); if (t.done) li.classList.add("done");
       ul.appendChild(li);
     });
     if (!todos.length) ul.innerHTML = '<li style="color:var(--muted);justify-content:center">还没有待办，加一条吧</li>';
+    renderTodoTab();
   }
   const hTodoInput = document.getElementById("homeTodoInput");
   if (hTodoInput) {
     document.getElementById("homeTodoAdd").onclick = function () {
       const v = hTodoInput.value.trim(); if (!v) return;
-      const todos = loadStore("work_todos") || []; todos.push({ text: v, done: false }); saveStore("work_todos", todos);
-      hTodoInput.value = ""; renderHomeTodos(); renderWork();
+      const ddl = document.getElementById("homeTodoDdl").value || "";
+      const prio = document.getElementById("homeTodoPrio").value || "一般";
+      const todos = loadStore("work_todos") || []; todos.push({ text: v, done: false, ddl: ddl, prio: prio }); saveStore("work_todos", todos);
+      hTodoInput.value = ""; document.getElementById("homeTodoDdl").value = "";
+      renderHomeTodos(); renderWork();
     };
     hTodoInput.addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("homeTodoAdd").click(); });
   }
@@ -1133,48 +1227,10 @@
   }
   function doPrompt(p) {
     if (p.action === "photo") { showPanel("life"); setTimeout(function () { const inp = document.getElementById("snapInput"); if (inp) inp.click(); }, 150); }
-    else if (p.action === "weather") { toast("今天天气：" + (document.getElementById("weather").textContent || "未知")); }
+    else if (p.action === "weather") { const st = todoStats(); toast("今天共 " + st.total + " 项待办" + (st.soon + st.overdue ? "，" + (st.soon + st.overdue) + " 个即将超时" : "，加油")); }
     else if (p.action === "mood") { showPanel("health"); }
     day.prompts = day.prompts || {}; day.prompts[p.id] = true; saveDay(key, day); renderPrompts();
     if (p.action !== "photo") toast("已记下：" + p.text);
-  }
-
-  // ---------- 数据备份（导入 / 导出） ----------
-  function initData() {
-    const exp = document.getElementById("dataExport"), impBtn = document.getElementById("dataImportBtn"), imp = document.getElementById("dataImport"), msg = document.getElementById("dataMsg"), list = document.getElementById("dataList");
-    if (!exp) return;
-    if (list) {
-      const keys = [];
-      for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k) keys.push(k); }
-      list.innerHTML = keys.length ? keys.map(function (k) { return "<li><span>" + esc(k) + "</span><span class='rd'>" + (localStorage.getItem(k) || "").length + " 字符</span></li>"; }).join("") : '<li style="color:var(--muted)">暂无数据</li>';
-    }
-    exp.onclick = function () {
-      const data = {};
-      for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k) data[k] = localStorage.getItem(k); }
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-      const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-      a.download = (C.friendName || "助手") + "的数据_" + key + ".json";
-      document.body.appendChild(a); a.click(); a.remove();
-      if (msg) msg.textContent = "已导出 " + Object.keys(data).length + " 项数据，记得存好这份文件 ♡";
-      toast("数据已导出");
-    };
-    impBtn.onclick = function () { imp.click(); };
-    imp.onchange = function () {
-      const f = imp.files[0]; if (!f) return;
-      const r = new FileReader();
-      r.onload = function () {
-        try {
-          const obj = JSON.parse(r.result);
-          if (!confirm("导入将覆盖当前浏览器里的同名数据，确定继续？")) { imp.value = ""; return; }
-          Object.keys(obj).forEach(function (k) { localStorage.setItem(k, obj[k]); });
-          if (msg) msg.textContent = "已导入 " + Object.keys(obj).length + " 项数据，页面将刷新以生效。";
-          toast("导入成功，正在刷新…");
-          setTimeout(function () { location.reload(); }, 700);
-        } catch (e) { if (msg) msg.textContent = "文件格式不对，不是有效的 JSON。"; }
-        imp.value = "";
-      };
-      r.readAsText(f);
-    };
   }
 
   // ---------- 每日一问：答案之书 ----------
@@ -1199,28 +1255,72 @@
     else { box.textContent = "？"; todayEl.textContent = "还没有"; note.textContent = ""; }
   }
 
-  // ---------- 每日一问：塔罗 ----------
+  // ---------- 每日一问：塔罗（点击才出结果；正/逆位 + 解读 + 匹配激励语） ----------
+  const TAROT_CHEER = {
+    "愚者":   { up: "带着好奇出发吧，世界会给勇敢的人让路。", rev: "慢一点没关系，看清路再迈步，你依然可以出发。" },
+    "魔术师": { up: "你手里的牌已经够好了，大胆去创造。", rev: "别怀疑自己的本事，把拖着的那件事今天就开个头。" },
+    "女祭司": { up: "相信你的直觉，它比你以为的更聪明。", rev: "静下来听听内心的声音，答案其实你早就知道。" },
+    "皇后":   { up: "温柔也是一种力量，好好爱自己，丰盛自然会来。", rev: "先把自己照顾好，你不需要为所有人负责。" },
+    "皇帝":   { up: "稳住节奏，按你的规划走，你掌控得住。", rev: "松一松手也没关系，不必事事都攥得那么紧。" },
+    "教皇":   { up: "前人的经验值得听，站在肩膀上看得更远。", rev: "规则是参考不是枷锁，走出自己的路也很好。" },
+    "恋人":   { up: "跟随真心去选择，爱和被爱你都值得。", rev: "选择难免纠结，但忠于自己的那颗心不会错。" },
+    "战车":   { up: "目标就在前方，踩下油门，胜利是你的。", rev: "先定方向再发力，你的冲劲儿谁也拦不住。" },
+    "力量":   { up: "真正的强大是温柔而坚定，你一直都有。", rev: "别怀疑自己，你比想象中坚强得多。" },
+    "隐士":   { up: "独处不是孤独，是在为更好的自己充电。", rev: "别把自己关太久，世界还有很多光等你。" },
+    "命运之轮": { up: "好运的齿轮已经开始转动，接住它！", rev: "低谷只是轮回的一段，转上去只是时间问题。" },
+    "正义":   { up: "你做的每一分努力，都会被公平地回报。", rev: "问心无愧就好，时间会还你一个公道。" },
+    "倒吊人": { up: "换个角度看，眼前的停顿也许是最好的安排。", rev: "别再为不值得的事消耗自己，该放就放。" },
+    "死神":   { up: "旧的结束是新的开始，勇敢告别，前面更好。", rev: "改变虽然难，但你值得一个全新的开始。" },
+    "节制":   { up: "不急不躁，细水长流，你的节奏刚刚好。", rev: "累了就歇歇，找回平衡再出发也不迟。" },
+    "恶魔":   { up: "看见执念就是解脱的开始，你有选择权。", rev: "你正在挣脱束缚，再坚持一下，自由就在前面。" },
+    "高塔":   { up: "崩塌的是旧框架，站上废墟你会看到新天地。", rev: "有些改变躲不掉，但你比任何风浪都稳。" },
+    "星星":   { up: "希望正在向你眨眼，继续相信，继续走。", rev: "暂时的迷路不算什么，你的星光一直都在。" },
+    "月亮":   { up: "看不清的时候就慢慢走，天亮之后一切明朗。", rev: "迷雾正在散开，真相和安心都在路上。" },
+    "太阳":   { up: "今天的你自带光芒，尽情发光就好！", rev: "阴影只是暂时的，你的太阳很快就会升起来。" },
+    "审判":   { up: "这是重新出发的号角，过去翻篇，未来可期。", rev: "别再自我否定，你已经比昨天更好了。" },
+    "世界":   { up: "圆满正在到来，你值得这一切的美好。", rev: "还差一点点就完成了，别停，终点就在眼前。" }
+  };
   function renderTarot() {
     const deck = (C.mystic && C.mystic.tarot) || [];
+    const back = document.getElementById("tarotBack");
+    const card = document.getElementById("tarotCard");
     const nameEl = document.getElementById("tarotName");
     const enEl = document.getElementById("tarotEn");
-    const posEl = document.getElementById("tarotPos");
-    const revEl = document.getElementById("tarotRev");
+    const oriEl = document.getElementById("tarotOri");
+    const readEl = document.getElementById("tarotRead");
+    const cheerEl = document.getElementById("tarotCheer");
     const note = document.getElementById("tarotNote");
-    function show(i, isDaily) {
+    function show(i, upright, isDaily) {
       const c = deck[i]; if (!c) return;
+      back.style.display = "none";
+      card.style.display = "block";
+      card.classList.remove("flip"); void card.offsetWidth; card.classList.add("flip");
       nameEl.textContent = c.name; enEl.textContent = c.en;
-      posEl.textContent = c.up; revEl.textContent = c.rev;
-      note.textContent = isDaily ? "这是你今天的专属牌，每天稳定不变。" : "随心抽的一张，参考看看。";
+      oriEl.innerHTML = upright
+        ? '<span class="ori-badge up">正位 ↑</span>'
+        : '<span class="ori-badge rev">逆位 ↓</span>';
+      readEl.innerHTML = "<b>解读：</b>" + esc(upright ? c.up : c.rev);
+      const cheer = TAROT_CHEER[c.name];
+      cheerEl.textContent = "「" + (cheer ? (upright ? cheer.up : cheer.rev) : "无论抽到什么牌，认真生活的人运气都不会差。") + "」";
+      note.textContent = isDaily ? "这是你今天的专属牌，当天稳定不变。" : "随心再抽的一张，参考看看。";
     }
-    function dailyIndex() {
+    function dailySeed() {
       const d = new Date();
-      const seed = d.getFullYear() * 1000 + (d.getMonth() + 1) * 40 + d.getDate();
-      return seed % deck.length;
+      return d.getFullYear() * 1000 + (d.getMonth() + 1) * 40 + d.getDate();
     }
-    document.getElementById("tarotDaily").onclick = function () { show(dailyIndex(), true); };
-    document.getElementById("tarotShuffle").onclick = function () { show(Math.floor(Math.random() * deck.length), false); };
-    show(dailyIndex(), true); // 默认展示今日牌
+    function drawDaily() {
+      const seed = dailySeed();
+      show(seed % deck.length, (seed % 7) % 2 === 0, true); // 牌面与正逆位当天稳定
+    }
+    function reset() {
+      back.style.display = "";
+      card.style.display = "none";
+      note.textContent = "";
+    }
+    back.onclick = drawDaily;
+    document.getElementById("tarotDaily").onclick = drawDaily;
+    document.getElementById("tarotShuffle").onclick = function () { show(Math.floor(Math.random() * deck.length), Math.random() < 0.5, false); };
+    reset(); // 进入页面只显示牌背，点击后才出结果
   }
 
   // ---------- 每日一问：灵签 ----------
@@ -1268,11 +1368,12 @@
       const min = parseInt(document.getElementById("exMin").value, 10);
       if (!min || min <= 0) { toast("先填一下运动了多少分钟哦"); return; }
       const level = document.getElementById("exLevel").value;
+      const time = document.getElementById("exTime") ? document.getElementById("exTime").value : "";
       const ex = day.exercises || [];
-      ex.push({ type: exSelType, min: min, level: level });
+      ex.push({ type: exSelType, min: min, level: level, time: time });
       day.exercises = ex; saveDay(key, day);
       document.getElementById("exMin").value = "";
-      document.getElementById("exSaved").textContent = "已记录：" + exSelType + " " + min + " 分钟（" + level + "）";
+      document.getElementById("exSaved").textContent = "已记录：" + (time ? time + " " : "") + exSelType + " " + min + " 分钟（" + level + "）";
       toast("运动打卡成功 ♡");
       renderExHeat(); renderExList(); renderHealthEx(); renderDiet();
     };
@@ -1305,7 +1406,7 @@
     ex.forEach(function (e, i) {
       const li = document.createElement("li");
       const sp = document.createElement("span");
-      sp.textContent = (typeof e === "object" && e) ? (e.type + " · " + e.min + " 分钟 · 强度" + (e.level || "中")) : String(e);
+      sp.textContent = (typeof e === "object" && e) ? ((e.time ? e.time + " · " : "") + e.type + " · " + e.min + " 分钟 · 强度" + (e.level || "中")) : String(e);
       const del = document.createElement("button"); del.className = "ci-del"; del.textContent = "删除";
       del.onclick = function () { ex.splice(i, 1); day.exercises = ex; saveDay(key, day); renderExHeat(); renderExList(); renderHealthEx(); renderDiet(); };
       li.appendChild(sp); li.appendChild(del);
@@ -1314,32 +1415,55 @@
     if (!ex.length) ul.innerHTML = '<li style="color:var(--muted);justify-content:center">今天还没运动，动一动更开心</li>';
   }
 
-  // ---------- 美食盲盒（大转盘） ----------
+  // ---------- 美食盲盒（点盒子开箱，每次文案不同） ----------
   const LIFE = window.APP_LIFE || {};
-  const WHEEL_COLORS = ["#e6d6f5", "#f5e0ee", "#dcd0f0", "#f3e6fb", "#e9defa", "#f8e8f3", "#e0d4ef", "#f1e2f7"];
-  let foodCat = "全部", wheelItems = [], wheelRot = 0, spinning = false;
-  function pickWheelItems() {
-    const all = LIFE.foodWheel || [];
-    const pool = foodCat === "全部" ? all.slice() : all.filter(function (f) { return f.cat === foodCat; });
-    // 随机抽 12 个做转盘扇形（太多字挤不下），每次切分类/转完都换一批
-    const shuffled = pool.slice().sort(function () { return Math.random() - 0.5; });
-    wheelItems = shuffled.slice(0, Math.min(12, shuffled.length));
-  }
-  function paintWheel() {
-    const wheel = document.getElementById("foodWheel"); if (!wheel) return;
-    const n = wheelItems.length;
-    if (!n) { wheel.innerHTML = ""; return; }
-    const seg = 360 / n;
-    let stops = [], labels = "";
-    wheelItems.forEach(function (it, i) {
-      const c = WHEEL_COLORS[i % WHEEL_COLORS.length];
-      stops.push(c + " " + (i * seg) + "deg " + ((i + 1) * seg) + "deg");
-      const ang = i * seg + seg / 2;
-      const name = it.name.length > 9 ? it.name.slice(0, 8) + "…" : it.name;
-      labels += '<span class="wheel-label" style="transform:rotate(' + ang + 'deg)">' + esc(name) + "</span>";
+  const BOX_EMOJIS = ["🎁", "📦", "🎀", "🧧", "🪄", "🎊", "🍱", "🛍️"];
+  const FOOD_LINES = [
+    "锵锵——命运之盒为你打开：<strong>{name}</strong>！",
+    "盒子里蹦出来的是……<strong>{name}</strong>！今天就它了！",
+    "哇哦，手气不错，开出了 <strong>{name}</strong>～",
+    "叮！宇宙的安排是 <strong>{name}</strong>，别犹豫啦。",
+    "缘分让你今天遇到 <strong>{name}</strong>，去吃就对了！",
+    "盲盒之神说：<strong>{name}</strong> 在等你翻牌子。",
+    "恭喜抽中隐藏款干饭选项：<strong>{name}</strong>！",
+    "咚咚咚——今日份快乐由 <strong>{name}</strong> 承包！",
+    "闭眼选的都是最好的：<strong>{name}</strong>，冲！",
+    "开出来的是 <strong>{name}</strong>，闻到香味了吗？"
+  ];
+  let foodCat = "全部", boxOpening = false;
+  function renderFoodBoxes() {
+    const grid = document.getElementById("foodBoxes"); if (!grid) return;
+    grid.innerHTML = "";
+    BOX_EMOJIS.slice().sort(function () { return Math.random() - 0.5; }).forEach(function (em, i) {
+      const b = document.createElement("button");
+      b.className = "blind-box";
+      b.innerHTML = '<span class="bb-emoji">' + em + '</span><span class="bb-q">?</span>';
+      b.onclick = function () { openBox(b); };
+      grid.appendChild(b);
     });
-    wheel.style.background = "conic-gradient(" + stops.join(",") + ")";
-    wheel.innerHTML = labels;
+  }
+  function openBox(btn) {
+    if (boxOpening) return;
+    const all = LIFE.foodWheel || [];
+    const pool = foodCat === "全部" ? all : all.filter(function (f) { return f.cat === foodCat; });
+    if (!pool.length) { toast("这个品类还没有内容"); return; }
+    boxOpening = true;
+    btn.classList.add("shaking");
+    const res = document.getElementById("foodResult");
+    res.innerHTML = '<span style="color:var(--muted)">盒子晃啊晃，好像有什么要出来了……</span>';
+    setTimeout(function () {
+      btn.classList.remove("shaking");
+      btn.classList.add("opened");
+      const it = pool[Math.floor(Math.random() * pool.length)];
+      const line = FOOD_LINES[Math.floor(Math.random() * FOOD_LINES.length)].replace("{name}", esc(it.name));
+      btn.querySelector(".bb-q").textContent = "✦";
+      res.innerHTML =
+        '<div class="food-hit">' + line + "</div>" +
+        '<div class="food-hit-sub">' + esc(it.cat) + (it.tip ? " · " + esc(it.tip) : "") + "</div>";
+      day.foodPick = it.name; saveDay(key, day);
+      toast("美食盲盒开出：" + it.name);
+      boxOpening = false;
+    }, 1200);
   }
   function renderFood() {
     const catBox = document.getElementById("foodCats"); if (!catBox) return;
@@ -1348,38 +1472,12 @@
       const b = document.createElement("button");
       b.className = "food-cat" + (c === foodCat ? " sel" : "");
       b.textContent = c;
-      b.onclick = function () { if (spinning) return; foodCat = c; pickWheelItems(); wheelRot = 0; const w = document.getElementById("foodWheel"); w.style.transition = "none"; w.style.transform = "rotate(0deg)"; paintWheel(); document.getElementById("foodResult").innerHTML = ""; renderFood(); };
+      b.onclick = function () { if (boxOpening) return; foodCat = c; document.getElementById("foodResult").innerHTML = ""; renderFood(); renderFoodBoxes(); };
       catBox.appendChild(b);
     });
-    if (!wheelItems.length) pickWheelItems();
-    paintWheel();
-    document.getElementById("foodSpin").onclick = spinWheel;
-  }
-  function spinWheel() {
-    if (spinning || !wheelItems.length) return;
-    spinning = true;
-    const wheel = document.getElementById("foodWheel");
-    const n = wheelItems.length, seg = 360 / n;
-    const hit = Math.floor(Math.random() * n);                       // 命中第 hit 项
-    const hitMid = hit * seg + seg / 2;                              // 该扇形中线角度
-    const target = 360 * (4 + Math.floor(Math.random() * 3)) + (360 - hitMid); // 指针在正上方(0deg)
-    wheelRot += target - (wheelRot % 360);
-    wheel.style.transition = "transform 4s cubic-bezier(.17,.67,.12,.99)";
-    wheel.style.transform = "rotate(" + wheelRot + "deg)";
-    const res = document.getElementById("foodResult");
-    res.innerHTML = '<span style="color:var(--muted)">转盘转呀转……</span>';
-    setTimeout(function () {
-      spinning = false;
-      const it = wheelItems[hit];
-      const link = "https://www.xiaohongshu.com/search_result?keyword=" + encodeURIComponent(it.name);
-      res.innerHTML =
-        '<div class="food-hit">今天就吃 —— <strong>' + esc(it.name) + "</strong></div>" +
-        '<div class="food-hit-sub">' + esc(it.cat) + (it.tip ? " · " + esc(it.tip) : "") + "</div>" +
-        '<a class="food-link" href="' + link + '" target="_blank" rel="noopener">去小红书看看大家怎么吃 →</a>';
-      // 记录到今天（供时间线汇总）
-      day.foodPick = it.name; saveDay(key, day);
-      toast("美食盲盒开出：" + it.name);
-    }, 4100);
+    const again = document.getElementById("foodAgain");
+    if (again) again.onclick = function () { if (boxOpening) return; document.getElementById("foodResult").innerHTML = ""; renderFoodBoxes(); };
+    if (!document.getElementById("foodBoxes").children.length) renderFoodBoxes();
   }
 
   // ---------- 兴趣拓展（填写兴趣 → 自动生成 1 个月计划） ----------
@@ -1499,7 +1597,7 @@
   ];
   const sidebarNav = document.getElementById("sidebarNav");
   const sidebar = document.getElementById("sidebar"), drawerMask = document.getElementById("drawerMask"), menuBtn = document.getElementById("menuBtn");
-  const renderMap = { home: renderHome, memoir: renderMemoir, study: renderStudy, work: renderWork, health: renderHealth, wealth: function () { renderWealth(); renderCalendar(); }, diet: renderDiet, travel: renderTravel, checkin: function () {}, answer: renderAnswer, tarot: renderTarot, oracle: renderOracle, exercise: renderExercise, food: renderFood, interest: function () { renderStudy(); }, timeline: renderTimeline };
+  const renderMap = { home: renderHome, memoir: renderMemoir, study: renderStudy, work: renderWork, health: renderHealth, wealth: function () { renderWealth(); renderCalendar(); }, diet: renderDiet, travel: renderTravel, checkin: function () {}, answer: renderAnswer, tarot: renderTarot, oracle: renderOracle, exercise: renderExercise, food: renderFood, interest: function () { renderStudy(); }, timeline: renderTimeline, about: function () {} };
 
   // 把导航树拍平，便于底部栏查找图标名称
   const flatNav = [];
@@ -1537,8 +1635,14 @@
         const sub = document.createElement("div"); sub.className = "nav-sub" + (item.open ? " open" : "");
         const arrow = head.querySelector(".nav-arrow"); if (item.open) arrow.classList.add("open");
         head.onclick = function () {
-          sub.classList.toggle("open");
-          arrow.classList.toggle("open");
+          const willOpen = !sub.classList.contains("open");
+          // 手风琴：打开一个时自动收起其他，避免互相遮挡
+          if (willOpen) {
+            Array.prototype.forEach.call(sidebarNav.querySelectorAll(".nav-sub.open"), function (s) { s.classList.remove("open"); });
+            Array.prototype.forEach.call(sidebarNav.querySelectorAll(".nav-arrow.open"), function (a) { a.classList.remove("open"); });
+          }
+          sub.classList.toggle("open", willOpen);
+          arrow.classList.toggle("open", willOpen);
         };
         item.children.forEach(function (child) {
           if (child.group) {
@@ -1585,7 +1689,7 @@
     if (renderMap[id]) renderMap[id]();
     window.scrollTo(0, 0);
   }
-  initWoodfish(); initQuotes(); initHomeCtrls(); initData();
+  initWoodfish(); initQuotes(); initHomeCtrls();
   buildNav();
   showPanel("home");
 })();

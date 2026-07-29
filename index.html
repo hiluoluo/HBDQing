@@ -27,7 +27,11 @@
           <h1 class="who" id="who">小宇</h1>
           <p class="date" id="today"></p>
         </div>
-        <div class="weather" id="weather">获取天气中…</div>
+        <div class="todo-tab" id="todoTab">
+          <span class="tt-emoji">📋</span>
+          <span class="tt-text" id="todoTabText">待办</span>
+          <div class="tt-pop" id="todoPop" hidden></div>
+        </div>
       </header>
 
       <div class="panels" id="panels">
@@ -94,6 +98,18 @@
             </div>
             <div class="row">
               <input type="text" id="homeTodoInput" class="flex-input" placeholder="添加一项待办…">
+            </div>
+            <div class="row" style="margin-top:6px">
+              <label class="set-label" style="flex:1">最晚完成<input type="date" id="homeTodoDdl"></label>
+              <label class="set-label" style="flex:1">优先级
+                <select id="homeTodoPrio">
+                  <option value="一般">一般（绿）</option>
+                  <option value="比较重要">比较重要（橙）</option>
+                  <option value="重要">重要（红）</option>
+                </select>
+              </label>
+            </div>
+            <div class="row" style="margin-top:8px">
               <button id="homeTodoAdd" class="btn primary">添加</button>
             </div>
             <ul id="homeTodoList" class="check-list"></ul>
@@ -131,11 +147,15 @@
 
           <div class="card">
             <h2>作息记录</h2>
+            <p class="hint">一般 7–8 小时最合适：6–8 小时绿灯 · 8–10 小时黄灯 · 少于 6 或超过 10 小时红灯。先选睡觉时间，再选起床时间。</p>
             <div class="form-grid">
-              <label>起床时间<input type="time" id="sleepUp"></label>
-              <label>睡觉时间<input type="time" id="sleepDown"></label>
+              <label>睡觉时间（昨晚）<select id="sleepDown"></select></label>
+              <label>起床时间（今早）<select id="sleepUp"></select></label>
             </div>
-            <p class="hint" id="sleepInfo"></p>
+            <div class="sleep-judge" id="sleepJudge" style="display:none">
+              <span class="sleep-light" id="sleepLight"></span>
+              <span id="sleepInfo"></span>
+            </div>
           </div>
 
           <div class="card">
@@ -189,7 +209,10 @@
             </div>
             <div class="ex-types" id="exTypes"></div>
             <div class="row" style="margin-top:10px">
+              <label class="set-label" style="flex:1">运动时间<input type="time" id="exTime"></label>
               <label class="set-label" style="flex:1">时长（分钟）<input type="number" id="exMin" placeholder="30" min="1" step="1"></label>
+            </div>
+            <div class="row" style="margin-top:10px">
               <label class="set-label" style="flex:1">强度
                 <select id="exLevel"><option value="轻">轻</option><option value="中" selected>中</option><option value="重">重</option></select>
               </label>
@@ -273,16 +296,9 @@
           </div>
         </section>
 
-        <!-- 学习：外语中心 -->
+        <!-- 学习：外语中心（子页面由侧边栏切换，页面内不再有 tab） -->
         <section class="panel" id="panel-study">
           <div class="card">
-            <div class="tabs" id="studyTabs">
-              <button class="tab active" data-study="en">英语积累</button>
-              <button class="tab" data-study="ko">韩语入门</button>
-              <button class="tab" data-study="law">法律法规</button>
-              <button class="tab" data-study="interest">兴趣拓展</button>
-            </div>
-
             <!-- 英语阅读 -->
             <div id="study-en" class="study-panel active">
               <div class="study-head">
@@ -315,6 +331,7 @@
                 <h3>母音</h3>
                 <div id="koVow" class="ko-grid"></div>
               </div>
+            </div>
 
             <!-- 法律法规 -->
             <div id="study-law" class="study-panel">
@@ -361,16 +378,21 @@
         <section class="panel" id="panel-tarot">
           <div class="card mystic-card">
             <h2>✺ 塔罗 · 每日一牌</h2>
-            <p class="hint">为你抽一张今日指引牌。点「今日牌」得到稳定的一日一牌，点「换一张」随意再抽。</p>
-            <div class="tarot-card" id="tarotCard">
+            <p class="hint">在心里默念今天想问的事，再点下面的牌背抽一张。抽出后会告诉你正位还是逆位，并附解读与今日寄语。</p>
+            <div class="tarot-back" id="tarotBack" title="点我抽牌">
+              <div class="tb-pattern">✦</div>
+              <div class="tb-text">点 我 抽 牌</div>
+            </div>
+            <div class="tarot-card" id="tarotCard" style="display:none">
               <div class="tarot-name" id="tarotName">—</div>
               <div class="tarot-en" id="tarotEn"></div>
-              <div class="tarot-pos"><b>正位</b><span id="tarotPos"></span></div>
-              <div class="tarot-rev"><b>逆位</b><span id="tarotRev"></span></div>
+              <div class="tarot-ori" id="tarotOri"></div>
+              <div class="tarot-read" id="tarotRead"></div>
+              <div class="tarot-cheer" id="tarotCheer"></div>
             </div>
             <div class="row" style="margin-top:18px;gap:10px;flex-wrap:wrap">
-              <button id="tarotDaily" class="btn primary">今日牌</button>
-              <button id="tarotShuffle" class="btn ghost">换一张</button>
+              <button id="tarotDaily" class="btn primary">抽今日牌</button>
+              <button id="tarotShuffle" class="btn ghost">再抽一张</button>
             </div>
             <p class="hint" id="tarotNote" style="margin-top:14px"></p>
           </div>
@@ -399,14 +421,11 @@
         <section class="panel" id="panel-food">
           <div class="card mystic-card">
             <h2>🍜 美食盲盒 · 今天吃什么</h2>
-            <p class="hint">不知道吃啥？转一转，让命运替你决定。可先选品类。</p>
+            <p class="hint">不知道吃啥？先选品类，再点任意一个盲盒，让命运替你决定。</p>
             <div class="food-cats" id="foodCats"></div>
-            <div class="wheel-wrap">
-              <div class="wheel-pointer"></div>
-              <div class="wheel" id="foodWheel"></div>
-            </div>
+            <div class="box-grid" id="foodBoxes"></div>
             <div class="row" style="justify-content:center;margin-top:14px">
-              <button id="foodSpin" class="btn primary" style="font-size:16px;padding:12px 28px">转 一 转</button>
+              <button id="foodAgain" class="btn ghost">重新摆一排盲盒</button>
             </div>
             <div class="food-result" id="foodResult"></div>
           </div>
@@ -555,21 +574,15 @@
           </div>
         </section>
 
-        <!-- 数据备份 -->
-        <section class="panel" id="panel-data">
-          <div class="card">
-            <h2>◈ 数据备份与恢复</h2>
-            <p class="hint">所有数据只存在你自己的浏览器里。导出可备份到手机/电脑；导入可换设备恢复。</p>
-            <div class="row" style="margin-top:10px">
-              <button id="dataExport" class="btn primary">导出数据（下载 JSON）</button>
-              <button id="dataImportBtn" class="btn">导入数据</button>
-              <input type="file" id="dataImport" accept="application/json" style="display:none">
+        <!-- 关于 -->
+        <section class="panel" id="panel-about">
+          <div class="card about-card">
+            <div class="about-inner">
+              <div class="about-emoji">🎂🎉</div>
+              <h2 class="about-title">庆姐，生日快乐 🥳</h2>
+              <p class="about-msg">我永远支持你的每一个选择！💜✨</p>
+              <div class="about-emoji-row">🎁 🌷 🎈 ⭐ 🎶</div>
             </div>
-            <p class="hint" id="dataMsg" style="margin-top:10px"></p>
-          </div>
-          <div class="card">
-            <h2>关于数据</h2>
-            <ul class="data-list" id="dataList"></ul>
           </div>
         </section>
 
