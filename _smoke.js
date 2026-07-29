@@ -161,7 +161,7 @@ ok(down.querySelectorAll("option").length <= 30, "睡觉选项精简（" + down.
 let t = setSleep("23:00", "04:00"); ok(/红|睡/.test(t) && doc.getElementById("sleepJudge").style.display !== "none", "<6h 有红灯调侃: " + t.slice(0, 30));
 t = setSleep("23:00", "06:30"); ok(/睡眠合格啦/.test(t), "6-8h 绿灯: " + t.slice(0, 30));
 t = setSleep("22:00", "07:00"); ok(/很幸福了吧/.test(t), "8-10h 黄灯+羡慕调侃: " + t.slice(0, 30));
-t = setSleep("21:00", "08:00"); ok(/别睡了姐姐/.test(t), ">10h 红灯+怎么睡得着: " + t.slice(0, 30));
+t = setSleep("21:00", "08:00"); ok(/别睡了姐姐！你到底是睡着了还是昏迷了！/.test(t), ">10h 红灯+怎么睡得着: " + t.slice(0, 30));
 
 console.log("== 6 运动打卡加时间 ==");
 // 运动健身打卡在健康记录页的 sec-exercise 中，renderHealth 已渲染
