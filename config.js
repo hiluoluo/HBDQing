@@ -242,7 +242,8 @@ window.APP_CONFIG = {
         { id: "record", label: "日常规划", icon: "✎", type: "group",
           children: [
             { id: "wealth", label: "记账",     icon: "✧" },
-            { id: "travel", label: "旅游计划", icon: "➹" }
+            { id: "travel", label: "旅游计划", icon: "➹" },
+            { id: "szfood", label: "美食榜单", icon: "🍜" }
           ]
         }
       ]
@@ -276,6 +277,7 @@ window.APP_CONFIG = {
 
     { id: "news", label: "热点动态", icon: "✉" },
     { id: "treehole", label: "树洞", icon: "☾" },
+    { id: "fitness", label: "轻健身", icon: "✧" },
     { id: "memoir", label: "回忆录", icon: "❀" },
     { id: "timeline", label: "我的", icon: "☺" },   // 无下拉：点进去即整体记录时间线
     { id: "about", label: "关于", icon: "✿" }     // 无下拉：点进去是生日祝福

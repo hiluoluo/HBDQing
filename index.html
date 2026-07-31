@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260731b">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260731b">
-  <link rel="stylesheet" href="style.css?v=20260731b">
+  <link rel="manifest" href="manifest.webmanifest?v=20260731c">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260731c">
+  <link rel="stylesheet" href="style.css?v=20260731c">
 </head>
 <body>
   <div class="app">
@@ -633,6 +633,10 @@
               <h2>☾ 树洞</h2>
               <span class="hint" id="treeholeAiState">纯本地保存 · 别人看不到</span>
             </div>
+            <!-- Q 版桌宠占位：等发图后替换成 Q 版小人 -->
+            <div class="pet-box" id="petBox">
+              <div class="pet-placeholder">🐣 桌宠待入驻</div>
+            </div>
             <p class="hint">有什么想说的、想吐槽的、藏在心里的小事，都可以写进树洞。只有姐姐自己能看到 ♡</p>
             <textarea id="treeholeInput" class="log" rows="4" placeholder="把今天想说的话告诉树洞吧…"></textarea>
             <div class="row" style="margin-top:8px">
@@ -643,6 +647,30 @@
           <div class="card">
             <h2>树洞里的悄悄话</h2>
             <div id="treeholeList" class="history"></div>
+          </div>
+        </section>
+
+        <!-- 轻健身：久坐小运动 + 视频嵌入位 -->
+        <section class="panel" id="panel-fitness">
+          <div class="card">
+            <div class="card-head">
+              <h2>✧ 轻健身</h2>
+              <span class="hint">坐着也能动 · 3 分钟起</span>
+            </div>
+            <p class="hint" id="fitnessIntro"></p>
+          </div>
+          <div id="fitnessCats"></div>
+        </section>
+
+        <!-- 深圳美食榜单：100 家打卡清单 -->
+        <section class="panel" id="panel-szfood">
+          <div class="card">
+            <div class="card-head">
+              <h2>🍜 深圳美食榜单</h2>
+              <span class="hint" id="szfoodCount"></span>
+            </div>
+            <p class="hint">100 家精选 · 按菜系分类 · 打卡功能开发中</p>
+            <div id="szfoodList"></div>
           </div>
         </section>
 
@@ -670,10 +698,12 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260731b"></script>
-  <script src="data/quotes.js?v=20260731b"></script>
-  <script src="data/life.js?v=20260731b"></script>
-  <script src="app.js?v=20260731b"></script>
+  <script src="config.js?v=20260731c"></script>
+  <script src="data/quotes.js?v=20260731c"></script>
+  <script src="data/life.js?v=20260731c"></script>
+  <script src="data/fitness.js?v=20260731c"></script>
+  <script src="data/szfood.js?v=20260731c"></script>
+  <script src="app.js?v=20260731c"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

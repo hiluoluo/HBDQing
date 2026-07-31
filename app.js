@@ -1955,6 +1955,60 @@
     };
   }
 
+  // ---------- 轻健身：桌面小运动 + 视频嵌入位 ----------
+  function renderFitness() {
+    const box = document.getElementById("fitnessCats"); if (!box) return;
+    const intro = document.getElementById("fitnessIntro");
+    let data = { cats: [] };
+    try { data = JSON.parse(localStorage.getItem("fitness_data")) || window.APP_FITNESS || data; } catch (e) { data = window.APP_FITNESS || data; }
+    if (intro) intro.textContent = data.intro || "久坐累了就花 3-5 分钟动一动~";
+    box.innerHTML = "";
+    (data.cats || []).forEach(function (c) {
+      const d = document.createElement("div"); d.className = "card fitness-cat";
+      let html = '<div class="card-head"><h2>' + (c.icon || "✧") + ' ' + esc(c.title || "") + '</h2></div>';
+      if (c.tip) html += '<p class="hint">' + esc(c.tip) + '</p>';
+      html += '<ul class="fitness-steps">';
+      (c.steps || []).forEach(function (s) { html += '<li>' + esc(s) + '</li>'; });
+      html += '</ul>';
+      // 视频嵌入位：data/fitness.json 的 video 字段填上 iframe 地址即可显示
+      if (c.video) {
+        html += '<div class="fitness-video"><iframe src="' + esc(c.video) + '" frameborder="0" allowfullscreen loading="lazy"></iframe></div>';
+      } else {
+        html += '<p class="hint fitness-video-empty">📺 视频教程待添加（跟我说一声就帮你嵌入）</p>';
+      }
+      d.innerHTML = html;
+      box.appendChild(d);
+    });
+  }
+
+  // ---------- 深圳美食榜单（数据已就绪，先展示；打卡功能待验证后做） ----------
+  function renderSzfood() {
+    const box = document.getElementById("szfoodList"); if (!box) return;
+    let data = null;
+    try { data = window.APP_SZFOOD; } catch (e) {}
+    const countEl = document.getElementById("szfoodCount");
+    if (!data || !data.categories) { box.innerHTML = '<p class="hint">数据加载中…</p>'; return; }
+    let total = 0;
+    data.categories.forEach(function (c) { total += (c.list || []).length; });
+    if (countEl) countEl.textContent = "共 " + total + " 家 · " + data.categories.length + " 大菜系";
+    box.innerHTML = "";
+    data.categories.forEach(function (c) {
+      const wrap = document.createElement("div");
+      wrap.innerHTML = '<h3 class="szfood-cat">' + esc(c.cat) + ' <span class="szfood-num">' + (c.list || []).length + ' 家</span></h3>';
+      const grid = document.createElement("div"); grid.className = "szfood-grid";
+      (c.list || []).forEach(function (s) {
+        const d = document.createElement("div"); d.className = "szfood-item";
+        d.innerHTML = '<div class="szfood-name">' + esc(s.name) + ' <span class="szfood-tag">' + esc(s.tag || "") + '</span></div>' +
+          '<div class="szfood-info">' + esc(s.district || "") + '</div>' +
+          '<div class="szfood-dishes">' + (s.dishes || []).map(esc).join(" · ") + '</div>' +
+          '<div class="szfood-bottom"><span class="szfood-price">¥' + (s.price || "-") + '</span><button class="mini-btn szfood-check" data-name="' + esc(s.name) + '">去打卡</button></div>';
+        grid.appendChild(d);
+      });
+      wrap.appendChild(grid);
+      box.appendChild(wrap);
+    });
+  }
+
   // ---------- 导航 ----------
   const NAV = C.nav || [
     { id: "home", label: "首页", icon: "⌂" },
@@ -1970,7 +2024,7 @@
   ];
   const sidebarNav = document.getElementById("sidebarNav");
   const sidebar = document.getElementById("sidebar"), drawerMask = document.getElementById("drawerMask"), menuBtn = document.getElementById("menuBtn");
-  const renderMap = { home: renderHome, memoir: renderMemoir, study: renderStudy, work: renderWork, health: renderHealth, meals: renderMeals, wealth: function () { renderWealth(); renderCalendar(); }, diet: renderDiet, travel: renderTravel, checkin: function () {}, answer: renderAnswer, tarot: renderTarot, oracle: renderOracle, exercise: renderExercise, food: renderFood, interest: function () { renderStudy(); }, timeline: renderTimeline, about: function () {}, treehole: renderTreeHole };
+  const renderMap = { home: renderHome, memoir: renderMemoir, study: renderStudy, work: renderWork, health: renderHealth, meals: renderMeals, wealth: function () { renderWealth(); renderCalendar(); }, diet: renderDiet, travel: renderTravel, checkin: function () {}, answer: renderAnswer, tarot: renderTarot, oracle: renderOracle, exercise: renderExercise, food: renderFood, interest: function () { renderStudy(); }, timeline: renderTimeline, about: function () {}, treehole: renderTreeHole, fitness: renderFitness, szfood: renderSzfood };
 
   // 把导航树拍平，便于底部栏查找图标名称
   const flatNav = [];
