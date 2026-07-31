@@ -3,10 +3,11 @@
 """
 定时抓取热点动态，生成 data/news.json 供网站直接读取（同源、无跨域问题）。
 由 GitHub Actions 定时调用；也可本地 python fetch_news.py 生成种子文件。
-免费、无需密钥的数据源：60s.viki.moe（微博/抖音/知乎/小红书/权威早报）。
-深圳/成都本地新闻：默认免 Key —— 从已抓取的多平台热榜里按城市名筛选
-真实的相关动态（数据源 60s 同为免费、无需密钥）。可选配置环境变量 JUHE_KEY
-（聚合数据 Key）增强为真实地方媒体新闻，置顶展示。
+数据源：
+- uapis.cn/api/v1/misc/hotboard（免费，微博/知乎/抖音/小红书/B站等 40+ 平台热榜）
+- xxapi.cn（免费备用：微博/抖音/百度/B站热搜）
+- 60s.viki.moe/v2/60s（每日 60 秒权威早报，需带 /v2）
+本地新闻：默认免 Key —— Bing 新闻 RSS（真实实时）；可选 JUHE_KEY 增强。
 """
 import json
 import os
@@ -16,6 +17,8 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 BASE = "https://60s.viki.moe/v2"
+UAPIS = "https://uapis.cn/api/v1/misc/hotboard"
+XXAPI = "https://v2.xxapi.cn/api"
 
 
 def get(url, timeout=15):
@@ -35,24 +38,51 @@ def fmt_hot(v):
         return str(v) if v else ""
 
 
-def social(ep, label):
+def uapis_social(platform, label):
+    """uapis.cn 全网热榜（免费，主源）：微博/知乎/抖音/小红书/B站等。"""
     try:
-        j = get(BASE + "/" + ep)
+        j = get(UAPIS + "?type=" + platform)
+        items = []
+        for it in (j.get("list") or [])[:15]:
+            title = it.get("title", "")
+            if not title:
+                continue
+            url = it.get("url") or ("https://www.baidu.com/s?wd=" + urllib.parse.quote(title))
+            items.append({"title": title, "url": url, "hot": fmt_hot(it.get("hot_value") or it.get("hot") or "")})
+        return {"label": label, "items": items}
+    except Exception as e:
+        return {"label": label, "items": [], "error": str(e)}
+
+
+def xxapi_social(ep, label):
+    """xxapi 免费热搜（备用源）：weibohot/douyinhot/baiduhot/bilibilihot。"""
+    try:
+        j = get(XXAPI + "/" + ep)
         data = j.get("data") or []
         items = []
         for it in data[:15]:
             if isinstance(it, str):
-                items.append({"title": it,
-                              "url": "https://www.baidu.com/s?wd=" + urllib.parse.quote(it),
-                              "hot": ""})
+                items.append({"title": it, "url": "https://www.baidu.com/s?wd=" + urllib.parse.quote(it), "hot": ""})
             else:
                 title = it.get("title", "")
-                link = it.get("link") or ("https://www.baidu.com/s?wd=" + urllib.parse.quote(title))
-                hot = fmt_hot(it.get("hot_value") or it.get("score") or it.get("hot_value_desc") or "")
-                items.append({"title": title, "url": link, "hot": hot})
+                if not title:
+                    continue
+                url = it.get("url") or ("https://www.baidu.com/s?wd=" + urllib.parse.quote(title))
+                items.append({"title": title, "url": url, "hot": fmt_hot(it.get("hot") or "")})
         return {"label": label, "items": items}
     except Exception as e:
         return {"label": label, "items": [], "error": str(e)}
+
+
+def social_fallback(platform, label, uapis_platform, xxapi_ep):
+    """主源 uapis → 备用 xxapi → 空。"""
+    r = uapis_social(uapis_platform, label)
+    if r["items"]:
+        return r
+    r2 = xxapi_social(xxapi_ep, label)
+    if r2["items"]:
+        return r2
+    return {"label": label, "items": [], "error": "both sources down"}
 
 
 def auth():
@@ -124,10 +154,10 @@ def local_news(city, label, key, pool):
 def main():
     sources = {}
     sources["auth"] = auth()
-    sources["weibo"] = social("weibo", "微博热搜")
-    sources["douyin"] = social("douyin", "抖音热榜·音乐")
-    sources["zhihu"] = social("zhihu", "知乎热榜")
-    sources["xhs"] = social("rednote", "小红书")
+    sources["weibo"] = social_fallback("微博热搜", "微博热搜", "weibo", "weibohot")
+    sources["douyin"] = social_fallback("抖音热榜", "抖音热榜", "douyin", "douyinhot")
+    sources["zhihu"] = social_fallback("知乎热榜", "知乎热榜", "zhihu", "zhihuhot")
+    sources["xhs"] = uapis_social("xiaohongshu", "小红书")
 
     # 汇总多平台热榜，供本地新闻按城市名筛选（免 Key）
     pool = []
