@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260731g">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260731g">
-  <link rel="stylesheet" href="style.css?v=20260731g">
+  <link rel="manifest" href="manifest.webmanifest?v=20260731h">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260731h">
+  <link rel="stylesheet" href="style.css?v=20260731h">
 </head>
 <body>
   <div class="app">
@@ -69,23 +69,29 @@
             <p class="merit-note" id="meritNote"></p>
           </div>
 
-          <!-- 图拉斯沙包：解压专用 -->
+          <!-- TORRAS 解压沙袋 -->
           <div class="card bag-card">
             <div class="card-head">
-              <h2>🪀 图拉斯沙包</h2>
-              <span class="hint">有气就打，别憋着</span>
-            </div>
-            <div class="bag-toolbar">
-              <button class="tool-btn sel" data-tool="fist">🥊 拳套</button>
-              <button class="tool-btn" data-tool="whip">🪢 鞭子</button>
+              <h2>🪀 TORRAS 解压沙袋</h2>
+              <span class="hint">想打人？打它就对了</span>
             </div>
             <div class="bag-stage" id="bagStage">
               <div class="bag-hit" id="bagHit"></div>
               <div class="bag-rope"></div>
               <div class="bag-punch" id="bagPunch">
                 <div class="bag-body">
-                  <span class="bag-brand">图拉斯<br>TurLas</span>
-                  <div class="bag-seam"></div>
+                  <div class="bag-stitch bag-stitch-t"></div>
+                  <div class="bag-stitch bag-stitch-b"></div>
+                  <span class="bag-brand">TORRAS</span>
+                  <!-- 鼻青脸肿层：累计挨打越多越明显 -->
+                  <div class="bag-bruise" id="bagBruise">
+                    <span class="bruise-eye bruise-eye-l"></span>
+                    <span class="bruise-eye bruise-eye-r"></span>
+                    <span class="bruise-mark bruise-mark-1"></span>
+                    <span class="bruise-mark bruise-mark-2"></span>
+                    <span class="bruise-swirl"></span>
+                    <span class="bruise-tear"></span>
+                  </div>
                   <div class="bag-chin"></div>
                 </div>
               </div>
@@ -387,15 +393,31 @@
 
             <!-- 韩语入门 -->
             <div id="study-ko" class="study-panel">
-              <h2>常用词汇</h2>
-              <div id="koWords" class="ko-grid"></div>
-              <h2 style="margin-top:22px">韩语四十音</h2>
+              <div class="card-head">
+                <h2>今日韩语</h2>
+                <span class="hint" id="koDate"></span>
+              </div>
+              <p class="hint">每天 2 词 + 2 句常用语（自动更换，可手动刷新）</p>
+
+              <h3>📚 今日词汇</h3>
+              <div id="koDailyWords" class="ko-grid"></div>
+
+              <h3 style="margin-top:18px">💬 今日常用语</h3>
+              <div id="koDailySents" class="ko-grid"></div>
+
+              <div class="row" style="margin-top:12px;gap:10px">
+                <button id="koRefresh" class="btn ghost">🎲 换一组</button>
+                <span class="hint" id="koRefreshHint"></span>
+              </div>
+
+              <h2 style="margin-top:24px">韩语四十音</h2>
+              <p class="hint">点击任意字卡听标准发音</p>
               <div class="ko-section">
-                <h3>子音</h3>
+                <h3>子音（19）</h3>
                 <div id="koCon" class="ko-grid"></div>
               </div>
               <div class="ko-section">
-                <h3>母音</h3>
+                <h3>母音（21）</h3>
                 <div id="koVow" class="ko-grid"></div>
               </div>
             </div>
@@ -723,12 +745,13 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260731g"></script>
-  <script src="data/quotes.js?v=20260731g"></script>
-  <script src="data/life.js?v=20260731g"></script>
-  <script src="data/fitness.js?v=20260731g"></script>
-  <script src="data/szfood.js?v=20260731g"></script>
-  <script src="app.js?v=20260731g"></script>
+  <script src="config.js?v=20260731h"></script>
+  <script src="data/quotes.js?v=20260731h"></script>
+  <script src="data/life.js?v=20260731h"></script>
+  <script src="data/fitness.js?v=20260731h"></script>
+  <script src="data/szfood.js?v=20260731h"></script>
+  <script src="data/korean.js?v=20260731h"></script>
+  <script src="app.js?v=20260731h"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

@@ -617,3 +617,58 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 @keyframes whipSnap{0%{opacity:0}20%{opacity:1}60%{opacity:1}100%{opacity:0}}
 .bag-count{margin-top:10px;font-size:13px;color:var(--muted);text-align:center}
 .bag-count b{color:#e0533d;font-size:16px}
+/* ---- TORRAS 解压沙袋 ---- */
+.bag-stage{position:relative;height:220px;display:flex;flex-direction:column;align-items:center;overflow:hidden;border-radius:18px;background:radial-gradient(ellipse at 50% 30%,#fff7f3,#f3edff 70%);cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.bag-rope{width:3px;height:28px;background:linear-gradient(180deg,#a89bd3,#5a5178);border-radius:2px;margin-top:4px;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.bag-punch{transform-origin:top center;transition:transform .45s cubic-bezier(.34,1.56,.64,1);position:relative}
+.bag-punch.swing-l{animation:bagSwingL .55s ease}
+.bag-punch.swing-r{animation:bagSwingR .55s ease}
+.bag-punch.squash{animation:bagSquash .25s ease}
+@keyframes bagSwingL{0%{transform:rotate(0)}30%{transform:rotate(-26deg) scaleX(.95)}70%{transform:rotate(12deg)}100%{transform:rotate(0)}}
+@keyframes bagSwingR{0%{transform:rotate(0)}30%{transform:rotate(24deg) scaleX(.95)}70%{transform:rotate(-10deg)}100%{transform:rotate(0)}}
+@keyframes bagSquash{0%,100%{transform:rotate(0) scaleX(1)}50%{transform:rotate(0) scaleX(.88) scaleY(1.06)}}
+.bag-body{position:relative;width:108px;height:148px;border-radius:54px 54px 18px 18px;
+  background:radial-gradient(ellipse at 28% 20%,#ff9b6a 0%,#e74c3c 32%,#b73327 75%,#7e241b);
+  box-shadow:inset -10px -14px 22px rgba(0,0,0,.28),inset 6px 8px 16px rgba(255,255,255,.15),0 12px 22px rgba(150,48,44,.35),0 4px 8px rgba(0,0,0,.1)}
+.bag-brand{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);
+  color:#ff6b00;font-weight:900;font-size:22px;letter-spacing:3px;
+  text-shadow:1px 1px 0 #fff,-1px 1px 0 #fff,1px -1px 0 #fff,-1px -1px 0 #fff,0 2px 6px rgba(0,0,0,.35);
+  z-index:3;font-family:-apple-system,Helvetica,Arial,sans-serif}
+.bag-stitch{position:absolute;left:50%;transform:translateX(-50%);height:2px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.5) 0 6px,transparent 6px 10px)}
+.bag-stitch-t{top:10px;width:75%}
+.bag-stitch-b{bottom:36px;width:70%}
+.bag-chin{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);width:34px;height:22px;
+  background:radial-gradient(ellipse at top,#7e241b,#4a1410);border-radius:50% 50% 45% 45%/40% 40% 60% 60%;
+  box-shadow:inset 0 -4px 6px rgba(0,0,0,.4)}
+.bag-chin::after{content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);width:60%;height:2px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.3) 0 4px,transparent 4px 7px)}
+.bag-stand{width:160px;height:14px;background:linear-gradient(180deg,#a89bd3 0%,#6a608a 100%);border-radius:8px 8px 4px 4px;margin-top:-6px;box-shadow:0 3px 6px rgba(0,0,0,.2)}
+
+/* 鼻青脸肿：默认隐藏，按挨打次数阶梯显示 */
+.bag-bruise{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;z-index:4}
+.bag-bruise.show-1{opacity:.45}
+.bag-bruise.show-2{opacity:.7}
+.bag-bruise.show-3{opacity:.95}
+.bruise-eye{position:absolute;width:16px;height:12px;border:2px solid #4a2a8a;border-radius:50%;background:rgba(120,80,180,.4)}
+.bruise-eye-l{top:30%;left:24%}
+.bruise-eye-r{top:30%;right:24%}
+.bruise-mark{position:absolute;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,#a3185d,#d63a72);box-shadow:0 0 6px rgba(214,58,114,.5)}
+.bruise-mark-1{top:42%;left:18%}
+.bruise-mark-2{top:55%;right:16%}
+.bruise-swirl{position:absolute;top:32%;left:50%;transform:translate(-50%,-50%);font-size:30px;font-weight:900;color:#fff;text-shadow:0 0 8px rgba(255,255,255,.7),0 0 2px #4a2a8a;opacity:0;line-height:1}
+.bag-bruise.show-2 .bruise-swirl{opacity:.55}
+.bag-bruise.show-3 .bruise-swirl{opacity:.9}
+.bruise-swirl::before{content:"💫"}
+.bruise-tear{position:absolute;top:44%;left:46%;width:6px;height:14px;background:linear-gradient(180deg,#a3c5ff,#5b8df7);border-radius:0 0 50% 50%;opacity:0;transform:rotate(-12deg)}
+.bag-bruise.show-3 .bruise-tear{opacity:.9;animation:tearDrop 1.2s ease-in infinite}
+@keyframes tearDrop{0%{opacity:.9;transform:translate(0,0) rotate(-12deg)}80%{opacity:.9;transform:translate(-2px,16px) rotate(-12deg)}100%{opacity:0;transform:translate(-2px,24px) rotate(-12deg)}}
+
+/* 打击特效 */
+.bag-hit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5}
+.bag-hit .hit-word{font-size:36px;font-weight:900;color:#e0533d;text-shadow:0 2px 12px rgba(224,83,61,.5);opacity:0;transform:scale(.4) rotate(-8deg)}
+.bag-hit.hit .hit-word{animation:hitPop .6s ease}
+@keyframes hitPop{0%{opacity:0;transform:scale(.4) rotate(-8deg)}25%{opacity:1;transform:scale(1.3) rotate(4deg)}60%{opacity:1;transform:scale(1) rotate(0)}100%{opacity:0;transform:scale(1.05) translateY(-18px)}}
+.bag-hit .hit-fist{font-size:46px;opacity:0;position:absolute;right:4%;bottom:14%}
+.bag-hit.fist .hit-fist{animation:fistFly .42s ease-out}
+@keyframes fistFly{0%{opacity:0;transform:translate(28px,24px) rotate(20deg) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translate(-72px,-58px) rotate(-30deg) scale(1.2)}}
+.bag-count{margin-top:10px;font-size:13px;color:var(--muted);text-align:center}
+.bag-count b{color:#e0533d;font-size:16px}

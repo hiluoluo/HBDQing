@@ -25,7 +25,7 @@ function ok(cond, msg) {
 }
 
 console.error("EVAL START");
-["config.js", "data/quotes.js", "data/life.js", "data/fitness.js", "data/szfood.js", "app.js"].forEach(function (f) {
+["config.js", "data/quotes.js", "data/life.js", "data/fitness.js", "data/szfood.js", "data/korean.js", "app.js"].forEach(function (f) {
   window.eval(fs.readFileSync(path.join(dir, f), "utf8"));
 });
 console.error("EVAL DONE");

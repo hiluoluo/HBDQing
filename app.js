@@ -682,27 +682,59 @@
   };
   loadFeed();
 
-  // 韩语入门（常用词精简 + 四十音常驻，点一下朗读，再点暂停/续读）
+  // ---------- 韩语入门：每日 2 词 + 2 句（自动/手动）+ 四十音常驻 ----------
   function makeKoCard(obj, zhOrSound) {
     const d = document.createElement("div"); d.className = "ko-card";
     d.innerHTML = '<button class="ko-play" type="button" aria-label="朗读">▶</button>' +
       '<div class="ko-main"><div class="ko">' + esc(obj.ko) + '</div>' +
-      '<div class="rom">' + esc(obj.rom) + '</div>' +
+      '<div class="rom">' + esc(obj.rom || "") + '</div>' +
       '<div class="zh">' + esc(zhOrSound) + '</div></div>';
     const say = function () { speakKo(obj.ko, d); };
     d.onclick = say;
     d.querySelector(".ko-play").onclick = function (e) { e.stopPropagation(); say(); };
     return d;
   }
+  // 基于日期字符串的稳定伪随机（mulberry32）
+  function hashStr(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h >>> 0; }
+  function pickN(arr, n, offset) {
+    const out = []; let i = offset % arr.length;
+    while (out.length < n && out.length < arr.length) {
+      if (!out.includes(arr[i])) out.push(arr[i]);
+      i = (i + 1) % arr.length;
+    }
+    return out;
+  }
   function renderKorean() {
-    const words = (C.korean && C.korean.words) || [];
-    const wg = document.getElementById("koWords"); wg.innerHTML = "";
-    words.forEach(function (w) { wg.appendChild(makeKoCard(w, w.zh)); });
-    const alpha = (C.korean && C.korean.alphabet) || {};
+    const K = (typeof APP_KOREAN !== "undefined" && APP_KOREAN) || (window.APP_KOREAN) || {};
+    const words = K.words || [];
+    const sents = K.sentences || [];
+    const dateEl = document.getElementById("koDate");
+    if (dateEl) dateEl.textContent = key + " · 第" + (hashStr(key) % 365 + 1) + "天";
+    const todayWords = pickN(words, 2, hashStr(key + "w"));
+    const todaySents = pickN(sents, 2, hashStr(key + "s"));
+    const dw = document.getElementById("koDailyWords"); dw.innerHTML = "";
+    todayWords.forEach(function (w) { dw.appendChild(makeKoCard(w, w.zh)); });
+    const ds = document.getElementById("koDailySents"); ds.innerHTML = "";
+    todaySents.forEach(function (s) { ds.appendChild(makeKoCard(s, s.zh)); });
+    // 手动换一组
+    const btn = document.getElementById("koRefresh"); const hint = document.getElementById("koRefreshHint");
+    if (btn && !btn.dataset.wired) {
+      btn.dataset.wired = "1";
+      btn.onclick = function () {
+        const k2 = key + "-" + Math.floor(Math.random() * 1e9);
+        const w2 = pickN(words, 2, hashStr(k2 + "w"));
+        const s2 = pickN(sents, 2, hashStr(k2 + "s"));
+        dw.innerHTML = ""; s2.forEach && (s2.forEach(function(){}));
+        dw.innerHTML = ""; w2.forEach(function (w) { dw.appendChild(makeKoCard(w, w.zh)); });
+        ds.innerHTML = ""; s2.forEach(function (s) { ds.appendChild(makeKoCard(s, s.zh)); });
+        if (hint) { hint.textContent = "已刷新 ✨"; setTimeout(function () { hint.textContent = ""; }, 2000); }
+      };
+    }
+    // 四十音常驻
+    const alpha = K.alphabet || {};
     const con = document.getElementById("koCon"), vow = document.getElementById("koVow");
-    con.innerHTML = ""; vow.innerHTML = "";
-    (alpha.consonants || []).forEach(function (c) { con.appendChild(makeKoCard(c, c.sound)); });
-    (alpha.vowels || []).forEach(function (c) { vow.appendChild(makeKoCard(c, c.sound)); });
+    if (con) { con.innerHTML = ""; (alpha.consonants || []).forEach(function (c) { con.appendChild(makeKoCard(c, c.sound)); }); }
+    if (vow) { vow.innerHTML = ""; (alpha.vowels || []).forEach(function (c) { vow.appendChild(makeKoCard(c, c.sound)); }); }
   }
   renderKorean();
   function renderStudy() { if (studyActive === "en") renderEnglish(enIdx); else if (studyActive === "ko") renderKorean(); else if (studyActive === "interest") renderInterest(); else renderLaw(); }
@@ -1460,41 +1492,46 @@
     const stage = document.getElementById("bagStage"); if (!stage) return;
     const punch = document.getElementById("bagPunch");
     const hit = document.getElementById("bagHit");
+    const bruise = document.getElementById("bagBruise");
     const countEl = document.getElementById("bagCount");
     const moodEl = document.getElementById("bagMood");
-    let tool = "fist";
     // 今日发泄次数（独立存，跨天清零）
     let todayCount = (function () { const t = loadStore("bag_" + key); return t || 0; })();
     countEl.textContent = todayCount;
-    const WORDS = ["这拳送给烦心事！", "啪！坏心情再见~", "解压 +1，世界美好一点", "打它！叫它烦你！", "疼吗？疼就对了！", "爽！再来一下！", "这一下替姐姐出气！", "好打！心情舒畅！"];
-    const combo = ["连击 5 下，沙包都懵了！", "连击 10 下，沙包求饶了！", "连击 20 下，今天谁也别想惹你！"];
-    // 武器切换
-    Array.prototype.forEach.call(document.querySelectorAll(".tool-btn"), function (b) {
-      b.onclick = function () {
-        Array.prototype.forEach.call(document.querySelectorAll(".tool-btn"), function (bb) { bb.classList.remove("sel"); });
-        b.classList.add("sel");
-        tool = b.dataset.tool;
-      };
-    });
-    // 打沙包
+    // 鼻青脸肿阶梯（按累计次数显示）
+    function applyBruise(n) {
+      if (!bruise) return;
+      bruise.classList.remove("show-1", "show-2", "show-3");
+      if (n >= 15) bruise.classList.add("show-3");
+      else if (n >= 8) bruise.classList.add("show-2");
+      else if (n >= 3) bruise.classList.add("show-1");
+    }
+    applyBruise(todayCount);
+    const WORDS = ["这拳送给烦心事！", "啪！坏心情再见~", "解压 +1，世界美好一点", "打它！叫它烦你！", "疼吗？疼就对了！", "爽！再来一下！", "这一下替姐姐出气！", "好打！心情舒畅！", "啊——沙袋也流泪了", "沙袋现在认得你的拳头了", "替姐姐揍它！", "拳头都热了，沙袋更热！"];
+    const combo = { 10: "连击 10 下！沙袋都开始求饶了~", 20: "连击 20 下！今天谁也别想惹姐姐！", 30: "连击 30 下！沙袋已经躺平了…", 50: "50 连击！沙袋精神上已经辞职了" };
+    // 打沙包（全程只有拳套一种武器）
     stage.onclick = function () {
       todayCount++;
       saveStore("bag_" + key, todayCount);
       countEl.textContent = todayCount;
-      // 摆动方向交替
-      punch.classList.remove("swing-l", "swing-r");
+      // 摆动（左右交替）+ 挤压
+      punch.classList.remove("swing-l", "swing-r", "squash");
       void punch.offsetWidth;
-      punch.classList.add(todayCount % 2 ? "swing-l" : "swing-r");
-      // 特效
-      hit.classList.remove("hit", "fist", "whip");
+      punch.classList.add("squash");
+      setTimeout(function () {
+        punch.classList.remove("squash");
+        void punch.offsetWidth;
+        punch.classList.add(todayCount % 2 ? "swing-l" : "swing-r");
+      }, 220);
+      // 鼻青脸肿阶梯
+      applyBruise(todayCount);
+      // 拳套特效
+      hit.classList.remove("hit", "fist");
       void hit.offsetWidth;
-      hit.classList.add("hit", tool);
+      hit.classList.add("hit", "fist");
       // 文字：连击彩蛋优先
-      let word = WORDS[Math.floor(Math.random() * WORDS.length)];
-      if (todayCount === 10) word = combo[0];
-      else if (todayCount === 20) word = combo[1];
-      else if (todayCount === 50) word = combo[2];
-      hit.innerHTML = '<span class="hit-word">' + word + '</span>' + (tool === "fist" ? '<span class="hit-fist">🥊</span>' : '<svg class="hit-whip" width="120" height="60" viewBox="0 0 120 60"><path d="M6 54 C 30 46 44 30 40 14 C 38 6 60 10 72 22 C 84 34 104 26 112 14" fill="none" stroke="#8a7fb8" stroke-width="3" stroke-linecap="round"/></svg>');
+      let word = combo[todayCount] || WORDS[Math.floor(Math.random() * WORDS.length)];
+      hit.innerHTML = '<span class="hit-word">' + word + '</span><span class="hit-fist">🥊</span>';
       moodEl.textContent = word;
     };
   }
