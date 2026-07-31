@@ -13,11 +13,11 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .app{display:flex;min-height:100vh}
 
 /* ---- 左侧栏（电脑常驻 / 手机抽屉） ---- */
-.sidebar{width:228px;flex:none;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;min-height:0}
+.sidebar{width:228px;flex:none;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .drawer-mask{display:none}
 .menu-btn{display:none}
 .brand{padding:22px 20px 14px;font-size:18px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.nav{display:flex;flex-direction:column;gap:4px;padding:6px 12px;overflow-y:auto;flex:1;min-height:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.nav{display:flex;flex-direction:column;gap:4px;padding:6px 12px;flex:0 0 auto}
 .nav-item,.nav-head{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;cursor:pointer;color:var(--muted);font-size:15px;font-weight:600;border:none;background:none;text-align:left;font-family:inherit;transition:.15s}
 .nav-item .ni,.nav-head .ni{font-size:18px;width:22px;text-align:center}
 .nav-item:hover,.nav-head:hover{background:#f4f1fc;color:var(--ink)}
@@ -586,4 +586,3 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .pet-box img{max-width:120px;max-height:120px;object-fit:contain}
 
 /* ---- 抽屉打开时锁定主页面滚动（防滚动穿透） ---- */
-body.no-scroll{overflow:hidden;height:100vh;height:100dvh}
