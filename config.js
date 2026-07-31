@@ -152,7 +152,7 @@ window.APP_CONFIG = {
 
   // AI 树洞：aiEndpoint 填入你的 AI 转发代理地址后启用 AI 回复；留空 = 纯本地记录
   treeHole: {
-    aiEndpoint: "",  // 例：https://treehole.你的名字.workers.dev/chat
+    aiEndpoint: "https://1461761825-dhs9d3nin1.ap-guangzhou.tencentscf.com/",  // 腾讯云 SCF Function URL（国内直连）
     aiName: "树洞精灵",
     placeholder: "把今天想说的话告诉树洞吧…"
   },
