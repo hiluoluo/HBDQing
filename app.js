@@ -520,7 +520,7 @@
     }
     // 优先读取定时任务预抓取的 data/news.json（同源、无跨域、关站也照常更新）
     function loadNewsCache(done) {
-      fetchJSON("./data/news.json", 8000).then(function (json) {
+      fetchJSON("./data/news.json?t=" + Date.now(), 8000).then(function (json) {
         if (!json || !json.sources) { done(); return; }
         all.forEach(function (s) {
           const sd = json.sources[s.id]; if (!sd) return;
@@ -658,7 +658,7 @@
     document.getElementById("enNext").textContent = enMode === "feed" ? "换一篇" : "换一篇";
   }
   function loadFeed(cb) {
-    fetchJSON("./data/english.json", 8000).then(function (j) {
+    fetchJSON("./data/english.json?t=" + Date.now(), 8000).then(function (j) {
       if (j && j.en && j.date === key) { feedData = j; if (enMode === "feed") renderEnglish(); }
       if (cb) cb();
     }).catch(function () { if (cb) cb(); });
