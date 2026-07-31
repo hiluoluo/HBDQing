@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260731h">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260731h">
-  <link rel="stylesheet" href="style.css?v=20260731h">
+  <link rel="manifest" href="manifest.webmanifest?v=20260731i">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260731i">
+  <link rel="stylesheet" href="style.css?v=20260731i">
 </head>
 <body>
   <div class="app">
@@ -69,11 +69,11 @@
             <p class="merit-note" id="meritNote"></p>
           </div>
 
-          <!-- TORRAS 解压沙袋 -->
+          <!-- 解压沙袋 -->
           <div class="card bag-card">
             <div class="card-head">
-              <h2>🪀 TORRAS 解压沙袋</h2>
-              <span class="hint">想打人？打它就对了</span>
+              <h2>🥊 解压沙袋</h2>
+              <span class="hint">TORRAS 赞助出气</span>
             </div>
             <div class="bag-stage" id="bagStage">
               <div class="bag-hit" id="bagHit"></div>
@@ -82,7 +82,8 @@
                 <div class="bag-body">
                   <div class="bag-stitch bag-stitch-t"></div>
                   <div class="bag-stitch bag-stitch-b"></div>
-                  <span class="bag-brand">TORRAS</span>
+                  <!-- TORRAS 真实 logo 图 -->
+                  <img class="bag-brand" src="assets/torras-logo.png" alt="TORRAS" />
                   <!-- 鼻青脸肿层：累计挨打越多越明显 -->
                   <div class="bag-bruise" id="bagBruise">
                     <span class="bruise-eye bruise-eye-l"></span>
@@ -97,7 +98,7 @@
               </div>
               <div class="bag-stand"></div>
             </div>
-            <p class="bag-count">今日发泄 <b id="bagCount">0</b> 下 · <span id="bagMood">来，给它一拳！</span></p>
+            <p class="bag-count">今日发泄 <b id="bagCount">0</b> 下</p>
           </div>
 
           <!-- 喝水 8 杯 -->
@@ -745,13 +746,13 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260731h"></script>
-  <script src="data/quotes.js?v=20260731h"></script>
-  <script src="data/life.js?v=20260731h"></script>
-  <script src="data/fitness.js?v=20260731h"></script>
-  <script src="data/szfood.js?v=20260731h"></script>
-  <script src="data/korean.js?v=20260731h"></script>
-  <script src="app.js?v=20260731h"></script>
+  <script src="config.js?v=20260731i"></script>
+  <script src="data/quotes.js?v=20260731i"></script>
+  <script src="data/life.js?v=20260731i"></script>
+  <script src="data/fitness.js?v=20260731i"></script>
+  <script src="data/szfood.js?v=20260731i"></script>
+  <script src="data/korean.js?v=20260731i"></script>
+  <script src="app.js?v=20260731i"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

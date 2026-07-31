@@ -1494,7 +1494,6 @@
     const hit = document.getElementById("bagHit");
     const bruise = document.getElementById("bagBruise");
     const countEl = document.getElementById("bagCount");
-    const moodEl = document.getElementById("bagMood");
     // 今日发泄次数（独立存，跨天清零）
     let todayCount = (function () { const t = loadStore("bag_" + key); return t || 0; })();
     countEl.textContent = todayCount;
@@ -1507,9 +1506,39 @@
       else if (n >= 3) bruise.classList.add("show-1");
     }
     applyBruise(todayCount);
-    const WORDS = ["这拳送给烦心事！", "啪！坏心情再见~", "解压 +1，世界美好一点", "打它！叫它烦你！", "疼吗？疼就对了！", "爽！再来一下！", "这一下替姐姐出气！", "好打！心情舒畅！", "啊——沙袋也流泪了", "沙袋现在认得你的拳头了", "替姐姐揍它！", "拳头都热了，沙袋更热！"];
-    const combo = { 10: "连击 10 下！沙袋都开始求饶了~", 20: "连击 20 下！今天谁也别想惹姐姐！", 30: "连击 30 下！沙袋已经躺平了…", 50: "50 连击！沙袋精神上已经辞职了" };
-    // 打沙包（全程只有拳套一种武器）
+    // 挥拳音效：Web Audio API 合成"砰"声（低频 thud + 摩擦噪声爆裂 + 一点点高音闷响）
+    function playPunch() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        // 1. 低频冲击（thud）
+        const o1 = ctx.createOscillator(); const g1 = ctx.createGain();
+        o1.type = "sine"; o1.frequency.setValueAtTime(120, ctx.currentTime);
+        o1.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.12);
+        g1.gain.setValueAtTime(0.7, ctx.currentTime);
+        g1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+        o1.connect(g1); g1.connect(ctx.destination);
+        o1.start(ctx.currentTime); o1.stop(ctx.currentTime + 0.2);
+        // 2. 皮肉摩擦噪声（噪声 buffer + 高通过滤）
+        const buf = ctx.createBuffer(1, ctx.sampleRate * 0.15, ctx.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 1.5);
+        const src = ctx.createBufferSource(); src.buffer = buf;
+        const filt = ctx.createBiquadFilter(); filt.type = "bandpass"; filt.frequency.value = 1800; filt.Q.value = 0.7;
+        const g2 = ctx.createGain(); g2.gain.setValueAtTime(0.45, ctx.currentTime);
+        g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.14);
+        src.connect(filt); filt.connect(g2); g2.connect(ctx.destination);
+        src.start(ctx.currentTime);
+        // 3. 高频闷响（细小的皮料"啪"声）
+        const o3 = ctx.createOscillator(); const g3 = ctx.createGain();
+        o3.type = "triangle"; o3.frequency.setValueAtTime(280, ctx.currentTime);
+        o3.frequency.exponentialRampToValueAtTime(90, ctx.currentTime + 0.08);
+        g3.gain.setValueAtTime(0.18, ctx.currentTime);
+        g3.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+        o3.connect(g3); g3.connect(ctx.destination);
+        o3.start(ctx.currentTime); o3.stop(ctx.currentTime + 0.12);
+      } catch (e) {}
+    }
+    // 打沙袋（单击/连击，挥拳 + 摆动 + 鼻青脸肿）
     stage.onclick = function () {
       todayCount++;
       saveStore("bag_" + key, todayCount);
@@ -1525,14 +1554,13 @@
       }, 220);
       // 鼻青脸肿阶梯
       applyBruise(todayCount);
-      // 拳套特效
+      // 拳套飞入特效
       hit.classList.remove("hit", "fist");
       void hit.offsetWidth;
       hit.classList.add("hit", "fist");
-      // 文字：连击彩蛋优先
-      let word = combo[todayCount] || WORDS[Math.floor(Math.random() * WORDS.length)];
-      hit.innerHTML = '<span class="hit-word">' + word + '</span><span class="hit-fist">🥊</span>';
-      moodEl.textContent = word;
+      hit.innerHTML = '<span class="hit-fist">🥊</span>';
+      // 挥拳声音
+      playPunch();
     };
   }
 
