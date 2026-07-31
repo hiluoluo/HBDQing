@@ -2041,8 +2041,8 @@
   flatten(NAV);
 
   // 抽屉开合（手机）
-  function openDrawer() { sidebar.classList.add("open"); drawerMask.classList.add("show"); }
-  function closeDrawer() { sidebar.classList.remove("open"); drawerMask.classList.remove("show"); }
+  function openDrawer() { sidebar.classList.add("open"); drawerMask.classList.add("show"); document.body.classList.add("no-scroll"); }
+  function closeDrawer() { sidebar.classList.remove("open"); drawerMask.classList.remove("show"); document.body.classList.remove("no-scroll"); }
   menuBtn.onclick = openDrawer;
   drawerMask.onclick = closeDrawer;
 
