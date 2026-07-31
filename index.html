@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260731a">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260731a">
-  <link rel="stylesheet" href="style.css?v=20260731a">
+  <link rel="manifest" href="manifest.webmanifest?v=20260731b">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260731b">
+  <link rel="stylesheet" href="style.css?v=20260731b">
 </head>
 <body>
   <div class="app">
@@ -44,6 +44,16 @@
         <!-- 首页 -->
         <section class="panel active" id="panel-home">
           <p class="gift" id="gift"></p>
+
+          <!-- 更新通知横幅（有新公告时显示） -->
+          <div class="notice-banner" id="noticeBanner" style="display:none">
+            <span class="notice-emoji">📢</span>
+            <div class="notice-body">
+              <b id="noticeTitle"></b>
+              <p id="noticeText"></p>
+            </div>
+            <button id="noticeClose" class="mini-btn">知道了</button>
+          </div>
 
           <!-- 赛博木鱼 -->
           <div class="card woodfish-card">
@@ -616,6 +626,26 @@
           </div>
         </section>
 
+        <!-- 树洞：写给姐姐的悄悄话收容所（AI 可插拔） -->
+        <section class="panel" id="panel-treehole">
+          <div class="card">
+            <div class="card-head">
+              <h2>☾ 树洞</h2>
+              <span class="hint" id="treeholeAiState">纯本地保存 · 别人看不到</span>
+            </div>
+            <p class="hint">有什么想说的、想吐槽的、藏在心里的小事，都可以写进树洞。只有姐姐自己能看到 ♡</p>
+            <textarea id="treeholeInput" class="log" rows="4" placeholder="把今天想说的话告诉树洞吧…"></textarea>
+            <div class="row" style="margin-top:8px">
+              <button id="treeholeSend" class="btn primary">丢进树洞</button>
+              <span class="hint" id="treeholeSaved"></span>
+            </div>
+          </div>
+          <div class="card">
+            <h2>树洞里的悄悄话</h2>
+            <div id="treeholeList" class="history"></div>
+          </div>
+        </section>
+
         <!-- 我的 · 整体记录时间线 -->
         <section class="panel" id="panel-timeline">
           <div class="card">
@@ -640,10 +670,10 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260731a"></script>
-  <script src="data/quotes.js?v=20260731a"></script>
-  <script src="data/life.js?v=20260731a"></script>
-  <script src="app.js?v=20260731a"></script>
+  <script src="config.js?v=20260731b"></script>
+  <script src="data/quotes.js?v=20260731b"></script>
+  <script src="data/life.js?v=20260731b"></script>
+  <script src="app.js?v=20260731b"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

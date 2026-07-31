@@ -546,3 +546,17 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 
 /* 睡眠补录 */
 .sleep-edit{background:#faf8ff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:8px}
+
+/* ---- 更新通知横幅 ---- */
+.notice-banner{display:flex;align-items:flex-start;gap:10px;background:linear-gradient(160deg,#fff7fb,#f3edff);border:1px solid var(--accent2);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.notice-emoji{font-size:20px;line-height:1.2}
+.notice-body{flex:1;min-width:0}
+.notice-body b{display:block;font-size:14px;color:var(--ink);margin-bottom:4px}
+.notice-body p{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
+
+/* ---- 树洞 ---- */
+.th-entry{background:#faf8ff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:10px}
+.th-head{font-size:11px;color:var(--muted);margin-bottom:4px}
+.th-text{font-size:14px;color:#3a3350;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.th-reply{margin-top:8px;font-size:13px;color:var(--accent);line-height:1.7;background:#f3edff;border-radius:10px;padding:8px 12px}
+.th-reply.dim{color:var(--muted)}

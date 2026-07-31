@@ -143,6 +143,20 @@ window.APP_CONFIG = {
   //          study 学习 | work 工作 | wealth 财富 | diet 饮食运动 | settings 设置
   bottomBar: { left: "home", right: "memoir" },
 
+  // 更新通知：有新功能/公告时填这里，姐姐打开网站会看到横幅提醒（看过一次后不再弹）
+  notice: {
+    title: "树洞上线啦 ☾",
+    text: "给姐姐准备了一个小树洞，藏在侧边栏里。想吐槽的、藏在心里的悄悄话，都可以写进去，只有你自己能看到 ♡",
+    date: "2026-07-31"
+  },
+
+  // AI 树洞：aiEndpoint 填入你的 AI 转发代理地址后启用 AI 回复；留空 = 纯本地记录
+  treeHole: {
+    aiEndpoint: "",  // 例：https://treehole.你的名字.workers.dev/chat
+    aiName: "树洞精灵",
+    placeholder: "把今天想说的话告诉树洞吧…"
+  },
+
   // 与姐姐的回忆录
   memoir: {
     title: "与姐姐的回忆录",
@@ -261,6 +275,7 @@ window.APP_CONFIG = {
     },
 
     { id: "news", label: "热点动态", icon: "✉" },
+    { id: "treehole", label: "树洞", icon: "☾" },
     { id: "memoir", label: "回忆录", icon: "❀" },
     { id: "timeline", label: "我的", icon: "☺" },   // 无下拉：点进去即整体记录时间线
     { id: "about", label: "关于", icon: "✿" }     // 无下拉：点进去是生日祝福

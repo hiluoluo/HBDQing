@@ -1881,6 +1881,80 @@
     renderExercise(); renderPeriod(); renderExam(); renderSleep(); renderSleepChart();
   }
 
+  // ---------- 树洞（悄悄话收容所；AI 可插拔） ----------
+  var TH_KEY = "treehole_entries";
+  function loadTreeHole() { return loadStore(TH_KEY) || []; }
+  function renderTreeHole() {
+    const box = document.getElementById("treeholeList"); if (!box) return;
+    const thCfg = C.treeHole || {};
+    const aiEl = document.getElementById("treeholeAiState");
+    if (aiEl) aiEl.textContent = thCfg.aiEndpoint ? "已接 AI · " + (thCfg.aiName || "树洞精灵") + " 会回话" : "纯本地保存 · 只有姐姐能看到";
+    const inp = document.getElementById("treeholeInput");
+    if (inp && thCfg.placeholder && !inp.getAttribute("data-ph")) { inp.setAttribute("placeholder", thCfg.placeholder); inp.setAttribute("data-ph", "1"); }
+    const btn = document.getElementById("treeholeSend");
+    if (btn && !btn.dataset.wired) {
+      btn.dataset.wired = "1";
+      btn.onclick = function () {
+        const v = (document.getElementById("treeholeInput").value || "").trim();
+        if (!v) { toast("先写点什么再丢进去吧~"); return; }
+        const list = loadTreeHole();
+        list.push({ date: key, time: new Date().toTimeString().slice(0, 5), text: v, reply: "" });
+        saveStore(TH_KEY, list);
+        document.getElementById("treeholeInput").value = "";
+        document.getElementById("treeholeSaved").textContent = "已收好 ♡ " + list.length + " 条悄悄话";
+        renderTreeHole();
+        if (thCfg.aiEndpoint) askTreeHole(list.length - 1);
+        else toast("树洞收到啦，先替你保管着 ♡");
+      };
+    }
+    box.innerHTML = "";
+    const list = loadTreeHole();
+    if (!list.length) { box.innerHTML = '<p class="hint">树洞还空空的，第一个悄悄话等你来写~</p>'; return; }
+    list.slice().reverse().forEach(function (it, ri) {
+      const d = document.createElement("div"); d.className = "th-entry";
+      d.innerHTML = '<div class="th-head"><span class="th-date">' + esc(it.date) + ' ' + esc(it.time || "") + '</span></div>' +
+        '<div class="th-text">' + esc(it.text) + '</div>' +
+        (it.reply ? '<div class="th-reply">' + esc(it.reply) + '</div>' : (it.replying ? '<div class="th-reply dim">树洞精灵正在想怎么回你…</div>' : ''));
+      box.appendChild(d);
+    });
+  }
+  // AI 回复（配置了 aiEndpoint 才启用）
+  function askTreeHole(idx) {
+    const thCfg = C.treeHole || {};
+    const list = loadTreeHole();
+    if (!list[idx] || list[idx].reply) return;
+    list[idx].replying = true; saveStore(TH_KEY, list); renderTreeHole();
+    fetch(thCfg.aiEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: list[idx].text })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      list[idx].replying = false;
+      list[idx].reply = (j && j.reply) || "树洞听见啦，乖，都会好起来的 ♡";
+      saveStore(TH_KEY, list); renderTreeHole();
+    }).catch(function () {
+      list[idx].replying = false; list[idx].reply = "树洞这会儿信号不太好，下次再回你 ♡";
+      saveStore(TH_KEY, list); renderTreeHole();
+    });
+  }
+
+  // ---------- 更新通知横幅（有新公告时，首页顶部弹出一次） ----------
+  function initNotice() {
+    const n = C.notice; if (!n || !n.text) return;
+    const banner = document.getElementById("noticeBanner"); if (!banner) return;
+    let seen = "";
+    try { seen = localStorage.getItem("notice_seen") || ""; } catch (e) {}
+    if (seen === n.date) return;
+    document.getElementById("noticeTitle").textContent = n.title || "更新啦";
+    document.getElementById("noticeText").textContent = n.text;
+    banner.style.display = "flex";
+    const close = document.getElementById("noticeClose");
+    if (close) close.onclick = function () {
+      banner.style.display = "none";
+      try { localStorage.setItem("notice_seen", n.date); } catch (e) {}
+    };
+  }
+
   // ---------- 导航 ----------
   const NAV = C.nav || [
     { id: "home", label: "首页", icon: "⌂" },
@@ -1896,7 +1970,7 @@
   ];
   const sidebarNav = document.getElementById("sidebarNav");
   const sidebar = document.getElementById("sidebar"), drawerMask = document.getElementById("drawerMask"), menuBtn = document.getElementById("menuBtn");
-  const renderMap = { home: renderHome, memoir: renderMemoir, study: renderStudy, work: renderWork, health: renderHealth, meals: renderMeals, wealth: function () { renderWealth(); renderCalendar(); }, diet: renderDiet, travel: renderTravel, checkin: function () {}, answer: renderAnswer, tarot: renderTarot, oracle: renderOracle, exercise: renderExercise, food: renderFood, interest: function () { renderStudy(); }, timeline: renderTimeline, about: function () {} };
+  const renderMap = { home: renderHome, memoir: renderMemoir, study: renderStudy, work: renderWork, health: renderHealth, meals: renderMeals, wealth: function () { renderWealth(); renderCalendar(); }, diet: renderDiet, travel: renderTravel, checkin: function () {}, answer: renderAnswer, tarot: renderTarot, oracle: renderOracle, exercise: renderExercise, food: renderFood, interest: function () { renderStudy(); }, timeline: renderTimeline, about: function () {}, treehole: renderTreeHole };
 
   // 把导航树拍平，便于底部栏查找图标名称
   const flatNav = [];
@@ -2007,7 +2081,7 @@
     if (renderMap[id]) renderMap[id]();
     window.scrollTo(0, 0);
   }
-  initWoodfish(); initQuotes(); initHomeCtrls();
+  initWoodfish(); initQuotes(); initHomeCtrls(); initNotice();
   buildNav();
   showPanel("home");
 })();
