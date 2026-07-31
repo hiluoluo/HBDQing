@@ -586,3 +586,34 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .pet-box img{max-width:120px;max-height:120px;object-fit:contain}
 
 /* ---- 抽屉打开时锁定主页面滚动（防滚动穿透） ---- */
+
+/* ---- 图拉斯沙包（解压） ---- */
+.bag-toolbar{display:flex;gap:8px;margin:4px 0 10px}
+.tool-btn{border:1px solid var(--line);background:#faf8ff;border-radius:10px;padding:7px 14px;font-size:13px;color:var(--muted);cursor:pointer;transition:.15s;font-family:inherit}
+.tool-btn.sel{background:var(--grad);color:#fff;border-color:transparent}
+.bag-stage{position:relative;height:190px;display:flex;flex-direction:column;align-items:center;overflow:hidden;border-radius:14px;background:linear-gradient(180deg,#faf8ff,#f3edff);cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.bag-rope{width:4px;height:34px;background:#8a7fb8;border-radius:2px;margin-top:6px}
+.bag-punch{transform-origin:top center;transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+.bag-punch.swing-l{animation:bagSwingL .5s ease}
+.bag-punch.swing-r{animation:bagSwingR .5s ease}
+@keyframes bagSwingL{0%{transform:rotate(0)}30%{transform:rotate(-22deg)}70%{transform:rotate(10deg)}100%{transform:rotate(0)}}
+@keyframes bagSwingR{0%{transform:rotate(0)}30%{transform:rotate(20deg)}70%{transform:rotate(-9deg)}100%{transform:rotate(0)}}
+.bag-body{position:relative;width:96px;height:118px;border-radius:46px 46px 34px 34px;
+  background:radial-gradient(ellipse at 32% 26%,#e76f6f,#c2453f 55%,#96302c);box-shadow:inset -8px -10px 18px rgba(0,0,0,.18),0 6px 14px rgba(150,48,44,.35)}
+.bag-brand{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;text-align:center;line-height:1.35;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+.bag-brand small{font-size:9px;font-weight:600;opacity:.85}
+.bag-seam{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:70%;height:2px;background:rgba(255,255,255,.4);border-radius:2px}
+.bag-chin{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:18px;height:12px;background:#96302c;border-radius:50%}
+.bag-stand{width:150px;height:10px;background:#c9c2e0;border-radius:8px;margin-top:-4px}
+.bag-hit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5}
+.bag-hit .hit-word{font-size:34px;font-weight:900;color:#e0533d;text-shadow:0 2px 10px rgba(224,83,61,.4);opacity:0;transform:scale(.4) rotate(-8deg)}
+.bag-hit.hit .hit-word{animation:hitPop .55s ease}
+@keyframes hitPop{0%{opacity:0;transform:scale(.4) rotate(-8deg)}25%{opacity:1;transform:scale(1.25) rotate(4deg)}60%{opacity:1;transform:scale(1) rotate(0)}100%{opacity:0;transform:scale(1.05) translateY(-18px)}}
+.bag-hit .hit-fist{font-size:40px;opacity:0;position:absolute;right:6%;bottom:14%}
+.bag-hit.fist .hit-fist{animation:fistFly .4s ease-out}
+@keyframes fistFly{0%{opacity:0;transform:translate(24px,20px) rotate(20deg) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translate(-60px,-48px) rotate(-30deg) scale(1.15)}}
+.bag-hit .hit-whip{position:absolute;opacity:0;pointer-events:none}
+.bag-hit.whip .hit-whip{animation:whipSnap .4s ease-out}
+@keyframes whipSnap{0%{opacity:0}20%{opacity:1}60%{opacity:1}100%{opacity:0}}
+.bag-count{margin-top:10px;font-size:13px;color:var(--muted);text-align:center}
+.bag-count b{color:#e0533d;font-size:16px}

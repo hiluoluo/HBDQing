@@ -1455,6 +1455,50 @@
     };
   }
 
+  // ---------- 图拉斯沙包（发泄解压） ----------
+  function initBag() {
+    const stage = document.getElementById("bagStage"); if (!stage) return;
+    const punch = document.getElementById("bagPunch");
+    const hit = document.getElementById("bagHit");
+    const countEl = document.getElementById("bagCount");
+    const moodEl = document.getElementById("bagMood");
+    let tool = "fist";
+    // 今日发泄次数（独立存，跨天清零）
+    let todayCount = (function () { const t = loadStore("bag_" + key); return t || 0; })();
+    countEl.textContent = todayCount;
+    const WORDS = ["这拳送给烦心事！", "啪！坏心情再见~", "解压 +1，世界美好一点", "打它！叫它烦你！", "疼吗？疼就对了！", "爽！再来一下！", "这一下替姐姐出气！", "好打！心情舒畅！"];
+    const combo = ["连击 5 下，沙包都懵了！", "连击 10 下，沙包求饶了！", "连击 20 下，今天谁也别想惹你！"];
+    // 武器切换
+    Array.prototype.forEach.call(document.querySelectorAll(".tool-btn"), function (b) {
+      b.onclick = function () {
+        Array.prototype.forEach.call(document.querySelectorAll(".tool-btn"), function (bb) { bb.classList.remove("sel"); });
+        b.classList.add("sel");
+        tool = b.dataset.tool;
+      };
+    });
+    // 打沙包
+    stage.onclick = function () {
+      todayCount++;
+      saveStore("bag_" + key, todayCount);
+      countEl.textContent = todayCount;
+      // 摆动方向交替
+      punch.classList.remove("swing-l", "swing-r");
+      void punch.offsetWidth;
+      punch.classList.add(todayCount % 2 ? "swing-l" : "swing-r");
+      // 特效
+      hit.classList.remove("hit", "fist", "whip");
+      void hit.offsetWidth;
+      hit.classList.add("hit", tool);
+      // 文字：连击彩蛋优先
+      let word = WORDS[Math.floor(Math.random() * WORDS.length)];
+      if (todayCount === 10) word = combo[0];
+      else if (todayCount === 20) word = combo[1];
+      else if (todayCount === 50) word = combo[2];
+      hit.innerHTML = '<span class="hit-word">' + word + '</span>' + (tool === "fist" ? '<span class="hit-fist">🥊</span>' : '<svg class="hit-whip" width="120" height="60" viewBox="0 0 120 60"><path d="M6 54 C 30 46 44 30 40 14 C 38 6 60 10 72 22 C 84 34 104 26 112 14" fill="none" stroke="#8a7fb8" stroke-width="3" stroke-linecap="round"/></svg>');
+      moodEl.textContent = word;
+    };
+  }
+
   // 喝水 8 杯（单列 · 水滴 💧 · 点亮）
   function paintCups() {
     const box = document.getElementById("cups"); if (!box) return;
@@ -2135,7 +2179,7 @@
     if (renderMap[id]) renderMap[id]();
     window.scrollTo(0, 0);
   }
-  initWoodfish(); initQuotes(); initHomeCtrls(); initNotice();
+  initWoodfish(); initQuotes(); initHomeCtrls(); initNotice(); initBag();
   buildNav();
   showPanel("home");
 })();
