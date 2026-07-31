@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260731j">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260731j">
-  <link rel="stylesheet" href="style.css?v=20260731j">
+  <link rel="manifest" href="manifest.webmanifest?v=20260731k">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260731k">
+  <link rel="stylesheet" href="style.css?v=20260731k">
 </head>
 <body>
   <div class="app">
@@ -679,22 +679,33 @@
           <div class="card">
             <div class="card-head">
               <h2>☾ 树洞</h2>
-              <span class="hint" id="treeholeAiState">纯本地保存 · 别人看不到</span>
+              <span class="hint" id="treeholeAiState">已接 AI · 树洞精灵</span>
             </div>
             <!-- Q 版桌宠占位：等发图后替换成 Q 版小人 -->
-            <div class="pet-box" id="petBox">
+            <div class="pet-box" id="petBox" style="display:none">
               <div class="pet-placeholder">🐣 桌宠待入驻</div>
             </div>
-            <p class="hint">有什么想说的、想吐槽的、藏在心里的小事，都可以写进树洞。只有姐姐自己能看到 ♡</p>
-            <textarea id="treeholeInput" class="log" rows="4" placeholder="把今天想说的话告诉树洞吧…"></textarea>
-            <div class="row" style="margin-top:8px">
-              <button id="treeholeSend" class="btn primary">丢进树洞</button>
-              <span class="hint" id="treeholeSaved"></span>
+            <!-- AI 对话框 -->
+            <div class="chat-box" id="chatBox"></div>
+            <div class="chat-input-row">
+              <input id="chatInput" class="flex-input" placeholder="和树洞精灵说点什么…">
+              <button id="chatSend" class="btn primary">发送</button>
+            </div>
+            <div class="chat-actions">
+              <button id="chatEnd" class="btn ghost">🕯️ 结束对话</button>
+              <span class="hint">聊后即焚 · 结束后记录即刻消失</span>
             </div>
           </div>
-          <div class="card">
-            <h2>树洞里的悄悄话</h2>
-            <div id="treeholeList" class="history"></div>
+          <!-- 焚毁确认弹窗 -->
+          <div class="chat-modal-mask" id="chatModal" style="display:none">
+            <div class="chat-modal">
+              <div class="chat-modal-icon">🕯️</div>
+              <p class="chat-modal-text">结束本次对话后，所有记录会即刻销毁。<br>守护姐姐的小秘密与小情绪 ♡</p>
+              <div class="row" style="gap:10px;justify-content:center;margin-top:16px">
+                <button id="chatModalOk" class="btn primary">确认结束</button>
+                <button id="chatModalCancel" class="btn ghost">再想想</button>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -746,13 +757,13 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260731j"></script>
-  <script src="data/quotes.js?v=20260731j"></script>
-  <script src="data/life.js?v=20260731j"></script>
-  <script src="data/fitness.js?v=20260731j"></script>
-  <script src="data/szfood.js?v=20260731j"></script>
-  <script src="data/korean.js?v=20260731j"></script>
-  <script src="app.js?v=20260731j"></script>
+  <script src="config.js?v=20260731k"></script>
+  <script src="data/quotes.js?v=20260731k"></script>
+  <script src="data/life.js?v=20260731k"></script>
+  <script src="data/fitness.js?v=20260731k"></script>
+  <script src="data/szfood.js?v=20260731k"></script>
+  <script src="data/korean.js?v=20260731k"></script>
+  <script src="app.js?v=20260731k"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

@@ -1990,61 +1990,73 @@
     renderExercise(); renderPeriod(); renderExam(); renderSleep(); renderSleepChart();
   }
 
-  // ---------- 树洞（悄悄话收容所；AI 可插拔） ----------
-  var TH_KEY = "treehole_entries";
-  function loadTreeHole() { return loadStore(TH_KEY) || []; }
+  // ---------- 树洞（AI 对话框 · 聊后即焚） ----------
+  var CHAT_KEY = "treehole_chat";
+  function loadChat() { try { return JSON.parse(localStorage.getItem(CHAT_KEY)) || []; } catch (e) { return []; } }
+  function saveChat(h) { try { localStorage.setItem(CHAT_KEY, JSON.stringify(h)); } catch (e) {} }
+  function clearChat() { try { localStorage.removeItem(CHAT_KEY); } catch (e) {} }
   function renderTreeHole() {
-    const box = document.getElementById("treeholeList"); if (!box) return;
+    const box = document.getElementById("chatBox"); if (!box) return;
     const thCfg = C.treeHole || {};
     const aiEl = document.getElementById("treeholeAiState");
-    if (aiEl) aiEl.textContent = thCfg.aiEndpoint ? "已接 AI · " + (thCfg.aiName || "树洞精灵") + " 会回话" : "纯本地保存 · 只有姐姐能看到";
-    const inp = document.getElementById("treeholeInput");
-    if (inp && thCfg.placeholder && !inp.getAttribute("data-ph")) { inp.setAttribute("placeholder", thCfg.placeholder); inp.setAttribute("data-ph", "1"); }
-    const btn = document.getElementById("treeholeSend");
-    if (btn && !btn.dataset.wired) {
-      btn.dataset.wired = "1";
-      btn.onclick = function () {
-        const v = (document.getElementById("treeholeInput").value || "").trim();
-        if (!v) { toast("先写点什么再丢进去吧~"); return; }
-        const list = loadTreeHole();
-        list.push({ date: key, time: new Date().toTimeString().slice(0, 5), text: v, reply: "" });
-        saveStore(TH_KEY, list);
-        document.getElementById("treeholeInput").value = "";
-        document.getElementById("treeholeSaved").textContent = "已收好 ♡ " + list.length + " 条悄悄话";
-        renderTreeHole();
-        if (thCfg.aiEndpoint) askTreeHole(list.length - 1);
-        else toast("树洞收到啦，先替你保管着 ♡");
-      };
-    }
+    if (aiEl) aiEl.textContent = thCfg.aiEndpoint ? "已接 AI · " + (thCfg.aiName || "树洞精灵") : "树洞精灵暂未接入";
+    const history = loadChat();
     box.innerHTML = "";
-    const list = loadTreeHole();
-    if (!list.length) { box.innerHTML = '<p class="hint">树洞还空空的，第一个悄悄话等你来写~</p>'; return; }
-    list.slice().reverse().forEach(function (it, ri) {
-      const d = document.createElement("div"); d.className = "th-entry";
-      d.innerHTML = '<div class="th-head"><span class="th-date">' + esc(it.date) + ' ' + esc(it.time || "") + '</span></div>' +
-        '<div class="th-text">' + esc(it.text) + '</div>' +
-        (it.reply ? '<div class="th-reply">' + esc(it.reply) + '</div>' : (it.replying ? '<div class="th-reply dim">树洞精灵正在想怎么回你…</div>' : ''));
-      box.appendChild(d);
+    if (!history.length) {
+      box.innerHTML = '<div class="chat-msg ai"><div class="bubble">我是树洞精灵 🐣 姐姐有什么想说的，都丢给我吧~ 这里只有我们俩，说完就焚毁，不留痕迹。</div></div>';
+    }
+    history.forEach(function (m) {
+      if (m.role === "user") box.innerHTML += '<div class="chat-msg me"><div class="bubble">' + esc(m.content) + '</div></div>';
+      else box.innerHTML += '<div class="chat-msg ai"><div class="bubble">' + esc(m.content) + '</div></div>';
     });
-  }
-  // AI 回复（配置了 aiEndpoint 才启用）
-  function askTreeHole(idx) {
-    const thCfg = C.treeHole || {};
-    const list = loadTreeHole();
-    if (!list[idx] || list[idx].reply) return;
-    list[idx].replying = true; saveStore(TH_KEY, list); renderTreeHole();
-    fetch(thCfg.aiEndpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: list[idx].text })
-    }).then(function (r) { return r.json(); }).then(function (j) {
-      list[idx].replying = false;
-      list[idx].reply = (j && j.reply) || "树洞听见啦，乖，都会好起来的 ♡";
-      saveStore(TH_KEY, list); renderTreeHole();
-    }).catch(function () {
-      list[idx].replying = false; list[idx].reply = "树洞这会儿信号不太好，下次再回你 ♡";
-      saveStore(TH_KEY, list); renderTreeHole();
-    });
+    box.scrollTop = box.scrollHeight;
+    const input = document.getElementById("chatInput");
+    const send = document.getElementById("chatSend");
+    if (send && !send.dataset.wired) {
+      send.dataset.wired = "1";
+      const doSend = function () {
+        const v = input.value.trim();
+        if (!v) { toast("先写点什么吧~"); return; }
+        if (!thCfg.aiEndpoint) { toast("树洞精灵还没接入 AI，稍等~"); return; }
+        input.value = "";
+        const h = loadChat();
+        h.push({ role: "user", content: v });
+        saveChat(h);
+        renderTreeHole();
+        box.innerHTML += '<div class="chat-msg ai"><div class="bubble thinking">树洞精灵正在想…</div></div>';
+        box.scrollTop = box.scrollHeight;
+        fetch(thCfg.aiEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: h })
+        }).then(function (r) { return r.json(); }).then(function (j) {
+          const hh = loadChat();
+          hh.push({ role: "assistant", content: (j && j.reply) || "树洞听见啦，乖，都会好起来的 ♡" });
+          saveChat(hh);
+          renderTreeHole();
+        }).catch(function () {
+          const hh = loadChat();
+          hh.push({ role: "assistant", content: "树洞这会儿信号不太好，下次再回你 ♡" });
+          saveChat(hh);
+          renderTreeHole();
+        });
+      };
+      send.onclick = doSend;
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") doSend(); });
+    }
+    // 结束对话（聊后即焚）
+    const endBtn = document.getElementById("chatEnd");
+    if (endBtn && !endBtn.dataset.wired) {
+      endBtn.dataset.wired = "1";
+      endBtn.onclick = function () { document.getElementById("chatModal").style.display = "flex"; };
+      document.getElementById("chatModalOk").onclick = function () {
+        clearChat();
+        document.getElementById("chatModal").style.display = "none";
+        renderTreeHole();
+        toast("对话已销毁，小秘密安全了 ♡");
+      };
+      document.getElementById("chatModalCancel").onclick = function () { document.getElementById("chatModal").style.display = "none"; };
+    }
   }
 
   // ---------- 更新通知横幅（有新公告时，首页顶部弹出一次） ----------
