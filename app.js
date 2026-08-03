@@ -34,12 +34,13 @@
 
   // 全局：HTML 转义
   function esc(s) { return (s == null ? "" : String(s)).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
-  // 全局：带超时的 JSON 请求
-  function fetchJSON(url, ms) {
+  // 全局：带超时的 JSON 请求（opts 可传 fetch 选项，如 { cache: "no-store" } 绕过缓存）
+  function fetchJSON(url, ms, opts) {
     return new Promise(function (resolve, reject) {
       const ctrl = ("AbortController" in window) ? new AbortController() : null;
       const timer = setTimeout(function () { if (ctrl) ctrl.abort(); reject(new Error("timeout")); }, ms || 10000);
-      fetch(url, ctrl ? { signal: ctrl.signal } : {}).then(function (r) {
+      const init = Object.assign({}, opts || {}, ctrl ? { signal: ctrl.signal } : {});
+      fetch(url, init).then(function (r) {
         clearTimeout(timer);
         if (!r.ok) { reject(new Error("http " + r.status)); return; }
         resolve(r.json());
@@ -519,9 +520,16 @@
       })();
     }
     // 优先读取定时任务预抓取的 data/news.json（同源、无跨域、关站也照常更新）
+    // cache: "no-store" 强制绕过 HTTP/CDN 缓存 + ?t= 时间戳防浏览器缓存，双保险拿最新数据
     function loadNewsCache(done) {
-      fetchJSON("./data/news.json?t=" + Date.now(), 8000).then(function (json) {
+      fetchJSON("./data/news.json?t=" + Date.now(), 8000, { cache: "no-store" }).then(function (json) {
         if (!json || !json.sources) { done(); return; }
+        // 显示数据更新时间（北京时间），一眼确认是不是最新
+        if (json.updated) {
+          const u = new Date(json.updated);
+          const pad = function (n) { return (n < 10 ? "0" : "") + n; };
+          summaryEl.textContent = "数据更新于 " + (u.getMonth() + 1) + "月" + u.getDate() + "日 " + pad(u.getHours() + 8) + ":" + pad(u.getMinutes()) + " · 每 2 小时自动刷新";
+        }
         all.forEach(function (s) {
           const sd = json.sources[s.id]; if (!sd) return;
           const items = (sd.items || []).map(function (it) {

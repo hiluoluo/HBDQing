@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="每日助手">
-  <link rel="manifest" href="manifest.webmanifest?v=20260731L">
-  <link rel="apple-touch-icon" href="icon-192.png?v=20260731L">
-  <link rel="stylesheet" href="style.css?v=20260731L">
+  <link rel="manifest" href="manifest.webmanifest?v=20260803a">
+  <link rel="apple-touch-icon" href="icon-192.png?v=20260803a">
+  <link rel="stylesheet" href="style.css?v=20260803a">
 </head>
 <body>
   <div class="app">
@@ -757,17 +757,21 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260731L"></script>
-  <script src="data/quotes.js?v=20260731L"></script>
-  <script src="data/life.js?v=20260731L"></script>
-  <script src="data/fitness.js?v=20260731L"></script>
-  <script src="data/szfood.js?v=20260731L"></script>
-  <script src="data/korean.js?v=20260731L"></script>
-  <script src="app.js?v=20260731L"></script>
+  <script src="config.js?v=20260803a"></script>
+  <script src="data/quotes.js?v=20260803a"></script>
+  <script src="data/life.js?v=20260803a"></script>
+  <script src="data/fitness.js?v=20260803a"></script>
+  <script src="data/szfood.js?v=20260803a"></script>
+  <script src="data/korean.js?v=20260803a"></script>
+  <script src="app.js?v=20260803a"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw.js?v=20260729').catch(function () {});
+        // 注册不带缓存参数的 sw.js，并强制绕过 HTTP 缓存检查（保证每次都能及时更新 SW）
+        navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) {
+          // 主动检查一次更新：每次打开页面都看看有没有新版 sw.js
+          reg.update();
+        }).catch(function () {});
       });
     }
   </script>
