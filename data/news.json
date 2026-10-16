@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T00:26:26Z",
+  "updated": "2026-10-16T07:14:40Z",
   "sources": {
     "auth": {
       "label": "新华社早报",
@@ -10,79 +10,79 @@
       "label": "微博热搜",
       "items": [
         {
-          "title": "深圳全市全天禁鸣喇叭5年",
-          "url": "https://s.weibo.com/weibo?q=%23%E6%B7%B1%E5%9C%B3%E5%85%A8%E5%B8%82%E5%85%A8%E5%A4%A9%E7%A6%81%E9%B8%A3%E5%96%87%E5%8F%AD5%E5%B9%B4%23",
-          "hot": "141.3万"
+          "title": "9.9级地震是什么概念",
+          "url": "https://s.weibo.com/weibo?q=%239.9%E7%BA%A7%E5%9C%B0%E9%9C%87%E6%98%AF%E4%BB%80%E4%B9%88%E6%A6%82%E5%BF%B5%23",
+          "hot": "117.2万"
         },
         {
-          "title": "看似热量高实则巨低卡的善良食物",
-          "url": "https://s.weibo.com/weibo?q=%23%E7%9C%8B%E4%BC%BC%E7%83%AD%E9%87%8F%E9%AB%98%E5%AE%9E%E5%88%99%E5%B7%A8%E4%BD%8E%E5%8D%A1%E7%9A%84%E5%96%84%E8%89%AF%E9%A3%9F%E7%89%A9%23",
-          "hot": "90.4万"
+          "title": "芒果真的拍了再见朋友",
+          "url": "https://s.weibo.com/weibo?q=%23%E8%8A%92%E6%9E%9C%E7%9C%9F%E7%9A%84%E6%8B%8D%E4%BA%86%E5%86%8D%E8%A7%81%E6%9C%8B%E5%8F%8B%23",
+          "hot": "84.7万"
         },
         {
-          "title": "起初他们参加红军只为找条活路",
-          "url": "https://s.weibo.com/weibo?q=%23%E8%B5%B7%E5%88%9D%E4%BB%96%E4%BB%AC%E5%8F%82%E5%8A%A0%E7%BA%A2%E5%86%9B%E5%8F%AA%E4%B8%BA%E6%89%BE%E6%9D%A1%E6%B4%BB%E8%B7%AF%23",
-          "hot": "70.5万"
+          "title": "长征路上山河新",
+          "url": "https://s.weibo.com/weibo?q=%23%E9%95%BF%E5%BE%81%E8%B7%AF%E4%B8%8A%E5%B1%B1%E6%B2%B3%E6%96%B0%23",
+          "hot": "65.4万"
         },
         {
-          "title": "特朗普发长文痛批泽连斯基",
-          "url": "https://s.weibo.com/weibo?q=%23%E7%89%B9%E6%9C%97%E6%99%AE%E5%8F%91%E9%95%BF%E6%96%87%E7%97%9B%E6%89%B9%E6%B3%BD%E8%BF%9E%E6%96%AF%E5%9F%BA%23",
-          "hot": "65.9万"
+          "title": "母子衣衫不整游荡当事女子回应",
+          "url": "https://s.weibo.com/weibo?q=%23%E6%AF%8D%E5%AD%90%E8%A1%A3%E8%A1%AB%E4%B8%8D%E6%95%B4%E6%B8%B8%E8%8D%A1%E5%BD%93%E4%BA%8B%E5%A5%B3%E5%AD%90%E5%9B%9E%E5%BA%94%23",
+          "hot": "47.6万"
         },
         {
-          "title": "马斯克称中国将生产大量内存条",
-          "url": "https://s.weibo.com/weibo?q=%23%E9%A9%AC%E6%96%AF%E5%85%8B%E7%A7%B0%E4%B8%AD%E5%9B%BD%E5%B0%86%E7%94%9F%E4%BA%A7%E5%A4%A7%E9%87%8F%E5%86%85%E5%AD%98%E6%9D%A1%23",
-          "hot": "54.1万"
+          "title": "嫁金钗开播",
+          "url": "https://s.weibo.com/weibo?q=%23%E5%AB%81%E9%87%91%E9%92%97%E5%BC%80%E6%92%AD%23",
+          "hot": "37.4万"
         },
         {
-          "title": "AI射雕英雄传看起来比人演的好",
-          "url": "https://s.weibo.com/weibo?q=%23AI%E5%B0%84%E9%9B%95%E8%8B%B1%E9%9B%84%E4%BC%A0%E7%9C%8B%E8%B5%B7%E6%9D%A5%E6%AF%94%E4%BA%BA%E6%BC%94%E7%9A%84%E5%A5%BD%23",
-          "hot": "53.1万"
+          "title": "陈奕迅演唱会官宣",
+          "url": "https://s.weibo.com/weibo?q=%23%E9%99%88%E5%A5%95%E8%BF%85%E6%BC%94%E5%94%B1%E4%BC%9A%E5%AE%98%E5%AE%A3%23",
+          "hot": "36万"
         },
         {
-          "title": "马斯克为何关注中国内存",
-          "url": "https://s.weibo.com/weibo?q=%23%E9%A9%AC%E6%96%AF%E5%85%8B%E4%B8%BA%E4%BD%95%E5%85%B3%E6%B3%A8%E4%B8%AD%E5%9B%BD%E5%86%85%E5%AD%98%23",
-          "hot": "40.2万"
+          "title": "维密请假事件当事人已离职",
+          "url": "https://s.weibo.com/weibo?q=%23%E7%BB%B4%E5%AF%86%E8%AF%B7%E5%81%87%E4%BA%8B%E4%BB%B6%E5%BD%93%E4%BA%8B%E4%BA%BA%E5%B7%B2%E7%A6%BB%E8%81%8C%23",
+          "hot": "36万"
         },
         {
-          "title": "多部门介入母子衣衫不整街头游荡",
-          "url": "https://s.weibo.com/weibo?q=%23%E5%A4%9A%E9%83%A8%E9%97%A8%E4%BB%8B%E5%85%A5%E6%AF%8D%E5%AD%90%E8%A1%A3%E8%A1%AB%E4%B8%8D%E6%95%B4%E8%A1%97%E5%A4%B4%E6%B8%B8%E8%8D%A1%23",
-          "hot": "33.8万"
+          "title": "肯德基将换百事可乐为可口可乐",
+          "url": "https://s.weibo.com/weibo?q=%23%E8%82%AF%E5%BE%B7%E5%9F%BA%E5%B0%86%E6%8D%A2%E7%99%BE%E4%BA%8B%E5%8F%AF%E4%B9%90%E4%B8%BA%E5%8F%AF%E5%8F%A3%E5%8F%AF%E4%B9%90%23",
+          "hot": "35.7万"
         },
         {
-          "title": "嫁金钗",
-          "url": "https://s.weibo.com/weibo?q=%23%E5%AB%81%E9%87%91%E9%92%97%23",
-          "hot": "33.5万"
+          "title": "女子不花钱起号火到外网",
+          "url": "https://s.weibo.com/weibo?q=%23%E5%A5%B3%E5%AD%90%E4%B8%8D%E8%8A%B1%E9%92%B1%E8%B5%B7%E5%8F%B7%E7%81%AB%E5%88%B0%E5%A4%96%E7%BD%91%23",
+          "hot": "35.4万"
         },
         {
-          "title": "尚公主 剧宣",
-          "url": "https://s.weibo.com/weibo?q=%23%E5%B0%9A%E5%85%AC%E4%B8%BB+%E5%89%A7%E5%AE%A3%23",
-          "hot": "26.1万"
+          "title": "日本误报9.9级地震",
+          "url": "https://s.weibo.com/weibo?q=%23%E6%97%A5%E6%9C%AC%E8%AF%AF%E6%8A%A59.9%E7%BA%A7%E5%9C%B0%E9%9C%87%23",
+          "hot": "35.2万"
         },
         {
-          "title": "黄子韬 徐艺洋",
-          "url": "https://s.weibo.com/weibo?q=%23%E9%BB%84%E5%AD%90%E9%9F%AC+%E5%BE%90%E8%89%BA%E6%B4%8B%23",
-          "hot": "26.1万"
+          "title": "黄子韬儿子国籍",
+          "url": "https://s.weibo.com/weibo?q=%23%E9%BB%84%E5%AD%90%E9%9F%AC%E5%84%BF%E5%AD%90%E5%9B%BD%E7%B1%8D%23",
+          "hot": "35.1万"
         },
         {
-          "title": "央企中建七局拖欠农民工工资",
-          "url": "https://s.weibo.com/weibo?q=%23%E5%A4%AE%E4%BC%81%E4%B8%AD%E5%BB%BA%E4%B8%83%E5%B1%80%E6%8B%96%E6%AC%A0%E5%86%9C%E6%B0%91%E5%B7%A5%E5%B7%A5%E8%B5%84%23",
-          "hot": "25.6万"
+          "title": "百事回应美国肯德基改可口可乐",
+          "url": "https://s.weibo.com/weibo?q=%23%E7%99%BE%E4%BA%8B%E5%9B%9E%E5%BA%94%E7%BE%8E%E5%9B%BD%E8%82%AF%E5%BE%B7%E5%9F%BA%E6%94%B9%E5%8F%AF%E5%8F%A3%E5%8F%AF%E4%B9%90%23",
+          "hot": "35万"
         },
         {
-          "title": "大龄读研见老师两面就退学",
-          "url": "https://s.weibo.com/weibo?q=%23%E5%A4%A7%E9%BE%84%E8%AF%BB%E7%A0%94%E8%A7%81%E8%80%81%E5%B8%88%E4%B8%A4%E9%9D%A2%E5%B0%B1%E9%80%80%E5%AD%A6%23",
-          "hot": "25.4万"
+          "title": "曝何穗面试维密被拒",
+          "url": "https://s.weibo.com/weibo?q=%23%E6%9B%9D%E4%BD%95%E7%A9%97%E9%9D%A2%E8%AF%95%E7%BB%B4%E5%AF%86%E8%A2%AB%E6%8B%92%23",
+          "hot": "34.7万"
         },
         {
-          "title": "为何年轻人不爱去菜市场",
-          "url": "https://s.weibo.com/weibo?q=%23%E4%B8%BA%E4%BD%95%E5%B9%B4%E8%BD%BB%E4%BA%BA%E4%B8%8D%E7%88%B1%E5%8E%BB%E8%8F%9C%E5%B8%82%E5%9C%BA%23",
-          "hot": "24.9万"
+          "title": "好奇百元回馈家长信任",
+          "url": "https://s.weibo.com/weibo?q=%23%E5%A5%BD%E5%A5%87%E7%99%BE%E5%85%83%E5%9B%9E%E9%A6%88%E5%AE%B6%E9%95%BF%E4%BF%A1%E4%BB%BB%23",
+          "hot": "34.6万"
         },
         {
-          "title": "张月看李昀锐接孟子义下班的反应",
-          "url": "https://s.weibo.com/weibo?q=%23%E5%BC%A0%E6%9C%88%E7%9C%8B%E6%9D%8E%E6%98%80%E9%94%90%E6%8E%A5%E5%AD%9F%E5%AD%90%E4%B9%89%E4%B8%8B%E7%8F%AD%E7%9A%84%E5%8F%8D%E5%BA%94%23",
-          "hot": "24.6万"
+          "title": "理想高管说特斯拉Roadster面目全非",
+          "url": "https://s.weibo.com/weibo?q=%23%E7%90%86%E6%83%B3%E9%AB%98%E7%AE%A1%E8%AF%B4%E7%89%B9%E6%96%AF%E6%8B%89Roadster%E9%9D%A2%E7%9B%AE%E5%85%A8%E9%9D%9E%23",
+          "hot": "34.4万"
         }
       ]
     },
@@ -90,79 +90,79 @@
       "label": "抖音热榜",
       "items": [
         {
-          "title": "抖音商城双11超级补贴来啦",
-          "url": "https://www.douyin.com/search/%E6%8A%96%E9%9F%B3%E5%95%86%E5%9F%8E%E5%8F%8C11%E8%B6%85%E7%BA%A7%E8%A1%A5%E8%B4%B4%E6%9D%A5%E5%95%A6?type=general",
-          "hot": "1213.1万"
-        },
-        {
-          "title": "当我拥有自己的ai播放器",
-          "url": "https://www.douyin.com/search/%E5%BD%93%E6%88%91%E6%8B%A5%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84ai%E6%92%AD%E6%94%BE%E5%99%A8?type=general",
-          "hot": "1135.7万"
-        },
-        {
-          "title": "第140届广交会开展",
-          "url": "https://www.douyin.com/search/%E7%AC%AC140%E5%B1%8A%E5%B9%BF%E4%BA%A4%E4%BC%9A%E5%BC%80%E5%B1%95?type=general",
-          "hot": "1056.3万"
-        },
-        {
           "title": "淡人早秋穿搭",
           "url": "https://www.douyin.com/search/%E6%B7%A1%E4%BA%BA%E6%97%A9%E7%A7%8B%E7%A9%BF%E6%90%AD?type=general",
-          "hot": "1041万"
+          "hot": "1257.3万"
         },
         {
-          "title": "全国赏秋进度条",
-          "url": "https://www.douyin.com/search/%E5%85%A8%E5%9B%BD%E8%B5%8F%E7%A7%8B%E8%BF%9B%E5%BA%A6%E6%9D%A1?type=general",
-          "hot": "969.7万"
+          "title": "英雄联盟S16世界赛开赛",
+          "url": "https://www.douyin.com/search/%E8%8B%B1%E9%9B%84%E8%81%94%E7%9B%9FS16%E4%B8%96%E7%95%8C%E8%B5%9B%E5%BC%80%E8%B5%9B?type=general",
+          "hot": "1207.4万"
         },
         {
-          "title": "全三角洲都在老太巡猎",
-          "url": "https://www.douyin.com/search/%E5%85%A8%E4%B8%89%E8%A7%92%E6%B4%B2%E9%83%BD%E5%9C%A8%E8%80%81%E5%A4%AA%E5%B7%A1%E7%8C%8E?type=general",
-          "hot": "875.5万"
+          "title": "本届广交会实现多项首次突破",
+          "url": "https://www.douyin.com/search/%E6%9C%AC%E5%B1%8A%E5%B9%BF%E4%BA%A4%E4%BC%9A%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E9%A6%96%E6%AC%A1%E7%AA%81%E7%A0%B4?type=general",
+          "hot": "981.4万"
         },
         {
-          "title": "这一步闪进景区宣传片了",
-          "url": "https://www.douyin.com/search/%E8%BF%99%E4%B8%80%E6%AD%A5%E9%97%AA%E8%BF%9B%E6%99%AF%E5%8C%BA%E5%AE%A3%E4%BC%A0%E7%89%87%E4%BA%86?type=general",
-          "hot": "780万"
+          "title": "火箭116:89主场大胜雷霆",
+          "url": "https://www.douyin.com/search/%E7%81%AB%E7%AE%AD116%3A89%E4%B8%BB%E5%9C%BA%E5%A4%A7%E8%83%9C%E9%9B%B7%E9%9C%86?type=general",
+          "hot": "939.9万"
         },
         {
-          "title": "乌鲁木齐迎来初雪",
-          "url": "https://www.douyin.com/search/%E4%B9%8C%E9%B2%81%E6%9C%A8%E9%BD%90%E8%BF%8E%E6%9D%A5%E5%88%9D%E9%9B%AA?type=general",
-          "hot": "779.8万"
+          "title": "解放军南北六海域同时集训",
+          "url": "https://www.douyin.com/search/%E8%A7%A3%E6%94%BE%E5%86%9B%E5%8D%97%E5%8C%97%E5%85%AD%E6%B5%B7%E5%9F%9F%E5%90%8C%E6%97%B6%E9%9B%86%E8%AE%AD?type=general",
+          "hot": "883.5万"
         },
         {
-          "title": "跟李静一起大声谈更年期",
-          "url": "https://www.douyin.com/search/%E8%B7%9F%E6%9D%8E%E9%9D%99%E4%B8%80%E8%B5%B7%E5%A4%A7%E5%A3%B0%E8%B0%88%E6%9B%B4%E5%B9%B4%E6%9C%9F?type=general",
-          "hot": "778.2万"
-        },
-        {
-          "title": "日美无视抗议坚持联合军演",
-          "url": "https://www.douyin.com/search/%E6%97%A5%E7%BE%8E%E6%97%A0%E8%A7%86%E6%8A%97%E8%AE%AE%E5%9D%9A%E6%8C%81%E8%81%94%E5%90%88%E5%86%9B%E6%BC%94?type=general",
-          "hot": "777.5万"
+          "title": "胡塞袭击利雅得机场致17死333伤",
+          "url": "https://www.douyin.com/search/%E8%83%A1%E5%A1%9E%E8%A2%AD%E5%87%BB%E5%88%A9%E9%9B%85%E5%BE%97%E6%9C%BA%E5%9C%BA%E8%87%B417%E6%AD%BB333%E4%BC%A4?type=general",
+          "hot": "865.3万"
         },
         {
           "title": "DeepSeek发布补偿方案",
           "url": "https://www.douyin.com/search/DeepSeek%E5%8F%91%E5%B8%83%E8%A1%A5%E5%81%BF%E6%96%B9%E6%A1%88?type=general",
-          "hot": "774.9万"
+          "hot": "770.5万"
         },
         {
-          "title": "科技股调整砸出黄金坑了吗",
-          "url": "https://www.douyin.com/search/%E7%A7%91%E6%8A%80%E8%82%A1%E8%B0%83%E6%95%B4%E7%A0%B8%E5%87%BA%E9%BB%84%E9%87%91%E5%9D%91%E4%BA%86%E5%90%97?type=general",
-          "hot": "773.5万"
+          "title": "这一步闪进景区宣传片了",
+          "url": "https://www.douyin.com/search/%E8%BF%99%E4%B8%80%E6%AD%A5%E9%97%AA%E8%BF%9B%E6%99%AF%E5%8C%BA%E5%AE%A3%E4%BC%A0%E7%89%87%E4%BA%86?type=general",
+          "hot": "769.6万"
         },
         {
-          "title": "李一桐常华森互相展示家产",
-          "url": "https://www.douyin.com/search/%E6%9D%8E%E4%B8%80%E6%A1%90%E5%B8%B8%E5%8D%8E%E6%A3%AE%E4%BA%92%E7%9B%B8%E5%B1%95%E7%A4%BA%E5%AE%B6%E4%BA%A7?type=general",
-          "hot": "772万"
+          "title": "今年第30号台风蔷琵已生成",
+          "url": "https://www.douyin.com/search/%E4%BB%8A%E5%B9%B4%E7%AC%AC30%E5%8F%B7%E5%8F%B0%E9%A3%8E%E8%94%B7%E7%90%B5%E5%B7%B2%E7%94%9F%E6%88%90?type=general",
+          "hot": "768.5万"
         },
         {
-          "title": "网传超级工程隧洞“挖偏”系谣言",
-          "url": "https://www.douyin.com/search/%E7%BD%91%E4%BC%A0%E8%B6%85%E7%BA%A7%E5%B7%A5%E7%A8%8B%E9%9A%A7%E6%B4%9E%E2%80%9C%E6%8C%96%E5%81%8F%E2%80%9D%E7%B3%BB%E8%B0%A3%E8%A8%80?type=general",
-          "hot": "771.6万"
+          "title": "特朗普指责泽连斯基制造麻烦",
+          "url": "https://www.douyin.com/search/%E7%89%B9%E6%9C%97%E6%99%AE%E6%8C%87%E8%B4%A3%E6%B3%BD%E8%BF%9E%E6%96%AF%E5%9F%BA%E5%88%B6%E9%80%A0%E9%BA%BB%E7%83%A6?type=general",
+          "hot": "767.8万"
         },
         {
-          "title": "丞磊追剧团还原麻将名场面",
-          "url": "https://www.douyin.com/search/%E4%B8%9E%E7%A3%8A%E8%BF%BD%E5%89%A7%E5%9B%A2%E8%BF%98%E5%8E%9F%E9%BA%BB%E5%B0%86%E5%90%8D%E5%9C%BA%E9%9D%A2?type=general",
-          "hot": "771.3万"
+          "title": "特斯拉发布第二代Roadster跑车",
+          "url": "https://www.douyin.com/search/%E7%89%B9%E6%96%AF%E6%8B%89%E5%8F%91%E5%B8%83%E7%AC%AC%E4%BA%8C%E4%BB%A3Roadster%E8%B7%91%E8%BD%A6?type=general",
+          "hot": "767.2万"
+        },
+        {
+          "title": "日美无视抗议坚持联合军演",
+          "url": "https://www.douyin.com/search/%E6%97%A5%E7%BE%8E%E6%97%A0%E8%A7%86%E6%8A%97%E8%AE%AE%E5%9D%9A%E6%8C%81%E8%81%94%E5%90%88%E5%86%9B%E6%BC%94?type=general",
+          "hot": "766.9万"
+        },
+        {
+          "title": "网传赴泰游客遭谋杀系谣言",
+          "url": "https://www.douyin.com/search/%E7%BD%91%E4%BC%A0%E8%B5%B4%E6%B3%B0%E6%B8%B8%E5%AE%A2%E9%81%AD%E8%B0%8B%E6%9D%80%E7%B3%BB%E8%B0%A3%E8%A8%80?type=general",
+          "hot": "766.8万"
+        },
+        {
+          "title": "A股午盘下挫",
+          "url": "https://www.douyin.com/search/A%E8%82%A1%E5%8D%88%E7%9B%98%E4%B8%8B%E6%8C%AB?type=general",
+          "hot": "765.8万"
+        },
+        {
+          "title": "嫁金钗开播",
+          "url": "https://www.douyin.com/search/%E5%AB%81%E9%87%91%E9%92%97%E5%BC%80%E6%92%AD?type=general",
+          "hot": "764.9万"
         }
       ]
     },
@@ -170,79 +170,79 @@
       "label": "知乎热榜",
       "items": [
         {
-          "title": "如何看待胖东来梦之城项目按照标准施工，被夸完全教科书级？",
-          "url": "https://www.zhihu.com/question/2093673568659838421",
-          "hot": "756 万热度"
-        },
-        {
-          "title": "如何评价潘天鸿（Tim）父亲圆通速递董事兼总裁潘水苗出任影视飓风董事长，影视飓风回应称并非新加入？",
-          "url": "https://www.zhihu.com/question/2094025776060429409",
-          "hot": "569 万热度"
-        },
-        {
-          "title": "1 岁宝宝吃下被邻居投毒的鸡蛋后进 ICU，邻居自首称「想毒黄鼠狼」，你怎么看？邻居该担什么法律责任？",
-          "url": "https://www.zhihu.com/question/2094023847775135091",
-          "hot": "203 万热度"
-        },
-        {
-          "title": "如何评价 DeepSeek 停摆 5 小时后，按最近七日 api 消耗向用户发放补偿赠金？",
-          "url": "https://www.zhihu.com/question/2094116217489450760",
-          "hot": "177 万热度"
+          "title": "特斯拉新款 Roadster 正式亮相，能实现离地升空、空中翻滚，如何评价？你看好它的市场前景吗？",
+          "url": "https://www.zhihu.com/question/2094190191133172464",
+          "hot": "4959 万热度"
         },
         {
           "title": "如何看待 13 岁女团成员出道仅数小时被曝父母恶意欠薪且被执行 345 万，母亲道歉并承诺会尽快解决？",
           "url": "https://www.zhihu.com/question/2094093905973044678",
-          "hot": "144 万热度"
+          "hot": "1522 万热度"
+        },
+        {
+          "title": "25 岁韩国网红柳智媛跑半马突发离世，此前她一直有运动的习惯，问题出在哪里？长跑应怎么评估身体状况？",
+          "url": "https://www.zhihu.com/question/2093971346942158548",
+          "hot": "711 万热度"
+        },
+        {
+          "title": "美国肯德基 2027 年起将改用可口可乐，背后是什么原因？消费者实际感受差别大吗？",
+          "url": "https://www.zhihu.com/question/2094346221913690254",
+          "hot": "680 万热度"
+        },
+        {
+          "title": "工厂里那些「看一眼就知道不对」的老师傅，到底凭的是什么？",
+          "url": "https://www.zhihu.com/question/2086781187104810476",
+          "hot": "542 万热度"
         },
         {
           "title": "如何看待申真谞获得烂柯杯世界围棋冠军，成为九冠王，彻底超越柯洁？",
           "url": "https://www.zhihu.com/question/2094115292263736344",
-          "hot": "139 万热度"
+          "hot": "408 万热度"
         },
         {
-          "title": "最近密集收到各种 AI 逆向游戏、软件的新闻和资讯，感觉很多人都在担心这个事情，程序开发的未来会怎样？",
-          "url": "https://www.zhihu.com/question/2093357614411338435",
-          "hot": "129 万热度"
+          "title": "深圳全市全天禁鸣喇叭 5 年，年内乱鸣喇叭第 3 次起罚 500，如何解读这项政策？罚款力度合理吗？",
+          "url": "https://www.zhihu.com/question/2094331791628657808",
+          "hot": "360 万热度"
         },
         {
-          "title": "LoL 官方宣布经典模式将于 2027 年 1 月下架，怀旧模式为何难以留住玩家？",
-          "url": "https://www.zhihu.com/question/2094017633859408212",
-          "hot": "123 万热度"
+          "title": "既然网球发球可以直接 ace 得分，那为什么不专门练发球？",
+          "url": "https://www.zhihu.com/question/2093402795584009589",
+          "hot": "331 万热度"
         },
         {
-          "title": "电影《生化危机：爆发夜》全球票房破 3 亿美元创系列纪录，中国内地首周 4060 万美元，如何看待这一成绩？",
-          "url": "https://www.zhihu.com/question/2093398805949276386",
-          "hot": "108 万热度"
+          "title": "「豆包对低认知人群有权威性」引热议，你怎么看这一说法？缺乏辨别力更容易盲目相信 AI，还是会更抵触？",
+          "url": "https://www.zhihu.com/question/2093992911612244313",
+          "hot": "303 万热度"
         },
         {
-          "title": "酒店因肖战演唱会从 179 元涨到 2193 元，市监部门称「明码标价都是正常的」，你怎么看？这合理吗？",
-          "url": "https://www.zhihu.com/question/2093975692383708744",
-          "hot": "81 万热度"
+          "title": "大厂员工吐槽新来的校招生特别 mean，被回复不 mean 根本过不了面试，真的吗？面试到底在选什么样的人？",
+          "url": "https://www.zhihu.com/question/2094093125488566874",
+          "hot": "282 万热度"
         },
         {
-          "title": "为什么人们忽然间对张纪中拍摄的金庸武侠剧好评如潮？",
-          "url": "https://www.zhihu.com/question/313748673",
-          "hot": "78 万热度"
+          "title": "四川雷波县学生分低教师拍照事件最新调查结果公布，县长被调离，如何看待该处罚结果？还有哪些信息值得关注？",
+          "url": "https://www.zhihu.com/question/2094365742414283664",
+          "hot": "244 万热度"
         },
         {
-          "title": "福建工人撞脸陈小春，名字中恰好带陈小春失散弟弟原名中的禄字，当事人回应称仅是巧合，哪些信息值得关注？",
-          "url": "https://www.zhihu.com/question/2093839969966203705",
-          "hot": "78 万热度"
+          "title": "珠穆朗玛峰只有一半在中国，为何全世界都认为是我国的？",
+          "url": "https://www.zhihu.com/question/2094299765097882927",
+          "hot": "197 万热度"
         },
         {
-          "title": "孙可望内战李定国的时候，为什么那么多人背叛他，输的那么快？明明云南的钱粮都是他生产的？",
-          "url": "https://www.zhihu.com/question/2087679381439256133",
-          "hot": "78 万热度"
+          "title": "特斯拉第二代 Roadster 还是汽车吗？展示的这些技术放在火箭领域算什么水平？",
+          "url": "https://www.zhihu.com/question/2094375637280449777",
+          "hot": "163 万热度"
         },
         {
-          "title": "如果乌姆里奇派出的摄魂怪成功给了哈利和达力一个吻，她该如何收场，邓布利多将会如何反应？",
-          "url": "https://www.zhihu.com/question/2021411544991286674",
-          "hot": "76 万热度"
+          "title": "深圳中小学推行春秋假，为什么很多家长反而不支持？春秋假的教育意义究竟是什么？",
+          "url": "https://www.zhihu.com/question/2092722215804461372",
+          "hot": "162 万热度"
         },
         {
-          "title": "看多了 AI 短剧，为什么都不太喜欢看真人演的短剧或电视剧了呢？",
-          "url": "https://www.zhihu.com/question/2062123788586726125",
-          "hot": "58 万热度"
+          "title": "曝「甲醛白菜」博主再曝桂花熏硫，广西通报情况属实正追溯流向，这种桂花危害有多大？还有哪些信息值得关注？",
+          "url": "https://www.zhihu.com/question/2094387941598389093",
+          "hot": "154 万热度"
         }
       ]
     },
@@ -330,17 +330,162 @@
       "label": "深圳本地",
       "items": [
         {
-          "title": "深圳全市全天禁鸣喇叭5年",
-          "url": "https://s.weibo.com/weibo?q=%23%E6%B7%B1%E5%9C%B3%E5%85%A8%E5%B8%82%E5%85%A8%E5%A4%A9%E7%A6%81%E9%B8%A3%E5%96%87%E5%8F%AD5%E5%B9%B4%23",
-          "hot": "141.3万",
-          "source": "微博热搜"
+          "title": "APEC会议期间深圳倡议错峰出行、居家办公，地铁、公交票价五折优惠",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2fwww.thepaper.cn%2fnewsDetail_forward_34255008&c=3862935082670952734&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳美术馆（新馆）正式开放！超出片的年度大展，免费预约！",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20231106A0AKJK00&c=243459838755194085&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳理工大学入选深圳首批哲学社会科学重点实验室",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2fwww.msn.com%2fzh-cn%2fmoney%2f%25E9%2580%259A%25E7%2594%25A8%2f%25E6%25B7%25B1%25E5%259C%25B3%25E7%2590%2586%25E5%25B7%25A5%25E5%25A4%25A7%25E5%25AD%25A6%25E5%2585%25A5%25E9%2580%2589%25E6%25B7%25B1%25E5%259C%25B3%25E9%25A6%2596%25E6%2589%25B9%25E5%2593%25B2%25E5%25AD%25A6%25E7%25A4%25BE%25E4%25BC%259A%25E7%25A7%2591%25E5%25AD%25A6%25E9%2587%258D%25E7%2582%25B9%25E5%25AE%259E%25E9%25AA%258C%25E5%25AE%25A4%2far-AA2ejvj7&c=9619351531471169034&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳以“每一度”的精准刻画，诠释中国式现代化的城市样本",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2fview.inews.qq.com%2fa%2f20250826A01IJV00&c=9884378142754355515&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳本土卫冕冠军刘瑞欣领衔阿美中国锦标赛11月重返深圳观澜湖, PIF全球系列赛再度登陆中国",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2fnews.sina.cn%2fsx%2f2026-10-12%2fdetail-iniuyarm8518952.d.html%3fvt%3d4&c=7185228611065311097&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳：APEC会议期间公交地铁票价打五折，倡议市民自愿申报停驶私家车",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2fwww.thepaper.cn%2fnewsDetail_forward_34255240&c=1203293269165752171&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳市委书记在2025年深圳市迎春茶话会上用2种方式说清楚了深圳！一个个亮眼的数据和一件件落地的实事释放大信号！",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20250124A09ESG00&c=406594227550342893&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳地铁2号线(线路图+时间表+延长线)",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2fsz.bendibao.com%2fjt%2f2019524%2f816445.htm&c=2595995720782305477&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳杭州同日出手！商品房销售改革落地扩至7城 现房销售加速",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2ffinance.eastmoney.com%2fa%2f202610153897017228.html&c=5134052651594812616&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳，何以成为「中国硅谷」？",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2ffinance.sina.com.cn%2fjjxw%2f2025-09-26%2fdoc-infrvhcq0582323.shtml&c=1970859956874103039&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳原副市长王守睿落马 刚达退休年龄",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cedf4bab4914819e84988962e016&url=https%3a%2f%2fwww.epochtimes.com%2fgb%2f26%2f10%2f12%2fn14868285.htm&c=5397431966134812857&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "深圳全市全天禁鸣喇叭 5 年，年内乱鸣喇叭第 3 次起罚 500，如何解读这项政策？罚款力度合理吗？",
+          "url": "https://www.zhihu.com/question/2094331791628657808",
+          "hot": "360 万热度",
+          "source": "知乎热榜"
+        },
+        {
+          "title": "深圳中小学推行春秋假，为什么很多家长反而不支持？春秋假的教育意义究竟是什么？",
+          "url": "https://www.zhihu.com/question/2092722215804461372",
+          "hot": "162 万热度",
+          "source": "知乎热榜"
         }
       ],
       "keyfree": true
     },
     "chengdu": {
       "label": "成都本地",
-      "items": [],
+      "items": [
+        {
+          "title": "完成数千万元融资! 成都合成生物学与蛋白质工程交叉赛道硬核“潜力股”发展提速",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2fwww.msn.com%2fzh-cn%2fmoney%2f%25E9%2580%259A%25E7%2594%25A8%2f%25E5%25AE%258C%25E6%2588%2590%25E6%2595%25B0%25E5%258D%2583%25E4%25B8%2587%25E5%2585%2583%25E8%259E%258D%25E8%25B5%2584-%25E6%2588%2590%25E9%2583%25BD%25E5%2590%2588%25E6%2588%2590%25E7%2594%259F%25E7%2589%25A9%25E5%25AD%25A6%25E4%25B8%258E%25E8%259B%258B%25E7%2599%25BD%25E8%25B4%25A8%25E5%25B7%25A5%25E7%25A8%258B%25E4%25BA%25A4%25E5%258F%2589%25E8%25B5%259B%25E9%2581%2593%25E7%25A1%25AC%25E6%25A0%25B8-%25E6%25BD%259C%25E5%258A%259B%25E8%2582%25A1-%25E5%258F%2591%25E5%25B1%2595%25E6%258F%2590%25E9%2580%259F%2far-AA2ejamV&c=10292411531833694257&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "“才聚天府·筑梦成都”——2026“蓉漂人才荟”华中科技大学专场活动成功举办",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20261016A039EP00&c=6194653661321428956&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "发射成功! “成都造”又上天啦",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2fwww.msn.com%2fzh-cn%2f%25E6%258A%2580%25E6%259C%25AF%2f%25E5%25A4%25AA%25E7%25A9%25BA%25E6%258E%25A2%25E7%25B4%25A2%2f%25E5%258F%2591%25E5%25B0%2584%25E6%2588%2590%25E5%258A%259F-%25E6%2588%2590%25E9%2583%25BD%25E9%2580%25A0-%25E5%258F%2588%25E4%25B8%258A%25E5%25A4%25A9%25E5%2595%25A6%2far-AA2eidrT&c=14960588177180168900&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "成都国际航空枢纽年旅客吞吐量首破7000万人次 “7000 万”背后的含金量",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=http%3a%2f%2fwww.sc.xinhuanet.com%2f20231211%2f1e9c2c99d7a8442da2b1ac23d1cf22e3%2fc.html&c=18254090869414100816&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "西南财经大学赵静梅：AI时代的“成都八零”，有何不同？",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2ffinance.eastmoney.com%2fa%2f202610143895755766.html&c=5890249400437762007&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "天府文化：成都建设世界文化名城的文化自信",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2fcpc.people.com.cn%2fn1%2f2018%2f0412%2fc389394-29922631.html&c=1443023687989959911&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "解码“成都金融”之四：成都加快构建特色金融产业体系",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=http%3a%2f%2fwww.sc.xinhuanet.com%2f20240130%2fb967f3f39b3341a08911331c1c0953c0%2fc.html&c=12821109233693854228&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "全球排名第40位 成都首次上榜国际交往中心城市",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2ffinance.sina.com.cn%2fjjxw%2f2025-09-30%2fdoc-infseytz2880714.shtml&c=10198594875034724064&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "成都地名溯源 | 智慧城区，缘之武侯",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2fview.inews.qq.com%2fa%2f20241004A02TN500&c=16656020251531791655&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "烂尾5年！华虹正式接手成都格芯晶圆厂：228亿元、规划月产能3万片",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2ffinance.sina.com.cn%2ftech%2froll%2f2023-12-09%2fdoc-imzxmnhs9478551.shtml&c=13238318398181210219&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "成都大运会 | “成都真的给人以家的感觉”——世界青年的中国文化印象",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2fwww.xinhuanet.com%2f2023-08%2f04%2fc_1129786287.htm&c=3791023672658734661&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        },
+        {
+          "title": "成都世运会丨成都将举办“我们一生中最棒的世运会”——专访国际世界运动会协会“掌门人”",
+          "url": "http://www.bing.com/news/apiclick.aspx?ref=FexRss&aid=&tid=6ad1cee01f8b4a0b9e9436438f7c1367&url=https%3a%2f%2fnews.china.com.cn%2f2025-08%2f06%2fcontent_118012113.shtml&c=16379329653247582931&mkt=en-us",
+          "hot": "",
+          "source": "本地新闻"
+        }
+      ],
       "keyfree": true
     }
   }
